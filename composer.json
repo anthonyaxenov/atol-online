@@ -1,0 +1,45 @@
+{
+    "name": "axenov/atol-online",
+    "description": "Library to use cloud cash register in e-commerce according to Russian Federal Law #54",
+    "license": "MIT",
+    "type": "library",
+    "version": "0.1.0-b",
+    "keywords": [
+        "54-fz",
+        "atol",
+        "atol-online"
+    ],
+    "homepage": "https://github.com/anthonyaxenov/atol-online",
+    "authors": [
+        {
+            "name": "Anthony Axenov",
+            "homepage": "http://anthonyaxenov.ru",
+            "email": "anthonyaxenov@gmail.com"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/anthonyaxenov/atol-online",
+        "issues": "https://github.com/anthonyaxenov/atol-online/issues",
+        "chat": "https://discord.gg/mFYTQmp"
+    },
+    "require": {
+        "php": ">=7.2",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^6.5",
+        "psr/log": "^1.1",
+        "ramsey/uuid": "^3.9"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
+    },
+    "autoload": {
+        "classmap": [
+            "src/AtolOnline/Api/",
+            "src/AtolOnline/Exceptions/",
+            "src/AtolOnline/Entities/",
+            "src/AtolOnline/Traits/",
+            "src/AtolOnline/Constants/",
+            "tests/"
+        ]
+    }
+}
