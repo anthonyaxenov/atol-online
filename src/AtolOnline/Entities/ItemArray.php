@@ -9,6 +9,8 @@
 
 namespace AtolOnline\Entities;
 
+use AtolOnline\Api\SellSchema;
+use AtolOnline\Exceptions\AtolTooFewItemsException;
 use AtolOnline\Exceptions\AtolTooManyItemsException;
 
 /**
@@ -20,8 +22,10 @@ class ItemArray extends AtolEntity
 {
     /**
      * Максимальное количество элементов в массиве
+     * По документации ограничение по количеству предметов расчёта = от 1 до 100,
+     * однако в схеме sell не указан receipt.properties.items.maxItems
      */
-    const MAX_COUNT = 100;
+    public const MAX_COUNT = 100;
     
     /**
      * @var \AtolOnline\Entities\Item[] Массив предметов расчёта
@@ -99,13 +103,20 @@ class ItemArray extends AtolEntity
      * @param array|null $items Если передать массив, то проверит количество его элементов.
      *                          Иначе проверит количество уже присвоенных элементов.
      * @return bool
+     * @throws \AtolOnline\Exceptions\AtolTooFewItemsException  Слишком мало предметов расчёта
      * @throws \AtolOnline\Exceptions\AtolTooManyItemsException Слишком много предметов расчёта
      */
     protected function validateCount(array $items = null)
     {
-        if (($items && is_array($items) && count($items) >= self::MAX_COUNT) || count($this->items) == self::MAX_COUNT) {
+        if (!empty($is_items) && is_array($items)) {
+            if (count($items) < SellSchema::get()->receipt->properties->items->minItems) {
+                throw new AtolTooFewItemsException(SellSchema::get()->receipt->properties->items->minItems);
+            } elseif (count($items) <= self::MAX_COUNT) { // maxItems отстутствует в схеме sell
+                return true;
+            }
+        } elseif (count($this->items) > self::MAX_COUNT) {
             throw new AtolTooManyItemsException(self::MAX_COUNT);
         }
-        return true;
+        return false;
     }
 }
