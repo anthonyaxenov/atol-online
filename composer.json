@@ -35,6 +35,7 @@
     "autoload": {
         "classmap": [
             "src/AtolOnline/Api/",
+            "src/AtolOnline/Api/Schemas/",
             "src/AtolOnline/Exceptions/",
             "src/AtolOnline/Entities/",
             "src/AtolOnline/Traits/",
