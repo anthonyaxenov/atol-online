@@ -4,3 +4,4 @@
 *.log
 /config.php
 *cache*
+/test.php
