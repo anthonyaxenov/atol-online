@@ -225,7 +225,7 @@ class Kkt extends Client
     public function sell(Document $document)
     {
         if ($document->getCorrectionInfo()) {
-            throw new AtolCorrectionInfoException('В документе есть данные коррекции');
+            throw new AtolCorrectionInfoException('Некорректная операция над документом коррекции');
         }
         return $this->registerDocument('sell', 'receipt', $document);
     }
@@ -243,7 +243,7 @@ class Kkt extends Client
     public function sellRefund(Document $document)
     {
         if ($document->getCorrectionInfo()) {
-            throw new AtolCorrectionInfoException('В документе есть данные коррекции');
+            throw new AtolCorrectionInfoException('Некорректная операция над документом коррекции');
         }
         return $this->registerDocument('sell_refund', 'receipt', $document->clearVats());
     }
@@ -277,7 +277,7 @@ class Kkt extends Client
     public function buy(Document $document)
     {
         if ($document->getCorrectionInfo()) {
-            throw new AtolCorrectionInfoException('В документе есть данные коррекции');
+            throw new AtolCorrectionInfoException('Некорректная операция над документом коррекции');
         }
         return $this->registerDocument('buy', 'receipt', $document);
     }
@@ -295,7 +295,7 @@ class Kkt extends Client
     public function buyRefund(Document $document)
     {
         if ($document->getCorrectionInfo()) {
-            throw new AtolCorrectionInfoException('В документе есть данные коррекции');
+            throw new AtolCorrectionInfoException('Некорректная операция над документом коррекции');
         }
         return $this->registerDocument('buy_refund', 'receipt', $document->clearVats());
     }
@@ -370,7 +370,6 @@ class Kkt extends Client
         $this->kkt_config['prod']['pass'] = '';
         $this->kkt_config['prod']['url'] = 'https://online.atol.ru/possystem/v4';
         $this->kkt_config['prod']['callback_url'] = '';
-        
         $this->kkt_config['test']['group'] = 'v4-online-atol-ru_4179';
         $this->kkt_config['test']['login'] = 'v4-online-atol-ru';
         $this->kkt_config['test']['pass'] = 'iGFFuihss';
