@@ -98,25 +98,39 @@ class ItemArray extends AtolEntity
     }
     
     /**
-     * Проверяет количество элементов в массиве
+     * Проверяет количество предметов расчёта
      *
      * @param array|null $items Если передать массив, то проверит количество его элементов.
      *                          Иначе проверит количество уже присвоенных элементов.
-     * @return bool
+     * @return bool true если всё хорошо, иначе выбрасывает исключение
      * @throws \AtolOnline\Exceptions\AtolTooFewItemsException  Слишком мало предметов расчёта
      * @throws \AtolOnline\Exceptions\AtolTooManyItemsException Слишком много предметов расчёта
      */
     protected function validateCount(array $items = null)
     {
-        if (!empty($is_items) && is_array($items)) {
-            if (count($items) < SellSchema::get()->receipt->properties->items->minItems) {
-                throw new AtolTooFewItemsException(SellSchema::get()->receipt->properties->items->minItems);
-            } elseif (count($items) <= self::MAX_COUNT) { // maxItems отстутствует в схеме sell
-                return true;
-            }
-        } elseif (count($this->items) > self::MAX_COUNT) {
-            throw new AtolTooManyItemsException(self::MAX_COUNT);
+        return empty($items)
+            ? $this->checkCount($this->items)
+            : $this->checkCount($items);
+    }
+    
+    /**
+     * Проверяет количество элементов в указанном массиве
+     *
+     * @param array|null $items
+     * @return bool true если всё хорошо, иначе выбрасывает исключение
+     * @throws \AtolOnline\Exceptions\AtolTooFewItemsException  Слишком мало предметов расчёта
+     * @throws \AtolOnline\Exceptions\AtolTooManyItemsException Слишком много предметов расчёта
+     */
+    protected function checkCount(?array $items = null)
+    {
+        $min_count = SellSchema::get()->receipt->properties->items->minItems;
+        $max_count = self::MAX_COUNT; // maxItems отстутствует в схеме sell
+        if (empty($items) || count($items) < $min_count) {
+            throw new AtolTooFewItemsException($min_count);
+        } elseif (count($items) >= $max_count) {
+            throw new AtolTooManyItemsException($max_count);
+        } else {
+            return true;
         }
-        return false;
     }
 }
