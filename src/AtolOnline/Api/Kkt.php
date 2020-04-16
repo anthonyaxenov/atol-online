@@ -115,10 +115,12 @@ class Kkt extends Client
      */
     public function setLogin(string $login)
     {
-        if (empty($login)) {
-            throw new AtolKktLoginEmptyException();
-        } elseif (strlen($login) > 100) {
-            throw new AtolKktLoginTooLongException($login, 100);
+        if (!$this->isTestMode()) {
+            if (empty($login)) {
+                throw new AtolKktLoginEmptyException();
+            } elseif (strlen($login) > 100) {
+                throw new AtolKktLoginTooLongException($login, 100);
+            }
         }
         $this->kkt_config['prod']['login'] = $login;
         return $this;
@@ -143,8 +145,10 @@ class Kkt extends Client
      */
     public function setPassword(string $password)
     {
-        if (empty($password)) {
-            throw new AtolKktPasswordEmptyException();
+        if (!$this->isTestMode()) {
+            if (empty($password)) {
+                throw new AtolKktPasswordEmptyException();
+            }
         }
         $this->kkt_config['prod']['pass'] = $password;
         return $this;
