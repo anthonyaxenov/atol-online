@@ -10,7 +10,6 @@
 namespace AtolOnline\Entities;
 
 use AtolOnline\Api\SellSchema;
-use AtolOnline\Exceptions\AtolTooFewVatsException;
 use AtolOnline\Exceptions\AtolTooManyVatsException;
 
 /**
@@ -29,7 +28,6 @@ class VatArray extends Entity
      * VatArray constructor.
      *
      * @param Vat[]|null $vats Массив ставок НДС
-     * @throws AtolTooFewVatsException  Слишком мало ставок НДС
      * @throws AtolTooManyVatsException Слишком много ставок НДС
      */
     public function __construct(?array $vats = null)
@@ -44,7 +42,6 @@ class VatArray extends Entity
      *
      * @param Vat[] $vats Массив ставок НДС
      * @return $this
-     * @throws AtolTooFewVatsException  Слишком мало ставок НДС
      * @throws AtolTooManyVatsException Слишком много ставок НДС
      */
     public function set(array $vats)
@@ -60,7 +57,6 @@ class VatArray extends Entity
      *
      * @param Vat $vat Объект ставки НДС
      * @return $this
-     * @throws AtolTooFewVatsException  Слишком мало ставок НДС
      * @throws AtolTooManyVatsException Слишком много ставок НДС
      */
     public function add(Vat $vat)
@@ -99,34 +95,14 @@ class VatArray extends Entity
      * @param Vat[]|null $vats Если передать массив, то проверит количество его элементов.
      *                         Иначе проверит количество уже присвоенных элементов.
      * @return bool true если всё хорошо, иначе выбрасывает исключение
-     * @throws AtolTooFewVatsException  Слишком мало ставок НДС
      * @throws AtolTooManyVatsException Слишком много ставок НДС
      */
-    protected function validateCount(?array $vats = null)
+    protected function validateCount(?array $vats = null): bool
     {
-        return empty($vats)
-            ? $this->checkCount($this->vats)
-            : $this->checkCount($vats);
-    }
-    
-    /**
-     * Проверяет количество элементов в указанном массиве
-     *
-     * @param array|null $elements
-     * @return bool true если всё хорошо, иначе выбрасывает исключение
-     * @throws AtolTooFewVatsException  Слишком мало ставок НДС
-     * @throws AtolTooManyVatsException Слишком много ставок НДС
-     */
-    protected function checkCount(?array $elements = null)
-    {
-        $min_count = SellSchema::get()->receipt->properties->vats->minItems;
-        $max_count = SellSchema::get()->receipt->properties->vats->maxItems;
-        if (empty($elements) || count($elements) < $min_count) {
-            throw new AtolTooFewVatsException($min_count);
-        } elseif (count($elements) >= $max_count) {
-            throw new AtolTooManyVatsException($max_count);
-        } else {
-            return true;
+        $max_items = SellSchema::get()->properties->receipt->properties->vats->maxItems;
+        if ((!empty($vats) && count($vats) >= $max_items) || count($this->vats) >= $max_items) {
+            throw new AtolTooManyVatsException($max_items);
         }
+        return true;
     }
 }

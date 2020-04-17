@@ -9,8 +9,6 @@
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Api\SellSchema;
-use AtolOnline\Exceptions\AtolTooFewItemsException;
 use AtolOnline\Exceptions\AtolTooManyItemsException;
 
 /**
@@ -36,7 +34,6 @@ class ItemArray extends Entity
      * ItemArray constructor.
      *
      * @param Item[]|null $items Массив предметов расчёта
-     * @throws AtolTooFewItemsException  Слишком мало предметов расчёта
      * @throws AtolTooManyItemsException Слишком много предметов расчёта
      */
     public function __construct(?array $items = null)
@@ -51,7 +48,6 @@ class ItemArray extends Entity
      *
      * @param Item[] $items Массив предметов расчёта
      * @return $this
-     * @throws AtolTooFewItemsException  Слишком мало предметов расчёта
      * @throws AtolTooManyItemsException Слишком много предметов расчёта
      */
     public function set(array $items)
@@ -67,7 +63,6 @@ class ItemArray extends Entity
      *
      * @param Item $item Объект предмета расчёта
      * @return $this
-     * @throws AtolTooFewItemsException  Слишком мало предметов расчёта
      * @throws AtolTooManyItemsException Слишком много предметов расчёта
      */
     public function add(Item $item)
@@ -106,34 +101,13 @@ class ItemArray extends Entity
      * @param Item[]|null $items Если передать массив, то проверит количество его элементов.
      *                           Иначе проверит количество уже присвоенных элементов.
      * @return bool true если всё хорошо, иначе выбрасывает исключение
-     * @throws AtolTooFewItemsException  Слишком мало предметов расчёта
      * @throws AtolTooManyItemsException Слишком много предметов расчёта
      */
-    protected function validateCount(?array $items = null)
+    protected function validateCount(?array $items = null): bool
     {
-        return empty($items)
-            ? $this->checkCount($this->items)
-            : $this->checkCount($items);
-    }
-    
-    /**
-     * Проверяет количество элементов в указанном массиве
-     *
-     * @param array|null $elements
-     * @return bool true если всё хорошо, иначе выбрасывает исключение
-     * @throws AtolTooFewItemsException  Слишком мало предметов расчёта
-     * @throws AtolTooManyItemsException Слишком много предметов расчёта
-     */
-    protected function checkCount(?array $elements = null)
-    {
-        $min_count = SellSchema::get()->receipt->properties->items->minItems;
-        $max_count = self::MAX_COUNT; // maxItems отсутствует в схеме sell
-        if (empty($elements) || count($elements) < $min_count) {
-            throw new AtolTooFewItemsException($min_count);
-        } elseif (count($elements) >= $max_count) {
-            throw new AtolTooManyItemsException($max_count);
-        } else {
-            return true;
+        if ((!empty($items) && count($items) >= self::MAX_COUNT) || count($this->items) >= self::MAX_COUNT) {
+            throw new AtolTooManyItemsException(self::MAX_COUNT);
         }
+        return true;
     }
 }

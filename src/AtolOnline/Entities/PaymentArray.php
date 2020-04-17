@@ -10,7 +10,6 @@
 namespace AtolOnline\Entities;
 
 use AtolOnline\Api\SellSchema;
-use AtolOnline\Exceptions\AtolTooFewPaymentsException;
 use AtolOnline\Exceptions\AtolTooManyPaymentsException;
 
 /**
@@ -29,7 +28,6 @@ class PaymentArray extends Entity
      * ItemArray constructor.
      *
      * @param Payment[]|null $payments Массив оплат
-     * @throws AtolTooFewPaymentsException  Слишком мало оплат
      * @throws AtolTooManyPaymentsException Слишком много оплат
      */
     public function __construct(?array $payments = null)
@@ -44,7 +42,6 @@ class PaymentArray extends Entity
      *
      * @param Payment[] $payments
      * @return $this
-     * @throws AtolTooFewPaymentsException  Слишком мало оплат
      * @throws AtolTooManyPaymentsException Слишком много оплат
      */
     public function set(array $payments)
@@ -60,7 +57,6 @@ class PaymentArray extends Entity
      *
      * @param Payment $payment Объект оплаты
      * @return $this
-     * @throws AtolTooFewPaymentsException  Слишком мало оплат
      * @throws AtolTooManyPaymentsException Слишком много оплат
      */
     public function add(Payment $payment)
@@ -99,34 +95,14 @@ class PaymentArray extends Entity
      * @param Payment[]|null $payments Если передать массив, то проверит количество его элементов.
      *                                 Иначе проверит количество уже присвоенных элементов.
      * @return bool true если всё хорошо, иначе выбрасывает исключение
-     * @throws AtolTooFewPaymentsException  Слишком мало оплат
      * @throws AtolTooManyPaymentsException Слишком много оплат
      */
-    protected function validateCount(?array $payments = null)
+    protected function validateCount(?array $payments = null): bool
     {
-        return empty($payments)
-            ? $this->checkCount($this->payments)
-            : $this->checkCount($payments);
-    }
-    
-    /**
-     * Проверяет количество элементов в указанном массиве
-     *
-     * @param array $elements
-     * @return bool true если всё хорошо, иначе выбрасывает исключение
-     * @throws AtolTooFewPaymentsException  Слишком мало оплат
-     * @throws AtolTooManyPaymentsException Слишком много оплат
-     */
-    protected function checkCount(?array $elements = null)
-    {
-        $min_count = SellSchema::get()->receipt->properties->payments->minItems;
-        $max_count = SellSchema::get()->receipt->properties->payments->maxItems;
-        if (empty($elements) || count($elements) < $min_count) {
-            throw new AtolTooFewPaymentsException($min_count);
-        } elseif (count($elements) >= $max_count) {
-            throw new AtolTooManyPaymentsException($max_count);
-        } else {
-            return true;
+        $max_items = SellSchema::get()->properties->receipt->properties->payments->maxItems;
+        if ((!empty($payments) && count($payments) >= $max_items) || count($this->payments) >= $max_items) {
+            throw new AtolTooManyPaymentsException($max_items);
         }
+        return true;
     }
 }
