@@ -16,7 +16,7 @@ use AtolOnline\{Constants\VatTypes, Traits\RublesKopeksConverter};
  *
  * @package AtolOnline\Entities
  */
-class Vat extends AtolEntity
+class Vat extends Entity
 {
     use RublesKopeksConverter;
     

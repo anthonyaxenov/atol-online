@@ -16,7 +16,7 @@ use AtolOnline\{Exceptions\AtolNameTooLongException, Exceptions\AtolPhoneTooLong
  *
  * @package AtolOnline\Entities
  */
-class Client extends AtolEntity
+class Client extends Entity
 {
     use
         /**

@@ -16,7 +16,7 @@ use AtolOnline\Exceptions\AtolCashierTooLongException;
  *
  * @package AtolOnline\Entities
  */
-class Document extends AtolEntity
+class Document extends Entity
 {
     /**
      * @var \AtolOnline\Entities\ItemArray Массив предметов расчёта

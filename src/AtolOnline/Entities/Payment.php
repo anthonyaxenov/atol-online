@@ -16,7 +16,7 @@ use AtolOnline\Constants\PaymentTypes;
  *
  * @package AtolOnline\Entities
  */
-class Payment extends AtolEntity
+class Payment extends Entity
 {
     /**
      * @var int Тип оплаты

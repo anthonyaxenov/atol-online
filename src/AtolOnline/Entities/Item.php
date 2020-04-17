@@ -22,7 +22,7 @@ use AtolOnline\{Exceptions\AtolNameTooLongException,
  *
  * @package AtolOnline\Entities
  */
-class Item extends AtolEntity
+class Item extends Entity
 {
     use RublesKopeksConverter;
     

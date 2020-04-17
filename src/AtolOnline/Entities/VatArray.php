@@ -18,7 +18,7 @@ use AtolOnline\Exceptions\AtolTooManyVatsException;
  *
  * @package AtolOnline\Entities
  */
-class VatArray extends AtolEntity
+class VatArray extends Entity
 {
     /**
      * @var Vat[] Массив ставок НДС

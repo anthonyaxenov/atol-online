@@ -16,7 +16,7 @@ use JsonSerializable;
  *
  * @package AtolOnline\Entities
  */
-abstract class AtolEntity implements JsonSerializable
+abstract class Entity implements JsonSerializable
 {
     /**
      * @inheritDoc

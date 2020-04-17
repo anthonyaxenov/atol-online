@@ -14,7 +14,7 @@ namespace AtolOnline\Entities;
  *
  * @package AtolOnline\Entities
  */
-class CorrectionInfo extends AtolEntity
+class CorrectionInfo extends Entity
 {
     /**
      * @var int Тип коррекции. Тег ФФД - 1173.

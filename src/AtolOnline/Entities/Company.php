@@ -22,7 +22,7 @@ use AtolOnline\{Exceptions\AtolEmailTooLongException,
  *
  * @package AtolOnline\Entities
  */
-class Company extends AtolEntity
+class Company extends Entity
 {
     use
         /**

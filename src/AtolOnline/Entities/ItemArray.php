@@ -18,7 +18,7 @@ use AtolOnline\Exceptions\AtolTooManyItemsException;
  *
  * @package AtolOnline\Entities
  */
-class ItemArray extends AtolEntity
+class ItemArray extends Entity
 {
     /**
      * Максимальное количество элементов в массиве

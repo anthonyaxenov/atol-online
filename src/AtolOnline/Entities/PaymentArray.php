@@ -16,7 +16,7 @@ use AtolOnline\Exceptions\AtolTooManyPaymentsException;
  *
  * @package AtolOnline\Entities
  */
-class PaymentArray extends AtolEntity
+class PaymentArray extends Entity
 {
     /**
      * Максимальное количество элементов в массиве

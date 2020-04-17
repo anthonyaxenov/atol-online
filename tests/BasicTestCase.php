@@ -7,7 +7,7 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-use AtolOnline\Entities\AtolEntity;
+use AtolOnline\Entities\Entity;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,10 +28,10 @@ class BasicTestCase extends TestCase
     }
     
     /**
-     * @param AtolOnline\Entities\AtolEntity $entity
+     * @param Entity $entity
      * @return $this
      */
-    public function checkAtolEntity(AtolEntity $entity)
+    public function checkAtolEntity(Entity $entity)
     {
         $this->assertJson((string)$entity);
         return $this;
