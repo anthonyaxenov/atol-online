@@ -32,7 +32,7 @@ class VatArray extends Entity
      * @throws AtolTooFewVatsException  Слишком мало ставок НДС
      * @throws AtolTooManyVatsException Слишком много ставок НДС
      */
-    public function __construct(array $vats = null)
+    public function __construct(?array $vats = null)
     {
         if ($vats) {
             $this->set($vats);
@@ -112,18 +112,18 @@ class VatArray extends Entity
     /**
      * Проверяет количество элементов в указанном массиве
      *
-     * @param Vat[]|null $vats
+     * @param array|null $elements
      * @return bool true если всё хорошо, иначе выбрасывает исключение
      * @throws AtolTooFewVatsException  Слишком мало ставок НДС
      * @throws AtolTooManyVatsException Слишком много ставок НДС
      */
-    protected function checkCount(?array $vats = null)
+    protected function checkCount(?array $elements = null)
     {
         $min_count = SellSchema::get()->receipt->properties->vats->minItems;
         $max_count = SellSchema::get()->receipt->properties->vats->maxItems;
-        if (empty($vats) || count($vats) < $min_count) {
+        if (empty($elements) || count($elements) < $min_count) {
             throw new AtolTooFewVatsException($min_count);
-        } elseif (count($vats) >= $max_count) {
+        } elseif (count($elements) >= $max_count) {
             throw new AtolTooManyVatsException($max_count);
         } else {
             return true;

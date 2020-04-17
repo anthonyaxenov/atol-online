@@ -28,17 +28,18 @@ class ItemArray extends Entity
     public const MAX_COUNT = 100;
     
     /**
-     * @var \AtolOnline\Entities\Item[] Массив предметов расчёта
+     * @var Item[] Массив предметов расчёта
      */
     private $items = [];
     
     /**
      * ItemArray constructor.
      *
-     * @param \AtolOnline\Entities\Item[]|null $items Массив предметов расчёта
-     * @throws \AtolOnline\Exceptions\AtolTooManyItemsException Слишком много предметов расчёта
+     * @param Item[]|null $items Массив предметов расчёта
+     * @throws AtolTooFewItemsException  Слишком мало предметов расчёта
+     * @throws AtolTooManyItemsException Слишком много предметов расчёта
      */
-    public function __construct(array $items = null)
+    public function __construct(?array $items = null)
     {
         if ($items) {
             $this->set($items);
@@ -48,9 +49,10 @@ class ItemArray extends Entity
     /**
      * Устанавливает массив предметов расчёта
      *
-     * @param \AtolOnline\Entities\Item[] $items Массив предметов расчёта
+     * @param Item[] $items Массив предметов расчёта
      * @return $this
-     * @throws \AtolOnline\Exceptions\AtolTooManyItemsException Слишком много предметов расчёта
+     * @throws AtolTooFewItemsException  Слишком мало предметов расчёта
+     * @throws AtolTooManyItemsException Слишком много предметов расчёта
      */
     public function set(array $items)
     {
@@ -63,9 +65,10 @@ class ItemArray extends Entity
     /**
      * Добавляет предмет расчёта в массив
      *
-     * @param \AtolOnline\Entities\Item $item Объект предмета расчёта
+     * @param Item $item Объект предмета расчёта
      * @return $this
-     * @throws \AtolOnline\Exceptions\AtolTooManyItemsException Слишком много предметов расчёта
+     * @throws AtolTooFewItemsException  Слишком мало предметов расчёта
+     * @throws AtolTooManyItemsException Слишком много предметов расчёта
      */
     public function add(Item $item)
     {
@@ -78,7 +81,7 @@ class ItemArray extends Entity
     /**
      * Возвращает массив предметов расчёта
      *
-     * @return \AtolOnline\Entities\Item[]
+     * @return Item[]
      */
     public function get()
     {
@@ -100,13 +103,13 @@ class ItemArray extends Entity
     /**
      * Проверяет количество предметов расчёта
      *
-     * @param array|null $items Если передать массив, то проверит количество его элементов.
-     *                          Иначе проверит количество уже присвоенных элементов.
+     * @param Item[]|null $items Если передать массив, то проверит количество его элементов.
+     *                           Иначе проверит количество уже присвоенных элементов.
      * @return bool true если всё хорошо, иначе выбрасывает исключение
-     * @throws \AtolOnline\Exceptions\AtolTooFewItemsException  Слишком мало предметов расчёта
-     * @throws \AtolOnline\Exceptions\AtolTooManyItemsException Слишком много предметов расчёта
+     * @throws AtolTooFewItemsException  Слишком мало предметов расчёта
+     * @throws AtolTooManyItemsException Слишком много предметов расчёта
      */
-    protected function validateCount(array $items = null)
+    protected function validateCount(?array $items = null)
     {
         return empty($items)
             ? $this->checkCount($this->items)
@@ -116,18 +119,18 @@ class ItemArray extends Entity
     /**
      * Проверяет количество элементов в указанном массиве
      *
-     * @param array|null $items
+     * @param array|null $elements
      * @return bool true если всё хорошо, иначе выбрасывает исключение
-     * @throws \AtolOnline\Exceptions\AtolTooFewItemsException  Слишком мало предметов расчёта
-     * @throws \AtolOnline\Exceptions\AtolTooManyItemsException Слишком много предметов расчёта
+     * @throws AtolTooFewItemsException  Слишком мало предметов расчёта
+     * @throws AtolTooManyItemsException Слишком много предметов расчёта
      */
-    protected function checkCount(?array $items = null)
+    protected function checkCount(?array $elements = null)
     {
         $min_count = SellSchema::get()->receipt->properties->items->minItems;
-        $max_count = self::MAX_COUNT; // maxItems отстутствует в схеме sell
-        if (empty($items) || count($items) < $min_count) {
+        $max_count = self::MAX_COUNT; // maxItems отсутствует в схеме sell
+        if (empty($elements) || count($elements) < $min_count) {
             throw new AtolTooFewItemsException($min_count);
-        } elseif (count($items) >= $max_count) {
+        } elseif (count($elements) >= $max_count) {
             throw new AtolTooManyItemsException($max_count);
         } else {
             return true;
