@@ -9,27 +9,15 @@
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при попытке указать слишком длинный логин ККТ
  *
  * @package AtolOnline\Exceptions
  */
-class AtolKktLoginTooLongException extends AtolException
+class AtolKktLoginTooLongException extends AtolTooLongException
 {
     /**
-     * AtolKktLoginTooLongException constructor.
-     *
-     * @param                 $login
-     * @param                 $max
-     * @param string          $message
-     * @param int             $code
-     * @param Throwable|null  $previous
+     * @var string Сообщение об ошибке
      */
-    public function __construct($login, $max, $message = "", $code = 0, Throwable $previous = null)
-    {
-        $message = $message ?: 'Слишком длинный логин ККТ (макс.  длина '.$max.', фактически '.strlen($login).'): '.$login;
-        parent::__construct($message, $code, $previous);
-    }
+    protected $message = 'KKT login is too long';
 }

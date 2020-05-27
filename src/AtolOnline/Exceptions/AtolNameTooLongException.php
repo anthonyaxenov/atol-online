@@ -9,27 +9,26 @@
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при попытке указать слишком длинное имя
  *
  * @package AtolOnline\Exceptions
  */
-class AtolNameTooLongException extends AtolException
+class AtolNameTooLongException extends AtolTooLongException
 {
     /**
-     * AtolNameTooLongException constructor.
-     *
-     * @param                 $name
-     * @param                 $max
-     * @param string          $message
-     * @param int             $code
-     * @param Throwable|null  $previous
+     * @inheritDoc
      */
-    public function __construct($name, $max, $message = "", $code = 0, Throwable $previous = null)
-    {
-        $message = $message ?: 'Слишком длинное имя/наименование (макс. длина '.$max.', фактически '.strlen($name).'): '.$name;
-        parent::__construct($message, $code, $previous);
-    }
+    protected $ffd_tags = [
+        1026,
+        1030,
+        1085,
+        1225,
+        1227,
+    ];
+    
+    /**
+     * @var string Сообщение об ошибке
+     */
+    protected $message = 'Name is too long';
 }

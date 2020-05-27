@@ -9,26 +9,27 @@
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при попытке добавить слишком много ставок НДС в массив
  *
  * @package AtolOnline\Exceptions
  */
-class AtolTooManyVatsException extends AtolException
+class AtolTooManyVatsException extends AtolTooManyException
 {
     /**
-     * AtolTooManyVatsException constructor.
-     *
-     * @param int            $max
-     * @param string         $message
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @inheritDoc
      */
-    public function __construct($max, $message = "", $code = 0, Throwable $previous = null)
-    {
-        $message = $message ?: 'Слишком много ставок НДС (макс. '.$max.')';
-        parent::__construct($message, $code, $previous);
-    }
+    protected $ffd_tags = [
+        1102,
+        1103,
+        1104,
+        1105,
+        1106,
+        1107,
+    ];
+    
+    /**
+     * @var string Сообщение об ошибке
+     */
+    protected $message = 'Too many vats';
 }

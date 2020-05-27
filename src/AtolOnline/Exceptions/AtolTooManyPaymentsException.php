@@ -9,26 +9,25 @@
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
- * Исключение, возникающее при попытке добавить слишком много ставок НДС в массив
+ * Исключение, возникающее при попытке добавить слишком много платежей в массив
  *
  * @package AtolOnline\Exceptions
  */
-class AtolTooManyPaymentsException extends AtolException
+class AtolTooManyPaymentsException extends AtolTooManyException
 {
     /**
-     * AtolTooManyPaymentsException constructor.
-     *
-     * @param int            $max
-     * @param string         $message
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @inheritDoc
      */
-    public function __construct($max, $message = "", $code = 0, Throwable $previous = null)
-    {
-        $message = $message ?: 'Слишком много платежей (макс. '.$max.')';
-        parent::__construct($message, $code, $previous);
-    }
+    protected $ffd_tags = [
+        1031,
+        1081,
+        1215,
+        1217,
+    ];
+    
+    /**
+     * @var string Сообщение об ошибке
+     */
+    protected $message = 'Too many payments';
 }

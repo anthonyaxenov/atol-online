@@ -9,27 +9,26 @@
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при попытке указать слишком длинный телефон
  *
  * @package AtolOnline\Exceptions
  */
-class AtolPhoneTooLongException extends AtolException
+class AtolPhoneTooLongException extends AtolTooLongException
 {
     /**
-     * AtolPhoneTooLongException constructor.
-     *
-     * @param                 $phone
-     * @param                 $max
-     * @param string          $message
-     * @param int             $code
-     * @param Throwable|null  $previous
+     * @inheritDoc
      */
-    public function __construct($phone, $max, $message = "", $code = 0, Throwable $previous = null)
-    {
-        $message = $message ?: 'Слишком длинный телефон (макс. длина '.$max.', фактически '.strlen($phone).'): '.$phone;
-        parent::__construct($message, $code, $previous);
-    }
+    protected $ffd_tags = [
+        1008,
+        1073,
+        1074,
+        1075,
+        1171,
+    ];
+    
+    /**
+     * @var string Сообщение об ошибке
+     */
+    protected $message = 'Phone is too long';
 }

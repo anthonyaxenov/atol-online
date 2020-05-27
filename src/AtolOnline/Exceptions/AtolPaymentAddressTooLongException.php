@@ -9,8 +9,6 @@
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при попытке указать слишком длинный платёжный адрес
  *
@@ -19,17 +17,14 @@ use Throwable;
 class AtolPaymentAddressTooLongException extends AtolException
 {
     /**
-     * AtolPaymentAddressTooLongException constructor.
-     *
-     * @param                 $address
-     * @param                 $max
-     * @param string          $message
-     * @param int             $code
-     * @param Throwable|null  $previous
+     * @inheritDoc
      */
-    public function __construct($address, $max, $message = "", $code = 0, Throwable $previous = null)
-    {
-        $message = $message ?: 'Слишком длинный адрес (макс. длина '.$max.', фактически '.strlen($address).'): '.$address;
-        parent::__construct($message, $code, $previous);
-    }
+    protected $ffd_tags = [
+        1187,
+    ];
+    
+    /**
+     * @var string Сообщение об ошибке
+     */
+    protected $message = 'Payment address is too long';
 }

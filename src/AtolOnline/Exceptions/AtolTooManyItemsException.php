@@ -9,26 +9,15 @@
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при попытке добавить слишком много предметов расчёта в массив
  *
  * @package AtolOnline\Exceptions
  */
-class AtolTooManyItemsException extends AtolException
+class AtolTooManyItemsException extends AtolTooManyException
 {
     /**
-     * AtolTooManyItemsException constructor.
-     *
-     * @param int            $max
-     * @param string         $message
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @var string Сообщение об ошибке
      */
-    public function __construct($max, $message = "", $code = 0, Throwable $previous = null)
-    {
-        $message = $message ?: 'Слишком много предметов расчёта (макс. '.$max.')';
-        parent::__construct($message, $code, $previous);
-    }
+    protected $message = 'Too many items';
 }

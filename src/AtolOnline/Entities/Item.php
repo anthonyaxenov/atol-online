@@ -11,11 +11,10 @@ namespace AtolOnline\Entities;
 
 use AtolOnline\{Exceptions\AtolNameTooLongException,
     Exceptions\AtolPriceTooHighException,
-    Exceptions\AtolQuantityTooHighException,
+    Exceptions\AtolTooManyException,
     Exceptions\AtolUnitTooLongException,
     Exceptions\AtolUserdataTooLongException,
-    Traits\RublesKopeksConverter
-};
+    Traits\RublesKopeksConverter};
 
 /**
  * Предмет расчёта (товар, услуга)
@@ -83,7 +82,7 @@ class Item extends Entity
      * @param string|null $payment_method   Способ расчёта
      * @throws AtolNameTooLongException Слишком длинное наименование
      * @throws AtolPriceTooHighException Слишком высокая цена за одну единицу
-     * @throws AtolQuantityTooHighException Слишком большое количество
+     * @throws AtolTooManyException Слишком большое количество
      * @throws AtolUnitTooLongException Слишком длинное название единицы измерения
      */
     public function __construct(
@@ -188,7 +187,7 @@ class Item extends Entity
      * @param float       $quantity         Количество
      * @param string|null $measurement_unit Единица измерения количества
      * @return $this
-     * @throws AtolQuantityTooHighException Слишком большое количество
+     * @throws AtolTooManyException Слишком большое количество
      * @throws AtolPriceTooHighException Слишком высокая общая стоимость
      * @throws AtolUnitTooLongException Слишком длинное название единицы измерения
      */
@@ -196,7 +195,7 @@ class Item extends Entity
     {
         $quantity = round($quantity, 3);
         if ($quantity > 99999.999) {
-            throw new AtolQuantityTooHighException($quantity, 99999.999);
+            throw new AtolTooManyException($quantity, 99999.999);
         }
         $this->quantity = $quantity;
         $this->calcSum();

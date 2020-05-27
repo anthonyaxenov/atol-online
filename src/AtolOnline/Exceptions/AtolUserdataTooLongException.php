@@ -9,27 +9,22 @@
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
- * Исключение, возникающее при попытке указать слишком длинный телефон
+ * Исключение, возникающее при попытке указать слишком длинный дополнительный реквизит
  *
  * @package AtolOnline\Exceptions
  */
-class AtolUserdataTooLongException extends AtolException
+class AtolUserdataTooLongException extends AtolTooLongException
 {
     /**
-     * AtolUserdataTooLongException constructor.
-     *
-     * @param                 $data
-     * @param                 $max
-     * @param string          $message
-     * @param int             $code
-     * @param Throwable|null  $previous
+     * @inheritDoc
      */
-    public function __construct($data, $max, $message = "", $code = 0, Throwable $previous = null)
-    {
-        $message = $message ?: 'Слишком длинный дополнительный реквизит (макс. длина '.$max.', фактически '.strlen($data).'): '.$data;
-        parent::__construct($message, $code, $previous);
-    }
+    protected $ffd_tags = [
+        1191,
+    ];
+    
+    /**
+     * @var string Сообщение об ошибке
+     */
+    protected $message = 'User data is too long';
 }

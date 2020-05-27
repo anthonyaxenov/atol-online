@@ -19,6 +19,14 @@ use Throwable;
 class AtolEmailValidateException extends AtolException
 {
     /**
+     * @inheritDoc
+     */
+    protected $ffd_tags = [
+        1008,
+        1117,
+    ];
+    
+    /**
      * AtolEmailValidateException constructor.
      *
      * @param                 $email
@@ -28,7 +36,6 @@ class AtolEmailValidateException extends AtolException
      */
     public function __construct($email, $message = "", $code = 0, Throwable $previous = null)
     {
-        $message = $message ?: 'Некорректный email: '.$email;
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message ?: 'Invalid email: '.$email, $code, $previous);
     }
 }

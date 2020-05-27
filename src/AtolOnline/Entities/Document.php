@@ -271,8 +271,8 @@ class Document extends Entity
     public function setCashier(?string $cashier)
     {
         $cashier = trim($cashier);
-        if (strlen($cashier) > 64) {
-            throw new AtolCashierTooLongException($cashier);
+        if ((function_exists('mb_strlen') ? mb_strlen($cashier) : strlen($cashier)) > 64) {
+            throw new AtolCashierTooLongException($cashier, 64);
         }
         $this->cashier = $cashier;
         return $this;

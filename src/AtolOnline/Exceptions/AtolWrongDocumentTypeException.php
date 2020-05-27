@@ -28,7 +28,6 @@ class AtolWrongDocumentTypeException extends AtolException
      */
     public function __construct($type, $message = "", $code = 0, Throwable $previous = null)
     {
-        $message = $message ?: 'Некорректный тип документа: ожидался \'receipt\' или \'correction\', указан \''.$type.'\'';
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message ?: "Wrong document type: 'receipt' or 'correction' expected, but '$type' provided", $code, $previous);
     }
 }
