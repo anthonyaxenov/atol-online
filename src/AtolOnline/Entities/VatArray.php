@@ -105,7 +105,7 @@ class VatArray extends Entity
     {
         $max_items = SellSchema::get()->properties->receipt->properties->vats->maxItems;
         if ((!empty($vats) && count($vats) >= $max_items) || count($this->vats) >= $max_items) {
-            throw new AtolTooManyVatsException($max_items);
+            throw new AtolTooManyVatsException(count($vats), $max_items);
         }
         return true;
     }
