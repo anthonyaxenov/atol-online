@@ -11,11 +11,10 @@ namespace AtolOnline\Entities;
 
 use AtolOnline\{Exceptions\AtolNameTooLongException,
     Exceptions\AtolPriceTooHighException,
-    Exceptions\AtolQuantityTooHighException,
+    Exceptions\AtolTooManyException,
     Exceptions\AtolUnitTooLongException,
     Exceptions\AtolUserdataTooLongException,
-    Traits\RublesKopeksConverter
-};
+    Traits\RublesKopeksConverter};
 
 /**
  * Предмет расчёта (товар, услуга)
@@ -83,7 +82,7 @@ class Item extends Entity
      * @param string|null $payment_method   Способ расчёта
      * @throws AtolNameTooLongException Слишком длинное наименование
      * @throws AtolPriceTooHighException Слишком высокая цена за одну единицу
-     * @throws AtolQuantityTooHighException Слишком большое количество
+     * @throws AtolTooManyException Слишком большое количество
      * @throws AtolUnitTooLongException Слишком длинное название единицы измерения
      */
     public function __construct(
@@ -101,17 +100,17 @@ class Item extends Entity
         if ($price) {
             $this->setPrice($price);
         }
-        if ($payment_object) {
-            $this->setPaymentObject($payment_object);
-        }
         if ($quantity) {
             $this->setQuantity($quantity);
+        }
+        if ($measurement_unit) {
+            $this->setMeasurementUnit($measurement_unit);
         }
         if ($vat_type) {
             $this->setVatType($vat_type);
         }
-        if ($measurement_unit) {
-            $this->setMeasurementUnit($measurement_unit);
+        if ($payment_object) {
+            $this->setPaymentObject($payment_object);
         }
         if ($payment_method) {
             $this->setPaymentMethod($payment_method);
@@ -188,7 +187,7 @@ class Item extends Entity
      * @param float       $quantity         Количество
      * @param string|null $measurement_unit Единица измерения количества
      * @return $this
-     * @throws AtolQuantityTooHighException Слишком большое количество
+     * @throws AtolTooManyException Слишком большое количество
      * @throws AtolPriceTooHighException Слишком высокая общая стоимость
      * @throws AtolUnitTooLongException Слишком длинное название единицы измерения
      */
@@ -196,7 +195,7 @@ class Item extends Entity
     {
         $quantity = round($quantity, 3);
         if ($quantity > 99999.999) {
-            throw new AtolQuantityTooHighException($quantity, 99999.999);
+            throw new AtolTooManyException($quantity, 99999.999);
         }
         $this->quantity = $quantity;
         $this->calcSum();
@@ -226,7 +225,7 @@ class Item extends Entity
     public function setMeasurementUnit(string $measurement_unit)
     {
         $measurement_unit = trim($measurement_unit);
-        if (strlen($measurement_unit) > 16) {
+        if ((function_exists('mb_strlen') ? mb_strlen($measurement_unit) : strlen($measurement_unit)) > 16) {
             throw new AtolUnitTooLongException($measurement_unit, 16);
         }
         $this->measurement_unit = $measurement_unit;

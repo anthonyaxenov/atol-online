@@ -9,27 +9,22 @@
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при попытке указать слишком высокую цену (сумму)
  *
  * @package AtolOnline\Exceptions
  */
-class AtolPriceTooHighException extends AtolException
+class AtolPriceTooHighException extends AtolTooManyException
 {
     /**
-     * AtolPriceTooHighException constructor.
-     *
-     * @param                 $price
-     * @param                 $max
-     * @param string          $message
-     * @param int             $code
-     * @param Throwable|null  $previous
+     * @inheritDoc
      */
-    public function __construct($price, $max, $message = "", $code = 0, Throwable $previous = null)
-    {
-        $message = $message ?: 'Слишком большая сумма (макс. '.$max.'): '.$price;
-        parent::__construct($message, $code, $previous);
-    }
+    protected $ffd_tags = [
+        1079,
+    ];
+    
+    /**
+     * @var string Сообщение об ошибке
+     */
+    protected $message = 'Price is too high';
 }

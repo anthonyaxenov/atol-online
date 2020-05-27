@@ -19,6 +19,16 @@ use Throwable;
 class AtolInnWrongLengthException extends AtolException
 {
     /**
+     * @inheritDoc
+     */
+    protected $ffd_tags = [
+        1016,
+        1018,
+        1226,
+        1228,
+    ];
+    
+    /**
      * AtolInnWrongLengthException constructor.
      *
      * @param                 $inn
@@ -28,7 +38,7 @@ class AtolInnWrongLengthException extends AtolException
      */
     public function __construct($inn, $message = "", $code = 0, Throwable $previous = null)
     {
-        $message = $message ?: 'Длина ИНН должна быть 10 или 12 цифр, фактически '.strlen($inn).': '.$inn;
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message ?: 'INN length must be 10 or 12 digits only, but actual is '.
+            (function_exists('mb_strlen') ? mb_strlen($inn) : strlen($inn)).')', $code, $previous);
     }
 }

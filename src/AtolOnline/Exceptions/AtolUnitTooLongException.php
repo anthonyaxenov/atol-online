@@ -9,27 +9,22 @@
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при попытке указать слишком длинный телефон
  *
  * @package AtolOnline\Exceptions
  */
-class AtolUnitTooLongException extends AtolException
+class AtolUnitTooLongException extends AtolTooLongException
 {
     /**
-     * AtolUnitTooLongException constructor.
-     *
-     * @param                 $unit
-     * @param                 $max
-     * @param string          $message
-     * @param int             $code
-     * @param Throwable|null  $previous
+     * @inheritDoc
      */
-    public function __construct($unit, $max, $message = "", $code = 0, Throwable $previous = null)
-    {
-        $message = $message ?: 'Слишком длинное название единицы измерения (макс. длина '.$max.', фактически '.strlen($unit).'): '.$unit;
-        parent::__construct($message, $code, $previous);
-    }
+    protected $ffd_tags = [
+        1197,
+    ];
+    
+    /**
+     * @var string Сообщение об ошибке
+     */
+    protected $message = 'Measurement unit is too long';
 }

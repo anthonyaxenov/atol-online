@@ -16,10 +16,10 @@ use Throwable;
  *
  * @package AtolOnline\Exceptions
  */
-class AtolUuidValidateException extends AtolException
+class AtolInvalidUuidException extends AtolException
 {
     /**
-     * AtolUuidValidateException constructor.
+     * AtolInvalidUuidException constructor.
      *
      * @param                 $uuid
      * @param string          $message
@@ -28,7 +28,6 @@ class AtolUuidValidateException extends AtolException
      */
     public function __construct($uuid, $message = "", $code = 0, Throwable $previous = null)
     {
-        $message = $message ?: 'Некорректный UUID: '.$uuid;
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message ?: 'Invalid UUID: '.$uuid, $code, $previous);
     }
 }

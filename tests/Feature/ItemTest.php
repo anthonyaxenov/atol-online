@@ -13,10 +13,9 @@ use AtolOnline\{Constants\PaymentMethods,
     Entities\Item,
     Exceptions\AtolNameTooLongException,
     Exceptions\AtolPriceTooHighException,
-    Exceptions\AtolQuantityTooHighException,
+    Exceptions\AtolTooManyException,
     Exceptions\AtolUnitTooLongException,
-    Exceptions\AtolUserdataTooLongException
-};
+    Exceptions\AtolUserdataTooLongException};
 
 /**
  * Class ItemTest
@@ -28,7 +27,7 @@ class ItemTest extends BasicTestCase
      *
      * @throws AtolOnline\Exceptions\AtolNameTooLongException
      * @throws AtolOnline\Exceptions\AtolPriceTooHighException
-     * @throws AtolOnline\Exceptions\AtolQuantityTooHighException
+     * @throws AtolOnline\Exceptions\AtolTooManyException
      * @throws AtolOnline\Exceptions\AtolUnitTooLongException
      */
     public function testConstructor()
@@ -57,7 +56,7 @@ class ItemTest extends BasicTestCase
      *
      * @throws AtolOnline\Exceptions\AtolNameTooLongException
      * @throws AtolOnline\Exceptions\AtolPriceTooHighException
-     * @throws AtolOnline\Exceptions\AtolQuantityTooHighException
+     * @throws AtolOnline\Exceptions\AtolTooManyException
      * @throws AtolOnline\Exceptions\AtolUnitTooLongException
      * @throws AtolOnline\Exceptions\AtolUserdataTooLongException
      */
@@ -88,7 +87,7 @@ class ItemTest extends BasicTestCase
      *
      * @throws AtolOnline\Exceptions\AtolNameTooLongException
      * @throws AtolOnline\Exceptions\AtolPriceTooHighException
-     * @throws AtolOnline\Exceptions\AtolQuantityTooHighException
+     * @throws AtolOnline\Exceptions\AtolTooManyException
      * @throws AtolOnline\Exceptions\AtolUnitTooLongException
      */
     public function testSetVat()
@@ -105,7 +104,7 @@ class ItemTest extends BasicTestCase
      *
      * @throws AtolOnline\Exceptions\AtolNameTooLongException
      * @throws AtolOnline\Exceptions\AtolPriceTooHighException
-     * @throws AtolOnline\Exceptions\AtolQuantityTooHighException
+     * @throws AtolOnline\Exceptions\AtolTooManyException
      * @throws AtolOnline\Exceptions\AtolUnitTooLongException
      */
     public function testAtolNameTooLongException()
@@ -119,14 +118,14 @@ class ItemTest extends BasicTestCase
      * Тестирует исключение о слишком высоком количестве
      *
      * @throws AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws AtolOnline\Exceptions\AtolQuantityTooHighException
+     * @throws AtolOnline\Exceptions\AtolTooManyException
      * @throws AtolOnline\Exceptions\AtolPriceTooHighException
      * @throws AtolOnline\Exceptions\AtolUnitTooLongException
      */
     public function testAtolQuantityTooHighException()
     {
         $item = new Item();
-        $this->expectException(AtolQuantityTooHighException::class);
+        $this->expectException(AtolTooManyException::class);
         $item->setQuantity(100000.1);
     }
     
@@ -135,7 +134,7 @@ class ItemTest extends BasicTestCase
      *
      * @throws AtolOnline\Exceptions\AtolPriceTooHighException
      * @throws AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws AtolOnline\Exceptions\AtolQuantityTooHighException
+     * @throws AtolOnline\Exceptions\AtolTooManyException
      * @throws AtolOnline\Exceptions\AtolUnitTooLongException
      */
     public function testAtolPriceTooHighException()
@@ -151,7 +150,7 @@ class ItemTest extends BasicTestCase
      * @throws AtolOnline\Exceptions\AtolUserdataTooLongException
      * @throws AtolOnline\Exceptions\AtolPriceTooHighException
      * @throws AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws AtolOnline\Exceptions\AtolQuantityTooHighException
+     * @throws AtolOnline\Exceptions\AtolTooManyException
      * @throws AtolOnline\Exceptions\AtolUnitTooLongException
      */
     public function testAtolUserdataTooLongException()
@@ -166,7 +165,7 @@ class ItemTest extends BasicTestCase
      *
      * @throws AtolOnline\Exceptions\AtolNameTooLongException
      * @throws AtolOnline\Exceptions\AtolPriceTooHighException
-     * @throws AtolOnline\Exceptions\AtolQuantityTooHighException
+     * @throws AtolOnline\Exceptions\AtolTooManyException
      * @throws AtolOnline\Exceptions\AtolUnitTooLongException
      */
     public function testAtolUnitTooLongException()

@@ -9,8 +9,6 @@
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при попытке указать пустой логин ККТ
  *
@@ -19,15 +17,7 @@ use Throwable;
 class AtolKktLoginEmptyException extends AtolException
 {
     /**
-     * AtolKktLoginEmptyException constructor.
-     *
-     * @param string         $message
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @var string Сообщение об ошибке
      */
-    public function __construct($message = "", $code = 0, Throwable $previous = null)
-    {
-        $message = $message ?: 'Логин ККТ не может быть пустым';
-        parent::__construct($message, $code, $previous);
-    }
+    protected $message = 'KKT login cannot be empty';
 }

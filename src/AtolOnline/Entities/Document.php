@@ -10,6 +10,8 @@
 namespace AtolOnline\Entities;
 
 use AtolOnline\Exceptions\AtolCashierTooLongException;
+use AtolOnline\Exceptions\AtolException;
+use AtolOnline\Exceptions\AtolInvalidJsonException;
 
 /**
  * Класс, описывающий документ
@@ -60,10 +62,6 @@ class Document extends Entity
     
     /**
      * Document constructor.
-     *
-     * @throws \AtolOnline\Exceptions\AtolTooManyItemsException Слишком много предметов расчёта
-     * @throws \AtolOnline\Exceptions\AtolTooManyPaymentsException Слишком много оплат
-     * @throws \AtolOnline\Exceptions\AtolTooManyVatsException Слишком много ставок НДС
      */
     public function __construct()
     {
@@ -82,10 +80,6 @@ class Document extends Entity
     public function clearVats()
     {
         $this->setVats([]);
-        foreach ($this->getItems() as &$item) {
-            $item->setVatType(null);
-        }
-        $this->calcTotal();
         return $this;
     }
     
@@ -98,11 +92,7 @@ class Document extends Entity
      */
     public function addVat(Vat $vat)
     {
-        if (count($this->getVats()) == 0 && !$vat->getSum()) {
-            $vat->setSum($this->calcTotal());
-        }
         $this->vats->add($vat);
-        $this->calcTotal();
         return $this;
     }
     
@@ -127,7 +117,6 @@ class Document extends Entity
     public function setVats(array $vats)
     {
         $this->vats->set($vats);
-        $this->calcTotal();
         return $this;
     }
     
@@ -271,8 +260,8 @@ class Document extends Entity
     public function setCashier(?string $cashier)
     {
         $cashier = trim($cashier);
-        if (strlen($cashier) > 64) {
-            throw new AtolCashierTooLongException($cashier);
+        if ((function_exists('mb_strlen') ? mb_strlen($cashier) : strlen($cashier)) > 64) {
+            throw new AtolCashierTooLongException($cashier, 64);
         }
         $this->cashier = $cashier;
         return $this;
@@ -309,11 +298,10 @@ class Document extends Entity
     public function calcTotal()
     {
         $sum = 0;
+        $this->clearVats();
         foreach ($this->items->get() as $item) {
             $sum += $item->calcSum();
-        }
-        foreach ($this->vats->get() as $vat) {
-            $vat->setSum($sum);
+            $this->addVat(new Vat($item->getVat()->getType(), $item->getSum()));
         }
         return $this->total = round($sum, 2);
     }
@@ -329,7 +317,89 @@ class Document extends Entity
     }
     
     /**
-     * @inheritDoc
+     * Собирает объект документа из сырой json-строки
+     *
+     * @param string $json
+     * @return \AtolOnline\Entities\Document
+     * @throws \AtolOnline\Exceptions\AtolEmailTooLongException
+     * @throws \AtolOnline\Exceptions\AtolEmailValidateException
+     * @throws \AtolOnline\Exceptions\AtolException
+     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException
+     * @throws \AtolOnline\Exceptions\AtolInvalidJsonException
+     * @throws \AtolOnline\Exceptions\AtolNameTooLongException
+     * @throws \AtolOnline\Exceptions\AtolPaymentAddressTooLongException
+     * @throws \AtolOnline\Exceptions\AtolPhoneTooLongException
+     * @throws \AtolOnline\Exceptions\AtolPriceTooHighException
+     * @throws \AtolOnline\Exceptions\AtolTooManyException
+     * @throws \AtolOnline\Exceptions\AtolTooManyItemsException
+     * @throws \AtolOnline\Exceptions\AtolTooManyPaymentsException
+     * @throws \AtolOnline\Exceptions\AtolUnitTooLongException
+     * @throws \AtolOnline\Exceptions\AtolUserdataTooLongException
+     */
+    public static function fromRaw(string $json)
+    {
+        $object = json_decode($json);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new AtolInvalidJsonException();
+        }
+        $doc = new self();
+        if ($object->company) {
+            $doc->setCompany(new Company(
+                $object->company->sno ?? null,
+                $object->company->inn ?? null,
+                $object->company->payment_address ?? null,
+                $object->company->email ?? null
+            ));
+        }
+        if ($object->client) {
+            $doc->setClient(new Client(
+                $object->client->name ?? null,
+                $object->client->phone ?? null,
+                $object->client->email ?? null,
+                $object->client->inn ?? null
+            ));
+        }
+        if ($object->items) {
+            foreach ($object->items as $obj_item) {
+                $item = new Item(
+                    $obj_item->name ?? null,
+                    $obj_item->price ?? null,
+                    $obj_item->quantity ?? null,
+                    $obj_item->measurement_unit ?? null,
+                    $obj_item->vat->type ?? null,
+                    $obj_item->payment_object ?? null,
+                    $obj_item->payment_method ?? null
+                );
+                if (!empty($obj_item->user_data)) {
+                    $item->setUserData($obj_item->user_data ?? null);
+                }
+                $doc->addItem($item);
+            }
+        }
+        if ($object->payments) {
+            foreach ($object->payments as $obj_payment) {
+                $doc->payments->add(new Payment(
+                    $obj_payment->type,
+                    $obj_payment->sum
+                ));
+            }
+        }
+        //if ($object->vats) {
+        //    foreach ($object->vats as $obj_vat) {
+        //        $doc->vats->add(new Vat(
+        //            $obj_vat->type
+        //        ));
+        //    }
+        //}
+        if ($object->total != $doc->calcTotal()) {
+            throw new AtolException('Real total sum not equals to provided in JSON one');
+        }
+        return $doc;
+    }
+    
+    /**
+     * Возвращает массив для кодирования в json
+     *
      * @throws \Exception
      */
     public function jsonSerialize()

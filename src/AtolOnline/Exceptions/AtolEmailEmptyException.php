@@ -9,8 +9,6 @@
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при попытке указать пустой email
  *
@@ -19,15 +17,15 @@ use Throwable;
 class AtolEmailEmptyException extends AtolException
 {
     /**
-     * AtolEmailEmptyException constructor.
-     *
-     * @param string         $message
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @inheritDoc
      */
-    public function __construct($message = "", $code = 0, Throwable $previous = null)
-    {
-        $message = $message ?: 'Email не может быть пустым';
-        parent::__construct($message, $code, $previous);
-    }
+    protected $ffd_tags = [
+        1008,
+        1117,
+    ];
+    
+    /**
+     * @var string Сообщение об ошибке
+     */
+    protected $message = 'Email cannot be empty';
 }

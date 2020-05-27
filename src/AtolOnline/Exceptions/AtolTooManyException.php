@@ -12,14 +12,19 @@ namespace AtolOnline\Exceptions;
 use Throwable;
 
 /**
- * Исключение, возникающее при попытке указать слишком большое количество
+ * Исключение, возникающее при попытке указать слишком большое количество чего-либо
  *
  * @package AtolOnline\Exceptions
  */
-class AtolQuantityTooHighException extends AtolException
+class AtolTooManyException extends AtolException
 {
     /**
-     * AtolQuantityTooHighException constructor.
+     * @var string Сообщение об ошибке
+     */
+    protected $message = 'Quantity is too high';
+    
+    /**
+     * AtolTooManyException constructor.
      *
      * @param                 $quantity
      * @param                 $max
@@ -29,7 +34,7 @@ class AtolQuantityTooHighException extends AtolException
      */
     public function __construct($quantity, $max, $message = "", $code = 0, Throwable $previous = null)
     {
-        $message = $message ?: 'Слишком большое количество (макс. '.$max.'): '.$quantity;
+        $message = $message ?: $this->message.' (max - '.$max.', actual - '.$quantity.')';
         parent::__construct($message, $code, $previous);
     }
 }

@@ -62,7 +62,11 @@ class VatArray extends Entity
     public function add(Vat $vat)
     {
         if ($this->validateCount()) {
-            $this->vats[] = $vat;
+            if (isset($this->vats[$vat->getType()])) {
+                $this->vats[$vat->getType()]->addSum($vat->getSum());
+            } else {
+                $this->vats[$vat->getType()] = $vat;
+            }
         }
         return $this;
     }
@@ -101,7 +105,7 @@ class VatArray extends Entity
     {
         $max_items = SellSchema::get()->properties->receipt->properties->vats->maxItems;
         if ((!empty($vats) && count($vats) >= $max_items) || count($this->vats) >= $max_items) {
-            throw new AtolTooManyVatsException($max_items);
+            throw new AtolTooManyVatsException(count($vats), $max_items);
         }
         return true;
     }

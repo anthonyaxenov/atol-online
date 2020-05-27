@@ -9,8 +9,6 @@
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при попытке зарегистрировать документ без данных коррекции
  *
@@ -19,15 +17,7 @@ use Throwable;
 class AtolCorrectionInfoException extends AtolException
 {
     /**
-     * AtolNoCorrectionInfoException constructor.
-     *
-     * @param string         $message
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @var string Сообщение об ошибке
      */
-    public function __construct($message = "", $code = 0, Throwable $previous = null)
-    {
-        $message = $message ?: 'В документе отсутствуют данные коррекции';
-        parent::__construct($message, $code, $previous);
-    }
+    protected $message = 'Document must have correction info';
 }

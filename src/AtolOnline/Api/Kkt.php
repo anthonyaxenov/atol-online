@@ -11,10 +11,10 @@ namespace AtolOnline\Api;
 
 use AtolOnline\{Entities\Document,
     Exceptions\AtolCorrectionInfoException,
+    Exceptions\AtolInvalidUuidException,
     Exceptions\AtolKktLoginEmptyException,
     Exceptions\AtolKktLoginTooLongException,
     Exceptions\AtolKktPasswordEmptyException,
-    Exceptions\AtolUuidValidateException,
     Exceptions\AtolWrongDocumentTypeException
 };
 use GuzzleHttp\Client;
@@ -327,13 +327,13 @@ class Kkt extends Client
      *
      * @param string $uuid UUID регистрации
      * @return \AtolOnline\Api\KktResponse
-     * @throws \AtolOnline\Exceptions\AtolUuidValidateException Некорректный UUID документа
+     * @throws \AtolOnline\Exceptions\AtolInvalidUuidException Некорректный UUID документа
      */
     public function getDocumentStatus(string $uuid)
     {
         $uuid = trim($uuid);
         if (!Uuid::isValid($uuid)) {
-            throw new AtolUuidValidateException($uuid);
+            throw new AtolInvalidUuidException($uuid);
         }
         $this->auth();
         return $this->sendAtolRequest('GET', 'report/'.$uuid);
