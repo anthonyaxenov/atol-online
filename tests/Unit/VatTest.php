@@ -44,8 +44,8 @@ class VatTest extends BasicTestCase
         return [
             [VatTypes::NONE, 100, 0, 0],
             [VatTypes::VAT0, 100, 0, 0],
-            [VatTypes::VAT10, 100, 10, 12],
-            [VatTypes::VAT18, 100, 18, 21.6],
+            [VatTypes::VAT10, 100, 9.09, 10.9],
+            [VatTypes::VAT18, 100, 15.25, 18.3],
         ];
     }
 }
