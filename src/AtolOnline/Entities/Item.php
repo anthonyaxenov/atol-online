@@ -100,17 +100,17 @@ class Item extends Entity
         if ($price) {
             $this->setPrice($price);
         }
-        if ($payment_object) {
-            $this->setPaymentObject($payment_object);
-        }
         if ($quantity) {
             $this->setQuantity($quantity);
+        }
+        if ($measurement_unit) {
+            $this->setMeasurementUnit($measurement_unit);
         }
         if ($vat_type) {
             $this->setVatType($vat_type);
         }
-        if ($measurement_unit) {
-            $this->setMeasurementUnit($measurement_unit);
+        if ($payment_object) {
+            $this->setPaymentObject($payment_object);
         }
         if ($payment_method) {
             $this->setPaymentMethod($payment_method);
@@ -225,7 +225,7 @@ class Item extends Entity
     public function setMeasurementUnit(string $measurement_unit)
     {
         $measurement_unit = trim($measurement_unit);
-        if (strlen($measurement_unit) > 16) {
+        if ((function_exists('mb_strlen') ? mb_strlen($measurement_unit) : strlen($measurement_unit)) > 16) {
             throw new AtolUnitTooLongException($measurement_unit, 16);
         }
         $this->measurement_unit = $measurement_unit;
