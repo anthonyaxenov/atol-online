@@ -3,7 +3,6 @@
     "description": "Library to use cloud cash register in e-commerce according to Russian Federal Law #54",
     "license": "MIT",
     "type": "library",
-    "version": "0.2.1-b",
     "keywords": [
         "54-fz",
         "kkt",

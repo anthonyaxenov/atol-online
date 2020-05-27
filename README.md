@@ -1,5 +1,7 @@
 # АТОЛ Онлайн
 
+![Build](https://github.com/anthonyaxenov/atol-online/workflows/Build/badge.svg?branch=master)
+
 Библиотека для фискализации чеков по 54-ФЗ через [облачную ККТ АТОЛ](https://online.atol.ru/).
 
 Текущая поддерживаемая версия API: **5.1**
