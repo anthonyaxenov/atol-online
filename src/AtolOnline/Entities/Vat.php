@@ -26,12 +26,12 @@ class Vat extends Entity
     private $type;
     
     /**
-     * @var int Сумма в копейках, от которой пересчитывается размер налога
+     * @var int Сумма в копейках, от которой пересчитывается размер НДС
      */
     private $sum_original = 0;
     
     /**
-     * @var int Сумма налога в копейках
+     * @var int Сумма НДС в копейках
      */
     private $sum_final = 0;
     
@@ -66,18 +66,19 @@ class Vat extends Entity
             case VatTypes::VAT0:
                 return 0;
             case VatTypes::VAT10:
-                return $kopeks * 10 / 100;
+                //return $kopeks * 10 / 100;
             case VatTypes::VAT110:
                 return $kopeks * 10 / 110;
             case VatTypes::VAT18:
-                return $kopeks * 18 / 100;
+                //return $kopeks * 18 / 100;
             case VatTypes::VAT118:
                 return $kopeks * 18 / 118;
             case VatTypes::VAT20:
-                return $kopeks * 20 / 100;
+                //return $kopeks * 20 / 100;
             case VatTypes::VAT120:
                 return $kopeks * 20 / 120;
         }
+        return 0;
     }
     
     /**

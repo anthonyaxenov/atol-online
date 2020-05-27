@@ -60,10 +60,6 @@ class Document extends Entity
     
     /**
      * Document constructor.
-     *
-     * @throws \AtolOnline\Exceptions\AtolTooManyItemsException Слишком много предметов расчёта
-     * @throws \AtolOnline\Exceptions\AtolTooManyPaymentsException Слишком много оплат
-     * @throws \AtolOnline\Exceptions\AtolTooManyVatsException Слишком много ставок НДС
      */
     public function __construct()
     {
@@ -82,10 +78,6 @@ class Document extends Entity
     public function clearVats()
     {
         $this->setVats([]);
-        foreach ($this->getItems() as &$item) {
-            $item->setVatType(null);
-        }
-        $this->calcTotal();
         return $this;
     }
     
@@ -98,11 +90,7 @@ class Document extends Entity
      */
     public function addVat(Vat $vat)
     {
-        if (count($this->getVats()) == 0 && !$vat->getSum()) {
-            $vat->setSum($this->calcTotal());
-        }
         $this->vats->add($vat);
-        $this->calcTotal();
         return $this;
     }
     
@@ -127,7 +115,6 @@ class Document extends Entity
     public function setVats(array $vats)
     {
         $this->vats->set($vats);
-        $this->calcTotal();
         return $this;
     }
     
@@ -309,11 +296,10 @@ class Document extends Entity
     public function calcTotal()
     {
         $sum = 0;
+        $this->clearVats();
         foreach ($this->items->get() as $item) {
             $sum += $item->calcSum();
-        }
-        foreach ($this->vats->get() as $vat) {
-            $vat->setSum($sum);
+            $this->addVat(new Vat($item->getVat()->getType(), $item->getSum()));
         }
         return $this->total = round($sum, 2);
     }

@@ -62,7 +62,11 @@ class VatArray extends Entity
     public function add(Vat $vat)
     {
         if ($this->validateCount()) {
-            $this->vats[] = $vat;
+            if (isset($this->vats[$vat->getType()])) {
+                $this->vats[$vat->getType()]->addSum($vat->getSum());
+            } else {
+                $this->vats[$vat->getType()] = $vat;
+            }
         }
         return $this;
     }
