@@ -1,6 +1,9 @@
-name: Composer and phpunit tests
+name: Build
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
