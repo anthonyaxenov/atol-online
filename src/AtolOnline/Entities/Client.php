@@ -89,7 +89,7 @@ class Client extends Entity
     public function setName(string $name)
     {
         $name = trim($name);
-        if (strlen($name) > 256) {
+        if ((function_exists('mb_strlen') ? mb_strlen($name) : strlen($name)) > 256) {
             throw new AtolNameTooLongException($name, 256);
         }
         $this->name = $name;
@@ -119,7 +119,7 @@ class Client extends Entity
     public function setPhone(string $phone)
     {
         $phone = preg_replace("/[^0-9+]/", '', $phone);
-        if (strlen($phone) > 64) {
+        if ((function_exists('mb_strlen') ? mb_strlen($phone) : strlen($phone)) > 64) {
             throw new AtolPhoneTooLongException($phone, 64);
         }
         $this->phone = $phone;

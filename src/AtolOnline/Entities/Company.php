@@ -115,7 +115,7 @@ class Company extends Entity
     public function setPaymentAddress(string $payment_address)
     {
         $payment_address = trim($payment_address);
-        if (strlen($payment_address) > 256) {
+        if ((function_exists('mb_strlen') ? mb_strlen($payment_address) : strlen($payment_address)) > 256) {
             throw new AtolPaymentAddressTooLongException($payment_address, 256);
         }
         $this->payment_address = $payment_address;

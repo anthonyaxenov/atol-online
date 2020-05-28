@@ -44,7 +44,7 @@ trait HasEmail
     public function setEmail(string $email)
     {
         $email = trim($email);
-        if (strlen($email) > 64) {
+        if ((function_exists('mb_strlen') ? mb_strlen($email) : strlen($email)) > 64) {
             throw new AtolEmailTooLongException($email, 64);
         }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

@@ -137,7 +137,7 @@ class Item extends Entity
     public function setName(string $name)
     {
         $name = trim($name);
-        if (strlen($name) > 128) {
+        if ((function_exists('mb_strlen') ? mb_strlen($name) : strlen($name)) > 128) {
             throw new AtolNameTooLongException($name, 128);
         }
         $this->name = $name;
@@ -328,7 +328,7 @@ class Item extends Entity
     public function setUserData(string $user_data)
     {
         $user_data = trim($user_data);
-        if (strlen($user_data) > 64) {
+        if ((function_exists('mb_strlen') ? mb_strlen($user_data) : strlen($user_data)) > 64) {
             throw new AtolUserdataTooLongException($user_data, 64);
         }
         $this->user_data = $user_data;

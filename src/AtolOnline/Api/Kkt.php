@@ -118,7 +118,7 @@ class Kkt extends Client
         if (!$this->isTestMode()) {
             if (empty($login)) {
                 throw new AtolKktLoginEmptyException();
-            } elseif (strlen($login) > 100) {
+            } elseif ((function_exists('mb_strlen') ? mb_strlen($login) : strlen($login)) > 100) {
                 throw new AtolKktLoginTooLongException($login, 100);
             }
         }
