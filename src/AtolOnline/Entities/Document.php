@@ -401,11 +401,11 @@ class Document extends Entity
      */
     public function jsonSerialize()
     {
-        $json = [
-            'company' => $this->getCompany()->jsonSerialize(), // обязательно
-            'payments' => $this->payments->jsonSerialize(), // обязательно
-            'cashier' => $this->getCashier() ?? '',
-        ];
+        $json['company'] = $this->getCompany()->jsonSerialize();// обязательно
+        $json['payments'] = $this->payments->jsonSerialize(); // обязательно
+        if ($this->getCashier()) {
+            $json['cashier'] = $this->getCashier();
+        }
         if ($this->getCorrectionInfo()) {
             $json['correction_info'] = $this->getCorrectionInfo()->jsonSerialize(); // обязательно для коррекционных
         } else {
