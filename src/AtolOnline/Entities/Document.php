@@ -338,60 +338,57 @@ class Document extends Entity
      */
     public static function fromRaw(string $json)
     {
-        $object = json_decode($json);
+        $array = json_decode($json, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new AtolInvalidJsonException();
         }
         $doc = new self();
-        if ($object->company) {
+        if (isset($array['company'])) {
             $doc->setCompany(new Company(
-                $object->company->sno ?? null,
-                $object->company->inn ?? null,
-                $object->company->payment_address ?? null,
-                $object->company->email ?? null
+                $array['company']['sno'] ?? null,
+                $array['company']['inn'] ?? null,
+                $array['company']['payment_address'] ?? null,
+                $array['company']['email'] ?? null
             ));
         }
-        if ($object->client) {
+        if (isset($array['client'])) {
             $doc->setClient(new Client(
-                $object->client->name ?? null,
-                $object->client->phone ?? null,
-                $object->client->email ?? null,
-                $object->client->inn ?? null
+                $array['client']['name'] ?? null,
+                $array['client']['phone'] ?? null,
+                $array['client']['email'] ?? null,
+                $array['client']['inn'] ?? null
             ));
         }
-        if ($object->items) {
-            foreach ($object->items as $obj_item) {
+        if (isset($array['items'])) {
+            foreach ($array['items'] as $ar_item) {
                 $item = new Item(
-                    $obj_item->name ?? null,
-                    $obj_item->price ?? null,
-                    $obj_item->quantity ?? null,
-                    $obj_item->measurement_unit ?? null,
-                    $obj_item->vat->type ?? null,
-                    $obj_item->payment_object ?? null,
-                    $obj_item->payment_method ?? null
+                    $ar_item['name'] ?? null,
+                    $ar_item['price'] ?? null,
+                    $ar_item['quantity'] ?? null,
+                    $ar_item['measurement_unit'] ?? null,
+                    $ar_item['vat']['type'] ?? null,
+                    $ar_item['payment_object'] ?? null,
+                    $ar_item['payment_method'] ?? null
                 );
-                if (!empty($obj_item->user_data)) {
-                    $item->setUserData($obj_item->user_data ?? null);
+                if (!empty($ar_item['user_data'])) {
+                    $item->setUserData($ar_item['user_data'] ?? null);
                 }
                 $doc->addItem($item);
             }
         }
-        if ($object->payments) {
-            foreach ($object->payments as $obj_payment) {
-                $doc->payments->add(new Payment(
-                    $obj_payment->type,
-                    $obj_payment->sum
-                ));
+        if (isset($array['payments'])) {
+            foreach ($array['payments'] as $ar_payment) {
+                $payment = new Payment();
+                if (isset($ar_payment['type'])) {
+                    $payment->setType($ar_payment['type']);
+                }
+                if (isset($ar_payment['sum'])) {
+                    $payment->setSum($ar_payment['sum']);
+                }
+                $doc->payments->add($payment);
             }
         }
-        //if ($object->vats) {
-        //    foreach ($object->vats as $obj_vat) {
-        //        $doc->vats->add(new Vat(
-        //            $obj_vat->type
-        //        ));
-        //    }
-        //}
-        if ($object->total != $doc->calcTotal()) {
+        if ($array['total'] != $doc->calcTotal()) {
             throw new AtolException('Real total sum not equals to provided in JSON one');
         }
         return $doc;
