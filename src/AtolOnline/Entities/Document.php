@@ -405,7 +405,7 @@ class Document extends Entity
             $json['company'] = $this->getCompany()->jsonSerialize(); // обязательно
         }
         if ($this->getPayments()) {
-            $json['payments'] = $this->getPayments()->jsonSerialize(); // обязательно
+            $json['payments'] = $this->payments->jsonSerialize(); // обязательно
         }
         if ($this->getCashier()) {
             $json['cashier'] = $this->getCashier();
@@ -417,7 +417,7 @@ class Document extends Entity
                 $json['client'] = $this->getClient()->jsonSerialize(); // обязательно для некоррекционных
             }
             if ($this->getItems()) {
-                $json['items'] = $this->getItems()->jsonSerialize(); // обязательно для некоррекционных
+                $json['items'] = $this->items->jsonSerialize(); // обязательно для некоррекционных
             }
             $json['total'] = $this->calcTotal(); // обязательно для некоррекционных
         }
