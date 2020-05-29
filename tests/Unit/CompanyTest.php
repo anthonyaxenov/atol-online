@@ -22,11 +22,6 @@ class CompanyTest extends BasicTestCase
 {
     /**
      * Тестирует установку параметров через конструктор
-     *
-     * @throws AtolOnline\Exceptions\AtolEmailTooLongException
-     * @throws AtolOnline\Exceptions\AtolEmailValidateException
-     * @throws AtolOnline\Exceptions\AtolInnWrongLengthException
-     * @throws AtolOnline\Exceptions\AtolPaymentAddressTooLongException
      */
     public function testConstructor()
     {
@@ -46,10 +41,7 @@ class CompanyTest extends BasicTestCase
     /**
      * Тестирует исключение о некорректной длине ИНН
      *
-     * @throws AtolOnline\Exceptions\AtolInnWrongLengthException
-     * @throws AtolOnline\Exceptions\AtolEmailTooLongException
-     * @throws AtolOnline\Exceptions\AtolEmailValidateException
-     * @throws AtolOnline\Exceptions\AtolPaymentAddressTooLongException
+     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException
      */
     public function testAtolInnWrongLengthException()
     {
@@ -62,49 +54,38 @@ class CompanyTest extends BasicTestCase
     /**
      * Тестирует исключение о слишком длинном платёжном адресе
      *
-     * @throws AtolOnline\Exceptions\AtolPaymentAddressTooLongException
-     * @throws AtolOnline\Exceptions\AtolEmailTooLongException
-     * @throws AtolOnline\Exceptions\AtolEmailValidateException
-     * @throws AtolOnline\Exceptions\AtolInnWrongLengthException
+     * @throws \AtolOnline\Exceptions\AtolPaymentAddressTooLongException
      */
     public function testAtolPaymentAddressTooLongException()
     {
         $company = new Company();
         $this->expectException(AtolPaymentAddressTooLongException::class);
-        $company->setPaymentAddress('John Doe John Doe John Doe John Doe '.
-            'John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe John '.
-            'Doe John Doe John Doe John Doe John DoeJohn Doe John Doe John Doe John Doe '.
-            'John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe John '.
-            'Doe John Doe John Doe John Doe John Doe');
+        $company->setPaymentAddress(self::randomString(257));
     }
     
     /**
      * Тестирует исключение о слишком длинной почте
      *
-     * @throws AtolOnline\Exceptions\AtolEmailTooLongException
-     * @throws AtolOnline\Exceptions\AtolEmailValidateException
-     * @throws AtolOnline\Exceptions\AtolInnWrongLengthException
-     * @throws AtolOnline\Exceptions\AtolPaymentAddressTooLongException
+     * @throws \AtolOnline\Exceptions\AtolEmailTooLongException
+     * @throws \AtolOnline\Exceptions\AtolEmailValidateException
      */
     public function testAtolEmailTooLongException()
     {
         $company = new Company();
         $this->expectException(AtolEmailTooLongException::class);
-        $company->setEmail('johnjohnjohnjohnjohnjohndoedoedoedoe@exampleexampleexampleexample.com');
+        $company->setEmail(self::randomString(65));
     }
     
     /**
      * Тестирует исключение о некорректной почте
      *
-     * @throws AtolOnline\Exceptions\AtolEmailValidateException
-     * @throws AtolOnline\Exceptions\AtolEmailTooLongException
-     * @throws AtolOnline\Exceptions\AtolInnWrongLengthException
-     * @throws AtolOnline\Exceptions\AtolPaymentAddressTooLongException
+     * @throws \AtolOnline\Exceptions\AtolEmailTooLongException
+     * @throws \AtolOnline\Exceptions\AtolEmailValidateException
      */
     public function testAtolEmailValidateException()
     {
         $company = new Company();
         $this->expectException(AtolEmailValidateException::class);
-        $company->setEmail('John Doe');
+        $company->setEmail(self::randomString(15));
     }
 }

@@ -23,22 +23,6 @@ use AtolOnline\{Constants\PaymentMethods,
 class ItemTest extends BasicTestCase
 {
     /**
-     * Возвращает случайную строку указанной длины
-     *
-     * @param int $length
-     * @return string
-     */
-    private static function randomString($length = 8)
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $string = '';
-        for ($i = 0; $i < $length; $i++) {
-            $string .= $characters[mt_rand(0, strlen($characters) - 1)];
-        }
-        return $string;
-    }
-    
-    /**
      * Тестирует установку параметров через конструктор
      *
      * @throws AtolOnline\Exceptions\AtolNameTooLongException

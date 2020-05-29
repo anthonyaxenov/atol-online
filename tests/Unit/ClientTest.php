@@ -22,12 +22,6 @@ class ClientTest extends BasicTestCase
 {
     /**
      * Тестирует установку параметров
-     *
-     * @throws \AtolOnline\Exceptions\AtolEmailTooLongException
-     * @throws \AtolOnline\Exceptions\AtolEmailValidateException
-     * @throws \AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws \AtolOnline\Exceptions\AtolPhoneTooLongException
-     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException
      */
     public function testConstructor()
     {
@@ -48,30 +42,18 @@ class ClientTest extends BasicTestCase
      * Тестирует исключение о слишком длинном имени
      *
      * @throws \AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws \AtolOnline\Exceptions\AtolEmailTooLongException
-     * @throws \AtolOnline\Exceptions\AtolEmailValidateException
-     * @throws \AtolOnline\Exceptions\AtolPhoneTooLongException
-     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException
      */
     public function testAtolNameTooLongException()
     {
         $customer = new Client();
         $this->expectException(AtolNameTooLongException::class);
-        $customer->setName('John Doe John Doe John Doe John Doe John Doe '.
-            'John Doe John Doe John Doe John Doe John Doe John Doe John Doe John '.
-            'Doe John Doe John Doe John Doe John DoeJohn Doe John Doe John Doe '.
-            'John Doe John Doe John Doe John Doe John Doe John Doe John Doe John '.
-            'Doe John Doe John Doe John Doe John Doe John Doe John Doe');
+        $customer->setName(self::randomString(257));
     }
     
     /**
      * Тестирует исключение о слишком длинном телефоне
      *
      * @throws \AtolOnline\Exceptions\AtolPhoneTooLongException
-     * @throws \AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws \AtolOnline\Exceptions\AtolEmailTooLongException
-     * @throws \AtolOnline\Exceptions\AtolEmailValidateException
-     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException
      */
     public function testAtolPhoneTooLongException()
     {
@@ -84,42 +66,32 @@ class ClientTest extends BasicTestCase
      * Тестирует исключение о слишком длинной почте
      *
      * @throws \AtolOnline\Exceptions\AtolEmailTooLongException
-     * @throws \AtolOnline\Exceptions\AtolPhoneTooLongException
-     * @throws \AtolOnline\Exceptions\AtolNameTooLongException
      * @throws \AtolOnline\Exceptions\AtolEmailValidateException
-     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException
      */
     public function testAtolEmailTooLongException()
     {
         $customer = new Client();
         $this->expectException(AtolEmailTooLongException::class);
-        $customer->setEmail('johnjohnjohnjohnjohnjohndoedoedoedoe@exampleexampleexampleexample.com');
+        $customer->setEmail(self::randomString(65));
     }
     
     /**
      * Тестирует исключение о некорректной почте
      *
-     * @throws \AtolOnline\Exceptions\AtolEmailValidateException
      * @throws \AtolOnline\Exceptions\AtolEmailTooLongException
-     * @throws \AtolOnline\Exceptions\AtolPhoneTooLongException
-     * @throws \AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException
+     * @throws \AtolOnline\Exceptions\AtolEmailValidateException
      */
     public function testAtolEmailValidateException()
     {
         $customer = new Client();
         $this->expectException(AtolEmailValidateException::class);
-        $customer->setEmail('John Doe');
+        $customer->setEmail(self::randomString(15));
     }
     
     /**
      * Тестирует исключение о некорректной длине ИНН
      *
      * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException
-     * @throws \AtolOnline\Exceptions\AtolEmailTooLongException
-     * @throws \AtolOnline\Exceptions\AtolEmailValidateException
-     * @throws \AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws \AtolOnline\Exceptions\AtolPhoneTooLongException
      */
     public function testAtolInnWrongLengthException()
     {
