@@ -81,9 +81,9 @@ class KktResponse implements JsonSerializable
     /**
      * Возвращает объект результата запроса
      *
-     * @return \stdClass
+     * @return stdClass|null
      */
-    public function getContent(): stdClass
+    public function getContent(): ?stdClass
     {
         return $this->content;
     }
