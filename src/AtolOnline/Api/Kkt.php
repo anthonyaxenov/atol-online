@@ -172,7 +172,7 @@ class Kkt extends Client
      */
     public function setCallbackUrl(string $url)
     {
-        $this->kkt_config['prod']['callback_url'] = $url;
+        $this->kkt_config[$this->isTestMode() ? 'test' : 'prod']['callback_url'] = $url;
         return $this;
     }
     
