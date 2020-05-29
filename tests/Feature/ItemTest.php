@@ -23,6 +23,22 @@ use AtolOnline\{Constants\PaymentMethods,
 class ItemTest extends BasicTestCase
 {
     /**
+     * Возвращает случайную строку указанной длины
+     *
+     * @param int $length
+     * @return string
+     */
+    private static function randomString($length = 8)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $string = '';
+        for ($i = 0; $i < $length; $i++) {
+            $string .= $characters[mt_rand(0, strlen($characters) - 1)];
+        }
+        return $string;
+    }
+    
+    /**
      * Тестирует установку параметров через конструктор
      *
      * @throws AtolOnline\Exceptions\AtolNameTooLongException
@@ -85,10 +101,7 @@ class ItemTest extends BasicTestCase
     /**
      * Тестирует установку ставки НДС разными путями
      *
-     * @throws AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws AtolOnline\Exceptions\AtolPriceTooHighException
-     * @throws AtolOnline\Exceptions\AtolTooManyException
-     * @throws AtolOnline\Exceptions\AtolUnitTooLongException
+     * @throws \AtolOnline\Exceptions\AtolPriceTooHighException
      */
     public function testSetVat()
     {
@@ -102,25 +115,21 @@ class ItemTest extends BasicTestCase
     /**
      * Тестирует исключение о слишком длинном наименовании
      *
-     * @throws AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws AtolOnline\Exceptions\AtolPriceTooHighException
-     * @throws AtolOnline\Exceptions\AtolTooManyException
-     * @throws AtolOnline\Exceptions\AtolUnitTooLongException
+     * @throws \AtolOnline\Exceptions\AtolNameTooLongException
      */
     public function testAtolNameTooLongException()
     {
         $item = new Item();
         $this->expectException(AtolNameTooLongException::class);
-        $item->setName('Банан Банан Банан Банан Банан Банан Банан Банан Банан Банан Банан Банан');
+        $item->setName(self::randomString(130));
     }
     
     /**
      * Тестирует исключение о слишком высоком количестве
      *
-     * @throws AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws AtolOnline\Exceptions\AtolTooManyException
-     * @throws AtolOnline\Exceptions\AtolPriceTooHighException
-     * @throws AtolOnline\Exceptions\AtolUnitTooLongException
+     * @throws \AtolOnline\Exceptions\AtolPriceTooHighException
+     * @throws \AtolOnline\Exceptions\AtolTooManyException
+     * @throws \AtolOnline\Exceptions\AtolUnitTooLongException
      */
     public function testAtolQuantityTooHighException()
     {
@@ -132,10 +141,7 @@ class ItemTest extends BasicTestCase
     /**
      * Тестирует исключение о слишком высокой цене
      *
-     * @throws AtolOnline\Exceptions\AtolPriceTooHighException
-     * @throws AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws AtolOnline\Exceptions\AtolTooManyException
-     * @throws AtolOnline\Exceptions\AtolUnitTooLongException
+     * @throws \AtolOnline\Exceptions\AtolPriceTooHighException
      */
     public function testAtolPriceTooHighException()
     {
@@ -147,11 +153,7 @@ class ItemTest extends BasicTestCase
     /**
      * Тестирует исключение о слишком длинных польз. данных
      *
-     * @throws AtolOnline\Exceptions\AtolUserdataTooLongException
-     * @throws AtolOnline\Exceptions\AtolPriceTooHighException
-     * @throws AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws AtolOnline\Exceptions\AtolTooManyException
-     * @throws AtolOnline\Exceptions\AtolUnitTooLongException
+     * @throws \AtolOnline\Exceptions\AtolUserdataTooLongException
      */
     public function testAtolUserdataTooLongException()
     {
@@ -163,10 +165,7 @@ class ItemTest extends BasicTestCase
     /**
      * Тестирует исключение о слишком длинной единице измерения
      *
-     * @throws AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws AtolOnline\Exceptions\AtolPriceTooHighException
-     * @throws AtolOnline\Exceptions\AtolTooManyException
-     * @throws AtolOnline\Exceptions\AtolUnitTooLongException
+     * @throws \AtolOnline\Exceptions\AtolUnitTooLongException
      */
     public function testAtolUnitTooLongException()
     {
