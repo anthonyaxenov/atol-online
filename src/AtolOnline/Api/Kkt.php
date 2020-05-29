@@ -505,7 +505,7 @@ class Kkt extends Client
      *
      * @return string
      */
-    protected function getAuthToken()
+    public function getAuthToken(): ?string
     {
         return $this->auth_token;
     }
