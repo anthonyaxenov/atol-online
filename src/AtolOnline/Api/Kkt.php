@@ -9,7 +9,8 @@
 
 namespace AtolOnline\Api;
 
-use AtolOnline\{Entities\Document,
+use AtolOnline\{Entities\Company,
+    Entities\Document,
     Exceptions\AtolCorrectionInfoException,
     Exceptions\AtolInvalidUuidException,
     Exceptions\AtolKktLoginEmptyException,
@@ -390,7 +391,7 @@ class Kkt extends Client
     {
         $headers['Content-type'] = 'application/json; charset=utf-8';
         if ($this->getAuthToken()) {
-            $headers['Token'] = $this->auth_token;
+            $headers['Token'] = $this->getAuthToken();
         }
         return $headers;
     }
@@ -429,6 +430,7 @@ class Kkt extends Client
      * @param mixed      $data        Данные для передачи
      * @param array|null $options     Параметры Guzzle
      * @return \AtolOnline\Api\KktResponse
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @see https://guzzle.readthedocs.io/en/latest/request-options.html
      */
     protected function sendAtolRequest(string $http_method, string $api_method, $data = null, array $options = null)
@@ -449,6 +451,7 @@ class Kkt extends Client
      * Производит авторизацию на ККТ и получает токен доступа для дальнейших HTTP-запросов
      *
      * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function auth()
     {
@@ -482,6 +485,12 @@ class Kkt extends Client
             throw new AtolWrongDocumentTypeException($type);
         }
         $this->auth();
+        if ($this->isTestMode()) {
+            $document->setCompany((new Company())
+                ->setInn('5544332219')
+                ->setPaymentAddress('https://v4.online.atol.ru')
+            );
+        }
         $data = [
             'timestamp' => date('d.m.y H:i:s'),
             'external_id' => Uuid::uuid4()->toString(),
