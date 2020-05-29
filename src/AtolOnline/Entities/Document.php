@@ -199,9 +199,9 @@ class Document extends Entity
     /**
      * Возвращает заданного клиента (покупателя)
      *
-     * @return Client
+     * @return Client|null
      */
-    public function getClient(): Client
+    public function getClient(): ?Client
     {
         return $this->client;
     }
@@ -221,9 +221,9 @@ class Document extends Entity
     /**
      * Возвращает заданную компанию (продавца)
      *
-     * @return Company
+     * @return Company|null
      */
-    public function getCompany(): Company
+    public function getCompany(): ?Company
     {
         return $this->company;
     }
@@ -388,7 +388,7 @@ class Document extends Entity
                 $doc->payments->add($payment);
             }
         }
-        if ($array['total'] != $doc->calcTotal()) {
+        if (isset($array['total']) && $array['total'] != $doc->calcTotal()) {
             throw new AtolException('Real total sum not equals to provided in JSON one');
         }
         return $doc;
@@ -401,16 +401,24 @@ class Document extends Entity
      */
     public function jsonSerialize()
     {
-        $json['company'] = $this->getCompany()->jsonSerialize();// обязательно
-        $json['payments'] = $this->payments->jsonSerialize(); // обязательно
+        if ($this->getCompany()) {
+            $json['company'] = $this->getCompany()->jsonSerialize(); // обязательно
+        }
+        if ($this->getPayments()) {
+            $json['payments'] = $this->getPayments()->jsonSerialize(); // обязательно
+        }
         if ($this->getCashier()) {
             $json['cashier'] = $this->getCashier();
         }
         if ($this->getCorrectionInfo()) {
             $json['correction_info'] = $this->getCorrectionInfo()->jsonSerialize(); // обязательно для коррекционных
         } else {
-            $json['client'] = $this->getClient()->jsonSerialize(); // обязательно для некоррекционных
-            $json['items'] = $this->items->jsonSerialize(); // обязательно для некоррекционных
+            if ($this->getClient()) {
+                $json['client'] = $this->getClient()->jsonSerialize(); // обязательно для некоррекционных
+            }
+            if ($this->getItems()) {
+                $json['items'] = $this->getItems()->jsonSerialize(); // обязательно для некоррекционных
+            }
             $json['total'] = $this->calcTotal(); // обязательно для некоррекционных
         }
         if ($this->getVats()) {
