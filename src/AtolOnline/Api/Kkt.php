@@ -471,14 +471,19 @@ class Kkt extends Client
     /**
      * Отправляет документ на регистрацию
      *
-     * @param string                        $api_method Метод API
-     * @param string                        $type       Тип документа: receipt, correction
-     * @param \AtolOnline\Entities\Document $document   Объект документа
+     * @param string                        $api_method  Метод API
+     * @param string                        $type        Тип документа: receipt, correction
+     * @param \AtolOnline\Entities\Document $document    Объект документа
+     * @param string|null                   $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
+     * @throws \AtolOnline\Exceptions\AtolEmailTooLongException
+     * @throws \AtolOnline\Exceptions\AtolEmailValidateException
+     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException
+     * @throws \AtolOnline\Exceptions\AtolPaymentAddressTooLongException
      * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
-     * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    protected function registerDocument(string $api_method, string $type, Document $document)
+    protected function registerDocument(string $api_method, string $type, Document $document, ?string $external_id = null)
     {
         $type = trim($type);
         if (!in_array($type, ['receipt', 'correction'])) {
@@ -489,14 +494,16 @@ class Kkt extends Client
             $document->setCompany((new Company())
                 ->setInn('5544332219')
                 ->setPaymentAddress('https://v4.online.atol.ru')
+                ->setEmail('test@example.com')
+                ->setSno('osn')
             );
         }
-        $data = [
-            'timestamp' => date('d.m.y H:i:s'),
-            'external_id' => Uuid::uuid4()->toString(),
-            'service' => ['callback_url' => $this->getCallbackUrl()],
-            $type => $document,
-        ];
+        $data['timestamp'] = date('d.m.y H:i:s');
+        $data['external_id'] = $external_id ?: Uuid::uuid4()->toString();
+        $data[$type] = $document;
+        if ($this->getCallbackUrl()) {
+            $data['service'] = ['callback_url' => $this->getCallbackUrl()];
+        }
         return $this->sendAtolRequest('POST', trim($api_method), $data);
     }
     
