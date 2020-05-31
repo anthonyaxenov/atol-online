@@ -9,8 +9,7 @@
 
 namespace AtolOnline\Api;
 
-use AtolOnline\{Entities\Company,
-    Entities\Document,
+use AtolOnline\{Entities\Document,
     Exceptions\AtolCorrectionInfoException,
     Exceptions\AtolInvalidUuidException,
     Exceptions\AtolKktLoginEmptyException,
@@ -366,6 +365,28 @@ class Kkt extends Client
     }
     
     /**
+     * Возвращает текущий токен авторизации
+     *
+     * @return string
+     */
+    public function getAuthToken(): ?string
+    {
+        return $this->auth_token;
+    }
+    
+    /**
+     * Устанавливает заранее известный токен авторизации
+     *
+     * @param string|null $auth_token
+     * @return $this
+     */
+    public function setAuthToken(?string $auth_token)
+    {
+        $this->auth_token = $auth_token;
+        return $this;
+    }
+    
+    /**
      * Сбрасывает настройки ККТ по умолчанию
      */
     protected function resetKktConfig(): void
@@ -476,11 +497,7 @@ class Kkt extends Client
      * @param \AtolOnline\Entities\Document $document    Объект документа
      * @param string|null                   $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
-     * @throws \AtolOnline\Exceptions\AtolEmailTooLongException
-     * @throws \AtolOnline\Exceptions\AtolEmailValidateException
-     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException
-     * @throws \AtolOnline\Exceptions\AtolPaymentAddressTooLongException
-     * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
+     * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function registerDocument(string $api_method, string $type, Document $document, ?string $external_id = null)
@@ -490,14 +507,6 @@ class Kkt extends Client
             throw new AtolWrongDocumentTypeException($type);
         }
         $this->auth();
-        if ($this->isTestMode()) {
-            $document->setCompany((new Company())
-                ->setInn('5544332219')
-                ->setPaymentAddress('https://v4.online.atol.ru')
-                ->setEmail('test@example.com')
-                ->setSno('osn')
-            );
-        }
         $data['timestamp'] = date('d.m.y H:i:s');
         $data['external_id'] = $external_id ?: Uuid::uuid4()->toString();
         $data[$type] = $document;
@@ -505,15 +514,5 @@ class Kkt extends Client
             $data['service'] = ['callback_url' => $this->getCallbackUrl()];
         }
         return $this->sendAtolRequest('POST', trim($api_method), $data);
-    }
-    
-    /**
-     * Возвращает текущий токен авторизации
-     *
-     * @return string
-     */
-    public function getAuthToken(): ?string
-    {
-        return $this->auth_token;
     }
 }
