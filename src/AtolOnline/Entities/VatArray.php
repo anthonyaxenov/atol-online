@@ -9,7 +9,6 @@
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Api\SellSchema;
 use AtolOnline\Exceptions\AtolTooManyVatsException;
 
 /**
@@ -19,6 +18,11 @@ use AtolOnline\Exceptions\AtolTooManyVatsException;
  */
 class VatArray extends Entity
 {
+    /**
+     * Максимальное количество элементов массива
+     */
+    public const MAX_COUNT = 6;
+    
     /**
      * @var Vat[] Массив ставок НДС
      */
@@ -103,9 +107,8 @@ class VatArray extends Entity
      */
     protected function validateCount(?array $vats = null): bool
     {
-        $max_items = SellSchema::get()->properties->receipt->properties->vats->maxItems;
-        if ((!empty($vats) && count($vats) >= $max_items) || count($this->vats) >= $max_items) {
-            throw new AtolTooManyVatsException(count($vats), $max_items);
+        if ((!empty($vats) && count($vats) >= self::MAX_COUNT) || count($this->vats) >= self::MAX_COUNT) {
+            throw new AtolTooManyVatsException(count($vats), self::MAX_COUNT);
         }
         return true;
     }

@@ -106,7 +106,7 @@ class ItemArray extends Entity
     protected function validateCount(?array $items = null): bool
     {
         if ((!empty($items) && count($items) >= self::MAX_COUNT) || count($this->items) >= self::MAX_COUNT) {
-            throw new AtolTooManyItemsException(self::MAX_COUNT);
+            throw new AtolTooManyItemsException(count($items), self::MAX_COUNT);
         }
         return true;
     }

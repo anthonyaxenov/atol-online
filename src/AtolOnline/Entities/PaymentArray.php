@@ -9,7 +9,6 @@
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Api\SellSchema;
 use AtolOnline\Exceptions\AtolTooManyPaymentsException;
 
 /**
@@ -19,6 +18,11 @@ use AtolOnline\Exceptions\AtolTooManyPaymentsException;
  */
 class PaymentArray extends Entity
 {
+    /**
+     * Максимальное количество элементов массива
+     */
+    public const MAX_COUNT = 10;
+    
     /**
      * @var Payment[] Массив оплат
      */
@@ -99,9 +103,8 @@ class PaymentArray extends Entity
      */
     protected function validateCount(?array $payments = null): bool
     {
-        $max_items = SellSchema::get()->properties->receipt->properties->payments->maxItems;
-        if ((!empty($payments) && count($payments) >= $max_items) || count($this->payments) >= $max_items) {
-            throw new AtolTooManyPaymentsException($max_items);
+        if ((!empty($payments) && count($payments) >= self::MAX_COUNT) || count($this->payments) >= self::MAX_COUNT) {
+            throw new AtolTooManyPaymentsException(count($payments), self::MAX_COUNT);
         }
         return true;
     }
