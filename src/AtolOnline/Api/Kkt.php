@@ -222,104 +222,115 @@ class Kkt extends Client
      * Регистрирует документ прихода
      *
      * @param \AtolOnline\Entities\Document $document
+     * @param string|null                   $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
      * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
      * @throws \AtolOnline\Exceptions\AtolCorrectionInfoException В документе есть данные коррекции
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function sell(Document $document)
+    public function sell(Document $document, ?string $external_id = null)
     {
         if ($document->getCorrectionInfo()) {
             throw new AtolCorrectionInfoException('Некорректная операция над документом коррекции');
         }
-        return $this->registerDocument('sell', 'receipt', $document);
+        return $this->registerDocument('sell', 'receipt', $document, $external_id);
     }
     
     /**
      * Регистрирует документ возврата прихода
      *
      * @param \AtolOnline\Entities\Document $document
+     * @param string|null                   $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
      * @throws \AtolOnline\Exceptions\AtolPriceTooHighException Слишком большая сумма
      * @throws \AtolOnline\Exceptions\AtolTooManyVatsException Слишком много ставок НДС
      * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
      * @throws \AtolOnline\Exceptions\AtolCorrectionInfoException В документе есть данные коррекции
      */
-    public function sellRefund(Document $document)
+    public function sellRefund(Document $document, ?string $external_id = null)
     {
         if ($document->getCorrectionInfo()) {
             throw new AtolCorrectionInfoException('Некорректная операция над документом коррекции');
         }
-        return $this->registerDocument('sell_refund', 'receipt', $document->clearVats());
+        return $this->registerDocument('sell_refund', 'receipt', $document->clearVats(), $external_id);
     }
     
     /**
      * Регистрирует документ коррекции прихода
      *
      * @param \AtolOnline\Entities\Document $document
+     * @param string|null                   $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
      * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
      * @throws \AtolOnline\Exceptions\AtolCorrectionInfoException В документе отсутствуют данные коррекции
      * @throws \AtolOnline\Exceptions\AtolTooManyItemsException Слишком много предметов расчёта
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function sellCorrection(Document $document)
+    public function sellCorrection(Document $document, ?string $external_id = null)
     {
         if (!$document->getCorrectionInfo()) {
             throw new AtolCorrectionInfoException();
         }
         $document->setClient(null)->setItems([]);
-        return $this->registerDocument('sell_correction', 'correction', $document);
+        return $this->registerDocument('sell_correction', 'correction', $document, $external_id);
     }
     
     /**
      * Регистрирует документ расхода
      *
      * @param \AtolOnline\Entities\Document $document
+     * @param string|null                   $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
      * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
      * @throws \AtolOnline\Exceptions\AtolCorrectionInfoException В документе есть данные коррекции
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function buy(Document $document)
+    public function buy(Document $document, ?string $external_id = null)
     {
         if ($document->getCorrectionInfo()) {
             throw new AtolCorrectionInfoException('Некорректная операция над документом коррекции');
         }
-        return $this->registerDocument('buy', 'receipt', $document);
+        return $this->registerDocument('buy', 'receipt', $document, $external_id);
     }
     
     /**
      * Регистрирует документ возврата расхода
      *
      * @param \AtolOnline\Entities\Document $document
+     * @param string|null                   $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
      * @throws \AtolOnline\Exceptions\AtolPriceTooHighException Слишком большая сумма
      * @throws \AtolOnline\Exceptions\AtolTooManyVatsException Слишком много ставок НДС
      * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
      * @throws \AtolOnline\Exceptions\AtolCorrectionInfoException В документе есть данные коррекции
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function buyRefund(Document $document)
+    public function buyRefund(Document $document, ?string $external_id = null)
     {
         if ($document->getCorrectionInfo()) {
             throw new AtolCorrectionInfoException('Некорректная операция над документом коррекции');
         }
-        return $this->registerDocument('buy_refund', 'receipt', $document->clearVats());
+        return $this->registerDocument('buy_refund', 'receipt', $document->clearVats(), $external_id);
     }
     
     /**
      * Регистрирует документ коррекции расхода
      *
-     * @param Document $document
+     * @param Document    $document
+     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
      * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
      * @throws \AtolOnline\Exceptions\AtolCorrectionInfoException В документе отсутствуют данные коррекции
      * @throws \AtolOnline\Exceptions\AtolTooManyItemsException Слишком много предметов расчёта
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function buyCorrection(Document $document)
+    public function buyCorrection(Document $document, ?string $external_id = null)
     {
         if (!$document->getCorrectionInfo()) {
             throw new AtolCorrectionInfoException();
         }
         $document->setClient(null)->setItems([]);
-        return $this->registerDocument('buy_correction', 'correction', $document);
+        return $this->registerDocument('buy_correction', 'correction', $document, $external_id);
     }
     
     /**
