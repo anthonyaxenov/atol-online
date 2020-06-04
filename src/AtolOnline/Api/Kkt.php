@@ -9,7 +9,9 @@
 
 namespace AtolOnline\Api;
 
-use AtolOnline\{Entities\Document,
+use AtolOnline\{Constants\TestEnvParams,
+    Entities\Company,
+    Entities\Document,
     Exceptions\AtolCorrectionInfoException,
     Exceptions\AtolInvalidUuidException,
     Exceptions\AtolKktLoginEmptyException,
@@ -407,9 +409,9 @@ class Kkt extends Client
         $this->kkt_config['prod']['pass'] = '';
         $this->kkt_config['prod']['url'] = 'https://online.atol.ru/possystem/v4';
         $this->kkt_config['prod']['callback_url'] = '';
-        $this->kkt_config['test']['group'] = 'v4-online-atol-ru_4179';
-        $this->kkt_config['test']['login'] = 'v4-online-atol-ru';
-        $this->kkt_config['test']['pass'] = 'iGFFuihss';
+        $this->kkt_config['test']['group'] = TestEnvParams::GROUP;
+        $this->kkt_config['test']['login'] = TestEnvParams::LOGIN;
+        $this->kkt_config['test']['pass'] = TestEnvParams::PASSWORD;
         $this->kkt_config['test']['url'] = 'https://testonline.atol.ru/possystem/v4';
         $this->kkt_config['test']['callback_url'] = '';
     }
@@ -518,6 +520,12 @@ class Kkt extends Client
             throw new AtolWrongDocumentTypeException($type);
         }
         $this->auth();
+        if ($this->isTestMode()) {
+            $document->setCompany(($document->getCompany() ?: new Company())
+                ->setInn(TestEnvParams::INN)
+                ->setSno(TestEnvParams::SNO)
+                ->setPaymentAddress(TestEnvParams::PAYMENT_ADDRESS));
+        }
         $data['timestamp'] = date('d.m.y H:i:s');
         $data['external_id'] = $external_id ?: Uuid::uuid4()->toString();
         $data[$type] = $document;
