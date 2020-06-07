@@ -9,7 +9,7 @@
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\{Exceptions\AtolNameTooLongException, Exceptions\AtolPhoneTooLongException, Traits\HasEmail, Traits\HasInn};
+use AtolOnline\{Constants\Constraints, Exceptions\AtolNameTooLongException, Exceptions\AtolPhoneTooLongException, Traits\HasEmail, Traits\HasInn};
 
 /**
  * Класс Client, описывающий сущность покупателя
@@ -46,11 +46,11 @@ class Client extends Entity
      * @param string|null $phone Телефон
      * @param string|null $email Email
      * @param string|null $inn   ИНН
-     * @throws \AtolOnline\Exceptions\AtolEmailTooLongException
-     * @throws \AtolOnline\Exceptions\AtolEmailValidateException
-     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException
-     * @throws \AtolOnline\Exceptions\AtolNameTooLongException
-     * @throws \AtolOnline\Exceptions\AtolPhoneTooLongException
+     * @throws \AtolOnline\Exceptions\AtolEmailTooLongException Слишком длинный email
+     * @throws \AtolOnline\Exceptions\AtolEmailValidateException Невалидный email
+     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException Некорректная длина ИНН
+     * @throws \AtolOnline\Exceptions\AtolNameTooLongException Слишком длинное имя
+     * @throws \AtolOnline\Exceptions\AtolPhoneTooLongException СЛишком длинный номер телефона
      */
     public function __construct(?string $name = null, ?string $phone = null, ?string $email = null, ?string $inn = null)
     {
@@ -89,8 +89,8 @@ class Client extends Entity
     public function setName(string $name)
     {
         $name = trim($name);
-        if ((function_exists('mb_strlen') ? mb_strlen($name) : strlen($name)) > 256) {
-            throw new AtolNameTooLongException($name, 256);
+        if (valid_strlen($name) > Constraints::MAX_LENGTH_CLIENT_NAME) {
+            throw new AtolNameTooLongException($name, Constraints::MAX_LENGTH_CLIENT_NAME);
         }
         $this->name = $name;
         return $this;
@@ -119,8 +119,8 @@ class Client extends Entity
     public function setPhone(string $phone)
     {
         $phone = preg_replace("/[^0-9+]/", '', $phone);
-        if ((function_exists('mb_strlen') ? mb_strlen($phone) : strlen($phone)) > 64) {
-            throw new AtolPhoneTooLongException($phone, 64);
+        if (valid_strlen($phone) > Constraints::MAX_LENGTH_CLIENT_PHONE) {
+            throw new AtolPhoneTooLongException($phone, Constraints::MAX_LENGTH_CLIENT_PHONE);
         }
         $this->phone = $phone;
         return $this;
