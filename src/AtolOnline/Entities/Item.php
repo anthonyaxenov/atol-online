@@ -9,12 +9,14 @@
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\{Exceptions\AtolNameTooLongException,
+use AtolOnline\{Constants\Constraints,
+    Exceptions\AtolNameTooLongException,
     Exceptions\AtolPriceTooHighException,
     Exceptions\AtolTooManyException,
     Exceptions\AtolUnitTooLongException,
     Exceptions\AtolUserdataTooLongException,
-    Traits\RublesKopeksConverter};
+    Traits\RublesKopeksConverter
+};
 
 /**
  * Предмет расчёта (товар, услуга)
@@ -137,8 +139,8 @@ class Item extends Entity
     public function setName(string $name)
     {
         $name = trim($name);
-        if ((function_exists('mb_strlen') ? mb_strlen($name) : strlen($name)) > 128) {
-            throw new AtolNameTooLongException($name, 128);
+        if (valid_strlen($name) > Constraints::MAX_LENGTH_ITEM_NAME) {
+            throw new AtolNameTooLongException($name, Constraints::MAX_LENGTH_ITEM_NAME);
         }
         $this->name = $name;
         return $this;
@@ -225,8 +227,8 @@ class Item extends Entity
     public function setMeasurementUnit(string $measurement_unit)
     {
         $measurement_unit = trim($measurement_unit);
-        if ((function_exists('mb_strlen') ? mb_strlen($measurement_unit) : strlen($measurement_unit)) > 16) {
-            throw new AtolUnitTooLongException($measurement_unit, 16);
+        if (valid_strlen($measurement_unit) > Constraints::MAX_LENGTH_MEASUREMENT_UNIT) {
+            throw new AtolUnitTooLongException($measurement_unit, Constraints::MAX_LENGTH_MEASUREMENT_UNIT);
         }
         $this->measurement_unit = $measurement_unit;
         return $this;
@@ -328,8 +330,8 @@ class Item extends Entity
     public function setUserData(string $user_data)
     {
         $user_data = trim($user_data);
-        if ((function_exists('mb_strlen') ? mb_strlen($user_data) : strlen($user_data)) > 64) {
-            throw new AtolUserdataTooLongException($user_data, 64);
+        if (valid_strlen($user_data) > Constraints::MAX_LENGTH_USER_DATA) {
+            throw new AtolUserdataTooLongException($user_data, Constraints::MAX_LENGTH_USER_DATA);
         }
         $this->user_data = $user_data;
         return $this;
