@@ -9,7 +9,8 @@
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\{Exceptions\AtolEmailTooLongException,
+use AtolOnline\{Constants\Constraints,
+    Exceptions\AtolEmailTooLongException,
     Exceptions\AtolEmailValidateException,
     Exceptions\AtolInnWrongLengthException,
     Exceptions\AtolPaymentAddressTooLongException,
@@ -52,10 +53,10 @@ class Company extends Entity
      * @param string|null $inn
      * @param string|null $paymentAddress
      * @param string|null $email
-     * @throws AtolEmailTooLongException
-     * @throws AtolEmailValidateException
-     * @throws AtolInnWrongLengthException
-     * @throws AtolPaymentAddressTooLongException
+     * @throws AtolEmailTooLongException Слишком длинный email
+     * @throws AtolEmailValidateException Невалидный email
+     * @throws AtolInnWrongLengthException Некорректная длина ИНН
+     * @throws AtolPaymentAddressTooLongException Слишком длинный адрес места расчётов
      */
     public function __construct(string $sno = null, string $inn = null, string $paymentAddress = null, string $email = null)
     {
@@ -110,13 +111,13 @@ class Company extends Entity
      *
      * @param string $payment_address
      * @return $this
-     * @throws AtolPaymentAddressTooLongException
+     * @throws AtolPaymentAddressTooLongException Слишком длинный адрес места расчётов
      */
     public function setPaymentAddress(string $payment_address)
     {
         $payment_address = trim($payment_address);
-        if ((function_exists('mb_strlen') ? mb_strlen($payment_address) : strlen($payment_address)) > 256) {
-            throw new AtolPaymentAddressTooLongException($payment_address, 256);
+        if (valid_strlen($payment_address) > Constraints::MAX_LENGTH_PAYMENT_ADDRESS) {
+            throw new AtolPaymentAddressTooLongException($payment_address, Constraints::MAX_LENGTH_PAYMENT_ADDRESS);
         }
         $this->payment_address = $payment_address;
         return $this;
