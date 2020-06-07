@@ -46,6 +46,9 @@
             "src/AtolOnline/Traits/",
             "src/AtolOnline/Constants/",
             "tests/"
+        ],
+        "files": [
+            "src/helpers.php"
         ]
     }
 }
