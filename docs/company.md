@@ -46,7 +46,7 @@ $company = (new AtolOnline\Entities\Company())
 * `AtolEmailValidateException` (если email невалиден).
 
 Метод `setInn()` чистит входную строку от всех символов, кроме цифр, и проверяет длину (либо 10, либо 12 цифр).
-Выбрасывает исключение `AtolInnWrongLengthException` (если длина строка ИНН некорректна).
+Выбрасывает исключение `AtolInnWrongLengthException` (если длина ИНН некорректна).
 
 Метод `setPaymentAddress()` проверяет длину (до 256 символов).
 Выбрасывает исключение `AtolPaymentAddressTooLongException` (если слишком длинный адрес места расчётов).
