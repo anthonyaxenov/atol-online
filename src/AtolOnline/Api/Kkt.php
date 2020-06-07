@@ -9,14 +9,19 @@
 
 namespace AtolOnline\Api;
 
-use AtolOnline\{Constants\TestEnvParams,
+use AtolOnline\{Constants\Constraints,
+    Constants\TestEnvParams,
     Entities\Company,
     Entities\Document,
+    Exceptions\AtolAuthFailedException,
+    Exceptions\AtolCallbackUrlTooLongException,
     Exceptions\AtolCorrectionInfoException,
+    Exceptions\AtolInvalidCallbackUrlException,
     Exceptions\AtolInvalidUuidException,
     Exceptions\AtolKktLoginEmptyException,
     Exceptions\AtolKktLoginTooLongException,
     Exceptions\AtolKktPasswordEmptyException,
+    Exceptions\AtolKktPasswordTooLongException,
     Exceptions\AtolWrongDocumentTypeException
 };
 use GuzzleHttp\Client;
@@ -60,6 +65,7 @@ class Kkt extends Client
      * @throws \AtolOnline\Exceptions\AtolKktLoginEmptyException Логин ККТ не может быть пустым
      * @throws \AtolOnline\Exceptions\AtolKktLoginTooLongException Слишком длинный логин ККТ
      * @throws \AtolOnline\Exceptions\AtolKktPasswordEmptyException Пароль ККТ не может быть пустым
+     * @throws \AtolOnline\Exceptions\AtolKktPasswordTooLongException Слишком длинный пароль ККТ
      * @see https://guzzle.readthedocs.io/en/latest/request-options.html
      */
     public function __construct(
@@ -117,12 +123,10 @@ class Kkt extends Client
      */
     public function setLogin(string $login)
     {
-        if (!$this->isTestMode()) {
-            if (empty($login)) {
-                throw new AtolKktLoginEmptyException();
-            } elseif ((function_exists('mb_strlen') ? mb_strlen($login) : strlen($login)) > 100) {
-                throw new AtolKktLoginTooLongException($login, 100);
-            }
+        if (empty($login)) {
+            throw new AtolKktLoginEmptyException();
+        } elseif (valid_strlen($login) > Constraints::MAX_LENGTH_LOGIN) {
+            throw new AtolKktLoginTooLongException($login, Constraints::MAX_LENGTH_LOGIN);
         }
         $this->kkt_config['prod']['login'] = $login;
         return $this;
@@ -144,13 +148,14 @@ class Kkt extends Client
      * @param string $password
      * @return $this
      * @throws \AtolOnline\Exceptions\AtolKktPasswordEmptyException Пароль ККТ не может быть пустым
+     * @throws \AtolOnline\Exceptions\AtolKktPasswordTooLongException Слишком длинный пароль ККТ
      */
     public function setPassword(string $password)
     {
-        if (!$this->isTestMode()) {
-            if (empty($password)) {
-                throw new AtolKktPasswordEmptyException();
-            }
+        if (empty($password)) {
+            throw new AtolKktPasswordEmptyException();
+        } elseif (valid_strlen($password) > Constraints::MAX_LENGTH_PASSWORD) {
+            throw new AtolKktPasswordTooLongException($password, Constraints::MAX_LENGTH_PASSWORD);
         }
         $this->kkt_config['prod']['pass'] = $password;
         return $this;
@@ -171,9 +176,16 @@ class Kkt extends Client
      *
      * @param string $url
      * @return $this
+     * @throws \AtolOnline\Exceptions\AtolCallbackUrlTooLongException Слишком длинный Callback URL
+     * @throws \AtolOnline\Exceptions\AtolInvalidCallbackUrlException Невалидный Callback URL
      */
     public function setCallbackUrl(string $url)
     {
+        if (valid_strlen($url) > Constraints::MAX_LENGTH_CALLBACK_URL) {
+            throw new AtolCallbackUrlTooLongException($url, Constraints::MAX_LENGTH_CALLBACK_URL);
+        } elseif (preg_match(Constraints::PATTERN_CALLBACK_URL, $url)) {
+            throw new AtolInvalidCallbackUrlException();
+        }
         $this->kkt_config[$this->isTestMode() ? 'test' : 'prod']['callback_url'] = $url;
         return $this;
     }
@@ -223,11 +235,14 @@ class Kkt extends Client
     /**
      * Регистрирует документ прихода
      *
-     * @param \AtolOnline\Entities\Document $document
+     * @param \AtolOnline\Entities\Document $document    Объект документа
      * @param string|null                   $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
-     * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
+     * @throws \AtolOnline\Exceptions\AtolAuthFailedException Ошибка авторизации
      * @throws \AtolOnline\Exceptions\AtolCorrectionInfoException В документе есть данные коррекции
+     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException Некорректная длина ИНН
+     * @throws \AtolOnline\Exceptions\AtolPaymentAddressTooLongException Слишком длинный адрес места расчётов
+     * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function sell(Document $document, ?string $external_id = null)
@@ -241,18 +256,22 @@ class Kkt extends Client
     /**
      * Регистрирует документ возврата прихода
      *
-     * @param \AtolOnline\Entities\Document $document
+     * @param \AtolOnline\Entities\Document $document    Объект документа
      * @param string|null                   $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
+     * @throws \AtolOnline\Exceptions\AtolAuthFailedException Ошибка авторизации
+     * @throws \AtolOnline\Exceptions\AtolCorrectionInfoException В документе есть данные коррекции
+     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException Некорректная длина ИНН
+     * @throws \AtolOnline\Exceptions\AtolPaymentAddressTooLongException Слишком длинный адрес места расчётов
      * @throws \AtolOnline\Exceptions\AtolPriceTooHighException Слишком большая сумма
      * @throws \AtolOnline\Exceptions\AtolTooManyVatsException Слишком много ставок НДС
      * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
-     * @throws \AtolOnline\Exceptions\AtolCorrectionInfoException В документе есть данные коррекции
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function sellRefund(Document $document, ?string $external_id = null)
     {
         if ($document->getCorrectionInfo()) {
-            throw new AtolCorrectionInfoException('Некорректная операция над документом коррекции');
+            throw new AtolCorrectionInfoException('Invalid operation on correction document');
         }
         return $this->registerDocument('sell_refund', 'receipt', $document->clearVats(), $external_id);
     }
@@ -260,12 +279,15 @@ class Kkt extends Client
     /**
      * Регистрирует документ коррекции прихода
      *
-     * @param \AtolOnline\Entities\Document $document
+     * @param \AtolOnline\Entities\Document $document    Объект документа
      * @param string|null                   $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
-     * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
+     * @throws \AtolOnline\Exceptions\AtolAuthFailedException Ошибка авторизации
      * @throws \AtolOnline\Exceptions\AtolCorrectionInfoException В документе отсутствуют данные коррекции
+     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException Некорректная длина ИНН
+     * @throws \AtolOnline\Exceptions\AtolPaymentAddressTooLongException Слишком длинный адрес места расчётов
      * @throws \AtolOnline\Exceptions\AtolTooManyItemsException Слишком много предметов расчёта
+     * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function sellCorrection(Document $document, ?string $external_id = null)
@@ -283,14 +305,17 @@ class Kkt extends Client
      * @param \AtolOnline\Entities\Document $document
      * @param string|null                   $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
-     * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
+     * @throws \AtolOnline\Exceptions\AtolAuthFailedException Ошибка авторизации
      * @throws \AtolOnline\Exceptions\AtolCorrectionInfoException В документе есть данные коррекции
+     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException Некорректная длина ИНН
+     * @throws \AtolOnline\Exceptions\AtolPaymentAddressTooLongException Слишком длинный адрес места расчётов
+     * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function buy(Document $document, ?string $external_id = null)
     {
         if ($document->getCorrectionInfo()) {
-            throw new AtolCorrectionInfoException('Некорректная операция над документом коррекции');
+            throw new AtolCorrectionInfoException('Invalid operation on correction document');
         }
         return $this->registerDocument('buy', 'receipt', $document, $external_id);
     }
@@ -301,16 +326,19 @@ class Kkt extends Client
      * @param \AtolOnline\Entities\Document $document
      * @param string|null                   $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
+     * @throws \AtolOnline\Exceptions\AtolAuthFailedException Ошибка авторизации
+     * @throws \AtolOnline\Exceptions\AtolCorrectionInfoException В документе есть данные коррекции
+     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException Некорректная длина ИНН
+     * @throws \AtolOnline\Exceptions\AtolPaymentAddressTooLongException Слишком длинный адрес места расчётов
      * @throws \AtolOnline\Exceptions\AtolPriceTooHighException Слишком большая сумма
      * @throws \AtolOnline\Exceptions\AtolTooManyVatsException Слишком много ставок НДС
      * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
-     * @throws \AtolOnline\Exceptions\AtolCorrectionInfoException В документе есть данные коррекции
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function buyRefund(Document $document, ?string $external_id = null)
     {
         if ($document->getCorrectionInfo()) {
-            throw new AtolCorrectionInfoException('Некорректная операция над документом коррекции');
+            throw new AtolCorrectionInfoException('Invalid operation on correction document');
         }
         return $this->registerDocument('buy_refund', 'receipt', $document->clearVats(), $external_id);
     }
@@ -318,12 +346,15 @@ class Kkt extends Client
     /**
      * Регистрирует документ коррекции расхода
      *
-     * @param Document    $document
-     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан UUID)
+     * @param \AtolOnline\Entities\Document $document
+     * @param string|null                   $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
-     * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
+     * @throws \AtolOnline\Exceptions\AtolAuthFailedException Ошибка авторизации
      * @throws \AtolOnline\Exceptions\AtolCorrectionInfoException В документе отсутствуют данные коррекции
+     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException Некорректная длтина ИНН
+     * @throws \AtolOnline\Exceptions\AtolPaymentAddressTooLongException Слишком длинный адрес места расчётов
      * @throws \AtolOnline\Exceptions\AtolTooManyItemsException Слишком много предметов расчёта
+     * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function buyCorrection(Document $document, ?string $external_id = null)
@@ -340,7 +371,9 @@ class Kkt extends Client
      *
      * @param string $uuid UUID регистрации
      * @return \AtolOnline\Api\KktResponse
+     * @throws \AtolOnline\Exceptions\AtolAuthFailedException Ошибка авторизации
      * @throws \AtolOnline\Exceptions\AtolInvalidUuidException Некорректный UUID документа
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getDocumentStatus(string $uuid)
     {
@@ -360,7 +393,9 @@ class Kkt extends Client
      * @param int    $retry_count Количество попыток
      * @param int    $timeout     Таймаут в секундах между попытками
      * @return \AtolOnline\Api\KktResponse
-     * @throws \AtolOnline\Exceptions\AtolException Некорректный UUID документа
+     * @throws \AtolOnline\Exceptions\AtolAuthFailedException Ошибка авторизации
+     * @throws \AtolOnline\Exceptions\AtolInvalidUuidException Некорректный UUID документа
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function pollDocumentStatus(string $uuid, int $retry_count = 5, int $timeout = 1)
     {
@@ -485,6 +520,7 @@ class Kkt extends Client
      * Производит авторизацию на ККТ и получает токен доступа для дальнейших HTTP-запросов
      *
      * @return bool
+     * @throws \AtolOnline\Exceptions\AtolAuthFailedException Ошибка авторизации
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function auth()
@@ -495,7 +531,7 @@ class Kkt extends Client
                 'pass' => $this->getPassword(),
             ]);
             if (!$result->isValid() || !$result->getContent()->token) {
-                return false;
+                throw new AtolAuthFailedException($result);
             }
             $this->auth_token = $result->getContent()->token;
         }
@@ -510,7 +546,10 @@ class Kkt extends Client
      * @param \AtolOnline\Entities\Document $document    Объект документа
      * @param string|null                   $external_id Уникальный код документа (если не указан, то будет создан UUID)
      * @return \AtolOnline\Api\KktResponse
-     * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException
+     * @throws \AtolOnline\Exceptions\AtolAuthFailedException Ошибка авторизации
+     * @throws \AtolOnline\Exceptions\AtolWrongDocumentTypeException Некорректный тип документа
+     * @throws \AtolOnline\Exceptions\AtolInnWrongLengthException Некорректная длина ИНН
+     * @throws \AtolOnline\Exceptions\AtolPaymentAddressTooLongException Слишком длинный адрес места расчётов
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function registerDocument(string $api_method, string $type, Document $document, ?string $external_id = null)
