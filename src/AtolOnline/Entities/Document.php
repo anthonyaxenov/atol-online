@@ -9,6 +9,7 @@
 
 namespace AtolOnline\Entities;
 
+use AtolOnline\Constants\Constraints;
 use AtolOnline\Exceptions\AtolCashierTooLongException;
 use AtolOnline\Exceptions\AtolException;
 use AtolOnline\Exceptions\AtolInvalidJsonException;
@@ -259,9 +260,11 @@ class Document extends Entity
      */
     public function setCashier(?string $cashier)
     {
-        $cashier = trim($cashier);
-        if ((function_exists('mb_strlen') ? mb_strlen($cashier) : strlen($cashier)) > 64) {
-            throw new AtolCashierTooLongException($cashier, 64);
+        if ($cashier !== null) {
+            $cashier = trim($cashier);
+            if (valid_strlen($cashier) > Constraints::MAX_LENGTH_CASHIER_NAME) {
+                throw new AtolCashierTooLongException($cashier, Constraints::MAX_LENGTH_CASHIER_NAME);
+            }
         }
         $this->cashier = $cashier;
         return $this;
