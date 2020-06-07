@@ -9,7 +9,7 @@
 
 namespace AtolOnline\Traits;
 
-use AtolOnline\{Exceptions\AtolEmailTooLongException, Exceptions\AtolEmailValidateException};
+use AtolOnline\{Constants\Constraints, Exceptions\AtolEmailTooLongException, Exceptions\AtolEmailValidateException};
 
 /**
  * Добавляет объекту функционал для работы с email
@@ -38,16 +38,15 @@ trait HasEmail
      *
      * @param string $email
      * @return $this
-     * @throws AtolEmailTooLongException
-     * @throws AtolEmailValidateException
+     * @throws \AtolOnline\Exceptions\AtolEmailTooLongException Слишком длинный email
+     * @throws \AtolOnline\Exceptions\AtolEmailValidateException Невалидный email
      */
     public function setEmail(string $email)
     {
         $email = trim($email);
-        if ((function_exists('mb_strlen') ? mb_strlen($email) : strlen($email)) > 64) {
-            throw new AtolEmailTooLongException($email, 64);
-        }
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (valid_strlen($email) > Constraints::MAX_LENGTH_EMAIL) {
+            throw new AtolEmailTooLongException($email, Constraints::MAX_LENGTH_EMAIL);
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new AtolEmailValidateException($email);
         }
         $this->email = $email;
