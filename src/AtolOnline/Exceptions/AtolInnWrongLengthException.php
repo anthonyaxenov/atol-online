@@ -39,6 +39,6 @@ class AtolInnWrongLengthException extends AtolException
     public function __construct($inn, $message = "", $code = 0, Throwable $previous = null)
     {
         parent::__construct($message ?: 'INN length must be 10 or 12 digits only, but actual is '.
-            (function_exists('mb_strlen') ? mb_strlen($inn) : strlen($inn)).')', $code, $previous);
+            valid_strlen($inn), $code, $previous);
     }
 }

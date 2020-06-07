@@ -27,5 +27,5 @@ class AtolEmailTooLongException extends AtolTooLongException
     /**
      * @var string Сообщение об ошибке
      */
-    protected $message = 'Email is is too long';
+    protected $message = 'Email is too long';
 }

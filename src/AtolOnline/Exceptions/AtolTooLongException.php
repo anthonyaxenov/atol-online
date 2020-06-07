@@ -35,6 +35,6 @@ class AtolTooLongException extends AtolException
     public function __construct($string, $max, $message = "", $code = 0, Throwable $previous = null)
     {
         parent::__construct($message ?: $this->message.' (max length - '.$max.', actual length - '.
-            (function_exists('mb_strlen') ? mb_strlen($string) : strlen($string)).')', $code, $previous);
+            valid_strlen($string), $code, $previous);
     }
 }
