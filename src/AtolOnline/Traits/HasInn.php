@@ -9,6 +9,7 @@
 
 namespace AtolOnline\Traits;
 
+use AtolOnline\Constants\Constraints;
 use AtolOnline\Exceptions\AtolInnWrongLengthException;
 
 /**
@@ -39,12 +40,12 @@ trait HasInn
      *
      * @param string $inn
      * @return $this
-     * @throws AtolInnWrongLengthException
+     * @throws AtolInnWrongLengthException Некорректная длина ИНН
      */
     public function setInn(string $inn)
     {
         $inn = preg_replace("/[^0-9]/", '', $inn);
-        if (preg_match_all("/(^[0-9]{10}$)|(^[0-9]{12}$)/", $inn) == 0) {
+        if (preg_match_all(Constraints::PATTERN_INN, $inn) == 0) {
             throw new AtolInnWrongLengthException($inn);
         }
         $this->inn = $inn;
