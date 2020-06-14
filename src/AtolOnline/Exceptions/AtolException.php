@@ -33,6 +33,7 @@ class AtolException extends Exception
      */
     public function __construct($message = "", $code = 0, Throwable $previous = null)
     {
+        $message = $message ?: $this->message;
         if ($this->getFfdTags()) {
             $message .= ' [FFD tags: '.implode(', ', $this->getFfdTags()).']';
         }
