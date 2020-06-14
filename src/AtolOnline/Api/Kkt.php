@@ -183,8 +183,8 @@ class Kkt extends Client
     {
         if (valid_strlen($url) > Constraints::MAX_LENGTH_CALLBACK_URL) {
             throw new AtolCallbackUrlTooLongException($url, Constraints::MAX_LENGTH_CALLBACK_URL);
-        } elseif (preg_match(Constraints::PATTERN_CALLBACK_URL, $url)) {
-            throw new AtolInvalidCallbackUrlException();
+        } elseif (!preg_match(Constraints::PATTERN_CALLBACK_URL, $url)) {
+            throw new AtolInvalidCallbackUrlException('Callback URL not matches with pattern');
         }
         $this->kkt_config[$this->isTestMode() ? 'test' : 'prod']['callback_url'] = $url;
         return $this;
