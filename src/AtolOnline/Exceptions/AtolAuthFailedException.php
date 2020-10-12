@@ -33,7 +33,7 @@ class AtolAuthFailedException extends Exception
         $message = $last_response->isValid()
             ? $message
             : '['.$last_response->error->code.'] '.$last_response->error->text.
-            '. ERROR_ID: '.$last_response->error->error_ID.
+            '. ERROR_ID: '.$last_response->error->error_id.
             '. TYPE: '.$last_response->error->type;
         $code = $last_response->isValid() ? $code : $last_response->error->code;
         parent::__construct($message, $code, $previous);
