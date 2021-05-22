@@ -68,7 +68,7 @@ class CorrectionInfo extends Entity
      */
     public function getNumber(): ?string
     {
-        return $this->base_name;
+        return $this->base_number;
     }
     
     /**
@@ -165,7 +165,7 @@ class CorrectionInfo extends Entity
             'type' => $this->getType() ?? '', // обязателен
             'base_date' => $this->getDate() ?? '', // обязателен
             'base_number' => $this->getNumber() ?? '', // обязателен
-            'base_name' => $this->getName() ?? '' // обязателен
+            'base_name' => $this->getName() ?? '' // не обязателен
         ];
     }
 }

@@ -50,7 +50,9 @@ class Vat extends Entity
     }
     
     /**
-     * Устанавливает размер НДС от суммы в копейках
+     * Устанавливает:
+     * размер НДС от суммы в копейках, для НДС 10 или 20, 10/110, 20/120;
+     * сумму платежа, если НДС - 0 процентов или без НДС.
      *
      * @param string $type   Тип ставки НДС
      * @param int    $kopeks Копейки
@@ -64,7 +66,7 @@ class Vat extends Entity
         switch ($type) {
             case VatTypes::NONE:
             case VatTypes::VAT0:
-                return 0;
+                return $kopeks;
             case VatTypes::VAT10:
                 //return $kopeks * 10 / 100;
             case VatTypes::VAT110:
