@@ -1,0 +1,25 @@
+name: Dev build
+
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+
+jobs:
+  Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Validate composer.json and composer.lock
+        uses: php-actions/composer@40-env
+        with:
+          version: 2
+          php_version: 7.4
+          only_args: --prefer-dist --no-progress
+
+      - name: Run phpunit tests
+        uses: php-actions/phpunit@v8
+        with:
+          configuration: ./phpunit.xml
