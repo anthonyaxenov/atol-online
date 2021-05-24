@@ -362,6 +362,14 @@ class Document extends Entity
                 $array['client']['inn'] ?? null
             ));
         }
+        if (isset($array['correction_info'])) {
+            $doc->setCorrectionInfo(new CorrectionInfo(
+                $array['correction_info']['type'] ?? null,
+                $array['correction_info']['base_date'] ?? null,
+                $array['correction_info']['base_number'] ?? null,
+                $array['correction_info']['base_name'] ?? null,
+            ));
+        }
         if (isset($array['items'])) {
             foreach ($array['items'] as $ar_item) {
                 $item = new Item(
@@ -389,6 +397,18 @@ class Document extends Entity
                     $payment->setSum($ar_payment['sum']);
                 }
                 $doc->payments->add($payment);
+            }
+        }
+        if (isset($array['vats'])) {
+            foreach ($array['vats'] as $vat_payment) {
+                $vat = new Vat();
+                if (isset($vat_payment['type'])) {
+                    $vat->setType($vat_payment['type']);
+                }
+                if (isset($vat_payment['sum'])) {
+                    $vat->setSum($vat_payment['sum']);
+                }
+                $doc->vats->add($vat);
             }
         }
         if (isset($array['total']) && $array['total'] != $doc->calcTotal()) {
