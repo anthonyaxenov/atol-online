@@ -5,16 +5,21 @@
     "type": "library",
     "keywords": [
         "54-fz",
+        "54-фз",
         "kkt",
+        "ккт",
         "e-commerce",
         "cash",
         "cash register",
         "payment",
         "payment system",
         "atol",
-        "atol-online"
+        "атол",
+        "atol-online",
+        "атол онлайн"
     ],
     "homepage": "https://github.com/anthonyaxenov/atol-online",
+    "readme": "https://github.com/anthonyaxenov/atol-online/blob/master/README.md",
     "authors": [
         {
             "name": "Anthony Axenov",
@@ -25,10 +30,16 @@
     "support": {
         "source": "https://github.com/anthonyaxenov/atol-online",
         "issues": "https://github.com/anthonyaxenov/atol-online/issues",
-        "chat": "https://discord.gg/mFYTQmp"
+        "docs": "https://github.com/anthonyaxenov/atol-online/blob/master/docs/readme.md"
     },
+    "funding": [
+        {
+            "type": "Yoomoney",
+            "url": "https://yoomoney.ru/to/41001685237530"
+        }
+    ],
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.4",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^6.5",
         "psr/log": "^1.1",
