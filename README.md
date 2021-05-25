@@ -1,6 +1,7 @@
 # АТОЛ Онлайн
 
-![Build](https://github.com/anthonyaxenov/atol-online/workflows/Build/badge.svg?branch=master)
+[![Master build](https://github.com/anthonyaxenov/atol-online/actions/workflows/master.yml/badge.svg)](https://github.com/anthonyaxenov/atol-online/actions/workflows/master.yml)
+[![Dev build](https://github.com/anthonyaxenov/atol-online/actions/workflows/dev.yml/badge.svg)](https://github.com/anthonyaxenov/atol-online/actions/workflows/dev.yml)
 
 Библиотека для фискализации чеков по 54-ФЗ через [облачную ККТ АТОЛ](https://online.atol.ru/).
 
