@@ -14,6 +14,7 @@ namespace AtolOnline\Api;
 use JsonSerializable;
 use Psr\Http\Message\ResponseInterface;
 use stdClass;
+use Stringable;
 
 /**
  * Класс AtolResponse, описывающий ответ от ККТ
@@ -21,7 +22,7 @@ use stdClass;
  * @property mixed $error
  * @package AtolOnline\Api
  */
-class KktResponse implements JsonSerializable
+class KktResponse implements JsonSerializable, Stringable
 {
     /**
      * @var int Код ответа сервера
@@ -29,9 +30,9 @@ class KktResponse implements JsonSerializable
     protected int $code;
 
     /**
-     * @var stdClass Содержимое ответа сервера
+     * @var stdClass|array|null Содержимое ответа сервера
      */
-    protected $content;
+    protected stdClass|array|null $content;
     
     /**
      * @var array Заголовки ответа
@@ -66,9 +67,9 @@ class KktResponse implements JsonSerializable
      * @param $name
      * @return mixed
      */
-    public function __get($name)
+    public function __get($name): mixed
     {
-        return $this->getContent()->$name;
+        return $this->getContent()?->$name;
     }
     
     /**
@@ -84,9 +85,9 @@ class KktResponse implements JsonSerializable
     /**
      * Возвращает объект результата запроса
      *
-     * @return stdClass|null
+     * @return mixed
      */
-    public function getContent(): ?stdClass
+    public function getContent(): mixed
     {
         return $this->content;
     }
@@ -107,7 +108,7 @@ class KktResponse implements JsonSerializable
     /**
      * Возвращает текстовое представление
      */
-    public function __toString()
+    public function __toString(): string
     {
         return json_encode($this->jsonSerialize(), JSON_UNESCAPED_UNICODE);
     }
@@ -115,7 +116,7 @@ class KktResponse implements JsonSerializable
     /**
      * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'code' => $this->code,

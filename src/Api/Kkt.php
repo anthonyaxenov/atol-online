@@ -17,15 +17,15 @@ use AtolOnline\{
     Entities\Document,
     Exceptions\AuthFailedException,
     Exceptions\EmptyCorrectionInfoException,
-    Exceptions\EmptyKktLoginException,
-    Exceptions\EmptyKktPasswordException,
+    Exceptions\EmptyLoginException,
+    Exceptions\EmptyPasswordException,
     Exceptions\InvalidCallbackUrlException,
     Exceptions\InvalidDocumentTypeException,
     Exceptions\InvalidInnLengthException,
     Exceptions\InvalidUuidException,
     Exceptions\TooLongCallbackUrlException,
-    Exceptions\TooLongKktLoginException,
-    Exceptions\TooLongKktPasswordException,
+    Exceptions\TooLongLoginException,
+    Exceptions\TooLongPasswordException,
     Exceptions\TooLongPaymentAddressException,
     Exceptions\TooManyItemsException,
     Exceptions\TooManyVatsException,
@@ -70,10 +70,6 @@ class Kkt extends Client
      * @param string|null $pass
      * @param bool $test_mode Флаг тестового режима
      * @param array $guzzle_config Конфигурация GuzzleHttp
-     * @throws EmptyKktLoginException Логин ККТ не может быть пустым
-     * @throws TooLongKktLoginException Слишком длинный логин ККТ
-     * @throws EmptyKktPasswordException Пароль ККТ не может быть пустым
-     * @throws TooLongKktPasswordException Слишком длинный пароль ККТ
      * @see https://guzzle.readthedocs.io/en/latest/request-options.html
      */
     public function __construct(
@@ -126,15 +122,15 @@ class Kkt extends Client
      *
      * @param string $login
      * @return $this
-     * @throws EmptyKktLoginException Логин ККТ не может быть пустым
-     * @throws TooLongKktLoginException Слишком длинный логин ККТ
+     * @throws EmptyLoginException Логин ККТ не может быть пустым
+     * @throws TooLongLoginException Слишком длинный логин ККТ
      */
     public function setLogin(string $login): Kkt
     {
         if (empty($login)) {
-            throw new EmptyKktLoginException();
+            throw new EmptyLoginException();
         } elseif (mb_strlen($login) > Constraints::MAX_LENGTH_LOGIN) {
-            throw new TooLongKktLoginException($login, Constraints::MAX_LENGTH_LOGIN);
+            throw new TooLongLoginException($login, Constraints::MAX_LENGTH_LOGIN);
         }
         $this->kkt_config['prod']['login'] = $login;
         return $this;
@@ -155,15 +151,15 @@ class Kkt extends Client
      *
      * @param string $password
      * @return $this
-     * @throws EmptyKktPasswordException Пароль ККТ не может быть пустым
-     * @throws TooLongKktPasswordException Слишком длинный пароль ККТ
+     * @throws EmptyPasswordException Пароль ККТ не может быть пустым
+     * @throws TooLongPasswordException Слишком длинный пароль ККТ
      */
     public function setPassword(string $password): Kkt
     {
         if (empty($password)) {
-            throw new EmptyKktPasswordException();
+            throw new EmptyPasswordException();
         } elseif (mb_strlen($password) > Constraints::MAX_LENGTH_PASSWORD) {
-            throw new TooLongKktPasswordException($password, Constraints::MAX_LENGTH_PASSWORD);
+            throw new TooLongPasswordException($password, Constraints::MAX_LENGTH_PASSWORD);
         }
         $this->kkt_config['prod']['pass'] = $password;
         return $this;
@@ -206,16 +202,6 @@ class Kkt extends Client
     public function getCallbackUrl(): string
     {
         return $this->kkt_config[$this->isTestMode() ? 'test' : 'prod']['callback_url'];
-    }
-
-    /**
-     * Возвращает последний ответ сервера
-     *
-     * @return KktResponse|null
-     */
-    public function getLastResponse(): ?KktResponse
-    {
-        return $this->last_response;
     }
     
     /**

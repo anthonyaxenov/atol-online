@@ -12,12 +12,12 @@ declare(strict_types = 1);
 namespace AtolOnline\Exceptions;
 
 /**
- * Исключение, возникающее при попытке указать пустой логин ККТ
+ * Исключение, возникающее при попытке указать слишком длинный логин ККТ
  */
-class EmptyKktLoginException extends AtolException
+class TooLongLoginException extends BasicTooLongException
 {
     /**
      * @var string Сообщение об ошибке
      */
-    protected $message = 'KKT login cannot be empty';
+    protected $message = 'KKT login is too long';
 }

@@ -16,26 +16,26 @@ use Exception;
 use Throwable;
 
 /**
- * Исключение, возникающее при работе с АТОЛ Онлайн
+ * Исключение, возникающее при неудачной авторизации
  */
 class AuthFailedException extends Exception
 {
     /**
      * Конструктор
      *
-     * @param KktResponse $last_response
+     * @param KktResponse $response
      * @param string $message
      * @param int $code
      * @param Throwable|null $previous
      */
-    public function __construct(KktResponse $last_response, $message = "", $code = 0, Throwable $previous = null)
+    public function __construct(KktResponse $response, $message = "", $code = 0, Throwable $previous = null)
     {
-        $message = $last_response->isValid()
+        $message = $response->isValid()
             ? $message
-            : '[' . $last_response->error->code . '] ' . $last_response->error->text .
-            '. ERROR_ID: ' . $last_response->error->error_id .
-            '. TYPE: ' . $last_response->error->type;
-        $code = $last_response->isValid() ? $code : $last_response->error->code;
+            : '[' . $response->error->code . '] ' . $response->error->text .
+            '. ERROR_ID: ' . $response->error->error_id .
+            '. TYPE: ' . $response->error->type;
+        $code = $response->isValid() ? $code : $response->error->code;
         parent::__construct($message, $code, $previous);
     }
 }

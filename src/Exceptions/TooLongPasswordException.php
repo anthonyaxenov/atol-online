@@ -14,7 +14,7 @@ namespace AtolOnline\Exceptions;
 /**
  * Исключение, возникающее при попытке указать слишком длинный пароль ККТ
  */
-class TooLongKktPasswordException extends BasicTooLongException
+class TooLongPasswordException extends BasicTooLongException
 {
     /**
      * @var string Сообщение об ошибке
