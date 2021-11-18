@@ -29,7 +29,7 @@ abstract class AtolClient
     /**
      * @var bool Флаг тестового режима
      */
-    protected bool $test_mode = true;
+    protected bool $test_mode;
 
     /**
      * @var Client HTTP-клиент для работы с API
@@ -59,6 +59,7 @@ abstract class AtolClient
     /**
      * Конструктор
      *
+     * @param bool $test_mode
      * @param string|null $login
      * @param string|null $password
      * @param array $config
@@ -69,6 +70,7 @@ abstract class AtolClient
      * @see https://guzzle.readthedocs.io/en/latest/request-options.html Допустимые параметры для $config
      */
     public function __construct(
+        bool $test_mode = true,
         ?string $login = null,
         ?string $password = null,
         array $config = []
@@ -76,8 +78,9 @@ abstract class AtolClient
         $this->http = new Client(array_merge($config, [
             'http_errors' => $config['http_errors'] ?? false,
         ]));
-        $login && $this->setLogin($login);
-        $password && $this->setPassword($password);
+        $this->setTestMode($test_mode);
+        !is_null($login) && $this->setLogin($login);
+        !is_null($password) && $this->setPassword($password);
     }
 
     /**
@@ -96,7 +99,7 @@ abstract class AtolClient
      * @param bool $test_mode
      * @return $this
      */
-    public function setTestMode(bool $test_mode): self
+    public function setTestMode(bool $test_mode = true): self
     {
         $this->test_mode = $test_mode;
         return $this;
@@ -139,7 +142,7 @@ abstract class AtolClient
      *
      * @return string|null
      */
-    protected function getLogin(): ?string
+    public function getLogin(): ?string
     {
         return $this->login;
     }
@@ -169,7 +172,7 @@ abstract class AtolClient
      *
      * @return string|null
      */
-    protected function getPassword(): ?string
+    public function getPassword(): ?string
     {
         return $this->password;
     }

@@ -9,9 +9,12 @@
 
 declare(strict_types = 1);
 
-namespace AtolOnline\Tests;
+namespace AtolOnlineTests;
 
 use AtolOnline\Entities\Entity;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Collection;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -20,15 +23,41 @@ use PHPUnit\Framework\TestCase;
 class BasicTestCase extends TestCase
 {
     /**
-     * @todo требуется рефакторинг
+     * Проверяет наличие подключения к ресурсу по URL
+     *
+     * @param string $url
+     * @param int $code
+     * @return bool
+     * @throws GuzzleException
      */
-    public function setUp(): void
+    protected function ping(string $url, int $code): bool
     {
-        //parent::setUp();
-        defined('ATOL_KKT_GROUP') ?: define('ATOL_KKT_GROUP', 'v4-online-atol-ru_4179');
-        defined('ATOL_KKT_LOGIN') ?: define('ATOL_KKT_LOGIN', 'v4-online-atol-ru');
-        defined('ATOL_KKT_PASS') ?: define('ATOL_KKT_PASS', 'iGFFuihss');
-        defined('ATOL_CALLBACK_URL') ?: define('ATOL_CALLBACK_URL', 'http://example.com/callback');
+        $result = (new Client(['http_errors' => false]))->request('GET', $url);
+        //$this->assertEquals(200, $result->getStatusCode());
+        return $result->getStatusCode() === $code;
+    }
+
+    /**
+     * Проверяет доступность API мониторинга
+     *
+     * @return bool
+     * @throws GuzzleException
+     */
+    protected function isMonitoringOnline(): bool
+    {
+        return $this->ping('https://testonline.atol.ru/api/auth/v1/gettoken', 400);
+    }
+
+    /**
+     * Пропускает текущий тест если API мониторинга недоступно
+     *
+     * @throws GuzzleException
+     */
+    protected function skipIfMonitoringIsOffline(): void
+    {
+        if (!$this->isMonitoringOnline()) {
+            $this->markTestSkipped($this->getName() . ': Monitoring API is inaccessible. Skipping test.');
+        }
     }
 
     /**
@@ -48,6 +77,79 @@ class BasicTestCase extends TestCase
         if ($json_structure) {
             $this->assertEquals(json_encode($json_structure), (string)$entity);
         }
+    }
+
+    /**
+     * Тестирует идентичность двух классов
+     *
+     * @param object|string $expected
+     * @param object|string $actual
+     */
+    public function assertIsSameClass(object|string $expected, object|string $actual)
+    {
+        $this->assertEquals(
+            is_object($expected) ? $expected::class : $expected,
+            is_object($actual) ? $actual::class : $actual
+        );
+    }
+
+    /**
+     * Тестирует наследование класса (объекта) от указанных классов
+     *
+     * @param string[] $parents
+     * @param object|string $actual
+     */
+    public function assertExtendsClasses(array $parents, object|string $actual)
+    {
+        $this->checkClassesIntersection($parents, $actual, 'class_parents');
+    }
+
+    /**
+     * Тестирует имплементацию классом (объектом) указанных интерфейсов
+     *
+     * @param string[] $parents
+     * @param object|string $actual
+     */
+    public function assertImplementsInterfaces(array $parents, object|string $actual)
+    {
+        $this->checkClassesIntersection($parents, $actual, 'class_implements');
+    }
+
+    /**
+     * Тестирует использование классом (объектом) указанных трейтов
+     *
+     * @param string[] $parents
+     * @param object|string $actual
+     */
+    public function assertUsesTraits(array $parents, object|string $actual)
+    {
+        $this->checkClassesIntersection($parents, $actual, 'class_uses');
+    }
+
+    /**
+     * Проверяет пересечение классов указанной функцией SPL
+     *
+     * @param object|string $class Класс для проверки на вхождение, или объект, класс коего нужно проверить
+     * @param array $classes Массив классов, вхождение в который нужно проверить
+     * @param string $function class_parents|class_implements|class_uses
+     */
+    protected function checkClassesIntersection(array $classes, object|string $class, string $function): void
+    {
+        $actual_classes = is_object($class) ? $function($class) : [$class::class];
+        $this->assertIsArray($actual_classes);
+        $this->assertNotEmpty(array_intersect($classes, $actual_classes));
+    }
+
+    /**
+     * Тестирует, является ли объект коллекцией
+     *
+     * @param mixed $expected
+     */
+    public function assertIsCollection(mixed $expected): void
+    {
+        $this->assertIsObject($expected);
+        $this->assertIsIterable($expected);
+        $this->assertIsSameClass($expected, Collection::class);
     }
 
     /**

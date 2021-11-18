@@ -58,7 +58,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "AtolOnline\\Tests\\": "tests/"
+            "AtolOnlineTests\\": "tests/"
         }
     },
     "scripts": {

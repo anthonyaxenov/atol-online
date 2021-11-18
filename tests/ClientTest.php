@@ -7,7 +7,7 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-namespace AtolOnline\Tests;
+namespace AtolOnlineTests;
 
 use AtolOnline\{
     Entities\Client,
@@ -16,7 +16,8 @@ use AtolOnline\{
     Exceptions\TooLongEmailException,
     Exceptions\TooLongNameException,
     Exceptions\TooLongPhoneException,
-    Helpers};
+    Helpers
+};
 
 /**
  * Набор тестов для проверки работы класс покупателя

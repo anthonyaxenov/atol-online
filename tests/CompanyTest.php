@@ -7,7 +7,7 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-namespace AtolOnline\Tests;
+namespace AtolOnlineTests;
 
 use AtolOnline\{
     Constants\SnoTypes,

@@ -7,11 +7,12 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-namespace AtolOnline\Tests;
+namespace AtolOnlineTests;
 
 use AtolOnline\{
     Constants\VatTypes,
-    Entities\Vat};
+    Entities\Vat
+};
 
 /**
  * Class VatTest
