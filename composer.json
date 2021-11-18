@@ -39,26 +39,30 @@
         }
     ],
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^6.5",
-        "psr/log": "^1.1",
-        "ramsey/uuid": "^3.9"
+        "ext-mbstring": "*",
+        "guzzlehttp/guzzle": "^7.4",
+        "psr/log": "^3",
+        "ramsey/uuid": "^4.2",
+        "myclabs/php-enum": "^1.8",
+        "illuminate/collections": "^8.70"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5"
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
-        "classmap": [
-            "src/AtolOnline/Api/",
-            "src/AtolOnline/Exceptions/",
-            "src/AtolOnline/Entities/",
-            "src/AtolOnline/Traits/",
-            "src/AtolOnline/Constants/",
-            "tests/"
-        ],
-        "files": [
-            "src/helpers.php"
-        ]
+        "psr-4": {
+            "AtolOnline\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AtolOnline\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --colors=always",
+        "test-cov": "vendor/bin/phpunit --coverage-html coverage"
     }
 }

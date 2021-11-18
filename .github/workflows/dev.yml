@@ -16,10 +16,10 @@ jobs:
         uses: php-actions/composer@40-env
         with:
           version: 2
-          php_version: 7.4
+          php_version: 8.0
           only_args: --prefer-dist --no-progress
 
       - name: Run phpunit tests
-        uses: php-actions/phpunit@v8
+        uses: php-actions/phpunit@v9
         with:
           configuration: ./phpunit.xml
