@@ -28,12 +28,17 @@ class BasicTestCase extends TestCase
      * @param string $url
      * @param int $code
      * @return bool
-     * @throws GuzzleException
      */
     protected function ping(string $url, int $code): bool
     {
-        $result = (new Client(['http_errors' => false]))->request('GET', $url);
-        //$this->assertEquals(200, $result->getStatusCode());
+        try {
+            $result = (new Client([
+                'http_errors' => false,
+                'timeout' => 3,
+            ]))->request('GET', $url);
+        } catch (GuzzleException) {
+            return false;
+        }
         return $result->getStatusCode() === $code;
     }
 
