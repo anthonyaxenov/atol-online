@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace AtolOnline\Api;
 
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Collection;
 use stdClass;
 
 /**
@@ -78,13 +79,13 @@ class KktMonitor extends AtolClient
      *
      * @param int|null $limit
      * @param int|null $offset
-     * @return KktResponse
+     * @return Collection
      * @throws GuzzleException
      * @see https://online.atol.ru/files/API_service_information.pdf Документация, стр 9
      */
-    public function getAll(?int $limit = null, ?int $offset = null): KktResponse
+    public function getAll(?int $limit = null, ?int $offset = null): Collection
     {
-        return $this->fetchAll($limit, $offset);
+        return collect($this->fetchAll($limit, $offset)->getContent());
     }
 
     /**
