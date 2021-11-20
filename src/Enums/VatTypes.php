@@ -9,7 +9,7 @@
 
 declare(strict_types = 1);
 
-namespace AtolOnline\Constants;
+namespace AtolOnline\Enums;
 
 use MyCLabs\Enum\Enum;
 

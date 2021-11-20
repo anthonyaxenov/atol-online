@@ -46,7 +46,6 @@ class BasicTestCase extends TestCase
      * Проверяет доступность API мониторинга
      *
      * @return bool
-     * @throws GuzzleException
      */
     protected function isMonitoringOnline(): bool
     {
@@ -54,9 +53,7 @@ class BasicTestCase extends TestCase
     }
 
     /**
-     * Пропускает текущий тест если API мониторинга недоступно
-     *
-     * @throws GuzzleException
+     * Пропускает текущий тест если API мониторинга недоступен
      */
     protected function skipIfMonitoringIsOffline(): void
     {
@@ -90,7 +87,7 @@ class BasicTestCase extends TestCase
      * @param object|string $expected
      * @param object|string $actual
      */
-    public function assertIsSameClass(object|string $expected, object|string $actual)
+    public function assertIsSameClass(object|string $expected, object|string $actual): void
     {
         $this->assertEquals(
             is_object($expected) ? $expected::class : $expected,
@@ -104,7 +101,7 @@ class BasicTestCase extends TestCase
      * @param string[] $parents
      * @param object|string $actual
      */
-    public function assertExtendsClasses(array $parents, object|string $actual)
+    public function assertExtendsClasses(array $parents, object|string $actual): void
     {
         $this->checkClassesIntersection($parents, $actual, 'class_parents');
     }
@@ -115,7 +112,7 @@ class BasicTestCase extends TestCase
      * @param string[] $parents
      * @param object|string $actual
      */
-    public function assertImplementsInterfaces(array $parents, object|string $actual)
+    public function assertImplementsInterfaces(array $parents, object|string $actual): void
     {
         $this->checkClassesIntersection($parents, $actual, 'class_implements');
     }
@@ -126,7 +123,7 @@ class BasicTestCase extends TestCase
      * @param string[] $parents
      * @param object|string $actual
      */
-    public function assertUsesTraits(array $parents, object|string $actual)
+    public function assertUsesTraits(array $parents, object|string $actual): void
     {
         $this->checkClassesIntersection($parents, $actual, 'class_uses');
     }

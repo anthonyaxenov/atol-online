@@ -11,7 +11,7 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
-use AtolOnline\Constants\DocumentTypes;
+use AtolOnline\Enums\DocumentTypes;
 use Throwable;
 
 /**

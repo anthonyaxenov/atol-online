@@ -10,10 +10,10 @@
 namespace AtolOnlineTests;
 
 use AtolOnline\{
-    Constants\PaymentMethods,
-    Constants\PaymentObjects,
-    Constants\VatTypes,
     Entities\Item,
+    Enums\PaymentMethods,
+    Enums\PaymentObjects,
+    Enums\VatTypes,
     Exceptions\BasicTooManyException,
     Exceptions\TooHighPriceException,
     Exceptions\TooLongNameException,

@@ -11,7 +11,7 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
-use AtolOnline\Constants\SnoTypes;
+use AtolOnline\Enums\SnoTypes;
 use Throwable;
 
 /**

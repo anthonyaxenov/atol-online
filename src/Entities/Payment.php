@@ -11,7 +11,7 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Constants\PaymentTypes;
+use AtolOnline\Enums\PaymentTypes;
 
 /**
  * Класс, описывающий оплату. Тег ФФД - 1031, 1081, 1215, 1216, 1217.

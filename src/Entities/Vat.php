@@ -11,7 +11,7 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Constants\VatTypes;
+use AtolOnline\Enums\VatTypes;
 
 /**
  * Класс, описывающий ставку НДС

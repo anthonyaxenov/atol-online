@@ -10,8 +10,8 @@
 namespace AtolOnlineTests;
 
 use AtolOnline\{
-    Constants\SnoTypes,
     Entities\Company,
+    Enums\SnoTypes,
     Exceptions\InvalidEmailException,
     Exceptions\InvalidInnLengthException,
     Exceptions\InvalidPaymentAddressException,

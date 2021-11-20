@@ -10,9 +10,8 @@
 namespace AtolOnlineTests;
 
 use AtolOnline\{
-    Constants\VatTypes,
-    Entities\Vat
-};
+    Entities\Vat,
+    Enums\VatTypes};
 
 /**
  * Class VatTest

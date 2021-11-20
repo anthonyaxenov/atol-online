@@ -11,9 +11,11 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Api;
 
+use AtolOnline\Entities\Kkt;
+use AtolOnline\Exceptions\EmptyMonitorDataException;
+use AtolOnline\Exceptions\NotEnoughMonitorDataException;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
-use stdClass;
 
 /**
  * Класс для мониторинга ККТ
@@ -85,7 +87,8 @@ class KktMonitor extends AtolClient
      */
     public function getAll(?int $limit = null, ?int $offset = null): Collection
     {
-        return collect($this->fetchAll($limit, $offset)->getContent());
+        $collection = collect($this->fetchAll($limit, $offset)->getContent());
+        return $collection->map(fn($data) => new Kkt($data));
     }
 
     /**
@@ -114,12 +117,14 @@ class KktMonitor extends AtolClient
      *
      * @todo кастовать к отдельному классу со своими геттерами
      * @param string $serial_number
-     * @return stdClass
+     * @return Kkt
      * @throws GuzzleException
+     * @throws EmptyMonitorDataException
+     * @throws NotEnoughMonitorDataException
      * @see https://online.atol.ru/files/API_service_information.pdf Документация, стр 11
      */
-    public function getOne(string $serial_number): stdClass
+    public function getOne(string $serial_number): Kkt
     {
-        return $this->fetchOne($serial_number)->getContent()->data;
+        return new Kkt($this->fetchOne($serial_number)->getContent()->data);
     }
 }

@@ -13,7 +13,7 @@ namespace AtolOnline\Entities;
 
 use AtolOnline\{
     Constants\Constraints,
-    Constants\SnoTypes,
+    Enums\SnoTypes,
     Exceptions\InvalidEmailException,
     Exceptions\InvalidInnLengthException,
     Exceptions\InvalidPaymentAddressException,
