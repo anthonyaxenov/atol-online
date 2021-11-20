@@ -1,5 +1,15 @@
 # АТОЛ Онлайн
 
+---
+
+**В этой ветке проводится глубокий рефакторинг и активная подготовка к `v1.0.0`.**
+
+**Актуальность документации -- околонулевая.**
+
+**Общая работоспособность -- нулевая.**
+
+---
+
 [![Master build](https://github.com/anthonyaxenov/atol-online/actions/workflows/master.yml/badge.svg)](https://github.com/anthonyaxenov/atol-online/actions/workflows/master.yml)
 [![Dev build](https://github.com/anthonyaxenov/atol-online/actions/workflows/dev.yml/badge.svg)](https://github.com/anthonyaxenov/atol-online/actions/workflows/dev.yml)
 
