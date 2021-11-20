@@ -45,21 +45,6 @@ class KktMonitor extends AtolClient
     }
 
     /**
-     * @inheritDoc
-     */
-    public function auth(?string $login = null, ?string $password = null): bool
-    {
-        if (empty($this->getToken())) {
-            $login && $this->setLogin($login);
-            $password && $this->setPassword($password);
-            if ($token = $this->doAuth()) {
-                $this->setToken($token);
-            }
-        }
-        return !empty($this->getToken());
-    }
-
-    /**
      * Получает от API информацию обо всех ККТ и ФН в рамках группы
      *
      * @param int|null $limit

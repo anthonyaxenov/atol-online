@@ -121,7 +121,7 @@ abstract class AtolClient
      * @param string|null $token
      * @return $this
      */
-    public function setToken(?string $token): AtolClient
+    public function setToken(?string $token): self
     {
         $this->token = $token;
         return $this;
@@ -283,7 +283,17 @@ abstract class AtolClient
      * @throws TooLongPasswordException
      * @throws GuzzleException
      */
-    abstract public function auth(?string $login = null, ?string $password = null): bool;
+    public function auth(?string $login = null, ?string $password = null): bool
+    {
+        if (empty($this->getToken())) {
+            $login && $this->setLogin($login);
+            $password && $this->setPassword($password);
+            if ($token = $this->doAuth()) {
+                $this->setToken($token);
+            }
+        }
+        return !empty($this->getToken());
+    }
 
     /**
      * Возвращает URL для запроса авторизации
