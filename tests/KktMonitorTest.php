@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
+ *
+ * This code is licensed under MIT.
+ * Этот код распространяется по лицензии MIT.
+ * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
+ */
 
 namespace AtolOnlineTests;
 
@@ -25,7 +32,7 @@ class KktMonitorTest extends BasicTestCase
     /**
      * Возвращает объект клиента для тестирования с тестовым API АТОЛ
      *
-     * @return AtolClient
+     * @return KktMonitor
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
      * @throws TooLongLoginException
@@ -320,12 +327,12 @@ class KktMonitorTest extends BasicTestCase
      * @throws EmptyMonitorDataException
      * @throws NotEnoughMonitorDataException
      */
-    public function testMOnitorGetOne(): void
+    public function testMonitorGetOne(): void
     {
         $this->skipIfMonitoringIsOffline();
         $client = $this->newTestClient();
         $client->auth();
-        $serial_number = $client->getAll()->random()->serialNumber;
+        $serial_number = $client->getAll()->first()->serialNumber;
         $kkt = $client->getOne($serial_number);
         $this->assertNotEmpty($client->getResponse());
         $this->assertIsSameClass(Kkt::class, $kkt);
