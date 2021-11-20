@@ -20,46 +20,34 @@ class CorrectionInfo extends Entity
      * @var string Тип коррекции. Тег ФФД - 1173.
      */
     protected string $type;
-    
+
     /**
      * @var string Дата документа основания для коррекции. Тег ФФД - 1178.
      */
     protected string $base_date;
-    
+
     /**
      * @var string Номер документа основания для коррекции. Тег ФФД - 1179.
      */
     protected string $base_number;
-    
-    /**
-     * @var string Описание коррекции. Тег ФФД - 1177.
-     */
-    protected string $base_name;
-    
+
     /**
      * CorrectionInfo constructor.
      *
-     * @param string|null $type        Тип коррекции
-     * @param string|null $base_date   Дата документа
+     * @param string|null $type Тип коррекции
+     * @param string|null $base_date Дата документа
      * @param string|null $base_number Номер документа
-     * @param string|null $base_name   Описание коррекции
      */
-    public function __construct(?string $type = null, ?string $base_date = null, ?string $base_number = null, ?string $base_name = null)
-    {
-        if ($type) {
-            $this->setType($type);
-        }
-        if ($base_date) {
-            $this->setDate($base_date);
-        }
-        if ($base_number) {
-            $this->setNumber($base_number);
-        }
-        if ($base_name) {
-            $this->setName($base_name);
-        }
+    public function __construct(
+        ?string $type = null,
+        ?string $base_date = null,
+        ?string $base_number = null
+    ) {
+        $type && $this->setType($type);
+        $base_date && $this->setDate($base_date);
+        $base_number && $this->setNumber($base_number);
     }
-    
+
     /**
      * Возвращает номер документа основания для коррекции.
      * Тег ФФД - 1179.
@@ -70,7 +58,7 @@ class CorrectionInfo extends Entity
     {
         return $this->base_number;
     }
-    
+
     /**
      * Устанавливает номер документа основания для коррекции.
      * Тег ФФД - 1179.
@@ -83,31 +71,7 @@ class CorrectionInfo extends Entity
         $this->base_number = trim($number);
         return $this;
     }
-    
-    /**
-     * Возвращает описание коррекции.
-     * Тег ФФД - 1177.
-     *
-     * @return string|null
-     */
-    public function getName(): ?string
-    {
-        return $this->base_name;
-    }
-    
-    /**
-     * Устанавливает описание коррекции.
-     * Тег ФФД - 1177.
-     *
-     * @param string $name
-     * @return $this
-     */
-    public function setName(string $name): CorrectionInfo
-    {
-        $this->base_name = trim($name);
-        return $this;
-    }
-    
+
     /**
      * Возвращает дату документа основания для коррекции.
      * Тег ФФД - 1178.
@@ -118,7 +82,7 @@ class CorrectionInfo extends Entity
     {
         return $this->base_date;
     }
-    
+
     /**
      * Устанавливает дату документа основания для коррекции.
      * Тег ФФД - 1178.
@@ -131,7 +95,7 @@ class CorrectionInfo extends Entity
         $this->base_date = $date;
         return $this;
     }
-    
+
     /**
      * Возвращает тип коррекции.
      * Тег ФФД - 1173.
@@ -142,7 +106,7 @@ class CorrectionInfo extends Entity
     {
         return $this->type;
     }
-    
+
     /**
      * Устанавливает тип коррекции.
      * Тег ФФД - 1173.
@@ -155,17 +119,16 @@ class CorrectionInfo extends Entity
         $this->type = $type;
         return $this;
     }
-    
+
     /**
      * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): object
     {
-        return [
+        return (object)[
             'type' => $this->getType() ?? '', // обязателен
             'base_date' => $this->getDate() ?? '', // обязателен
             'base_number' => $this->getNumber() ?? '', // обязателен
-            'base_name' => $this->getName() ?? '' // не обязателен
         ];
     }
 }
