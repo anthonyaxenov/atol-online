@@ -22,16 +22,16 @@ $customer = new AtolOnline\Entities\Company();
 Указать эти атрибуты можно двумя способами:
 
 ```php
-// 1 способ - через конструктор
+// 1 способ - через конструктор (все аргументы обязательны)
 $company = new AtolOnline\Entities\Company(
+    'company@example.com' // email
     AtolOnline\Constants\SnoTypes::OSN, // тип СНО
     '5544332219', // номер ИНН
     'https://v4.online.atol.ru', // адрес места расчётов
-    'company@example.com' // email
 );
 
 // 2 способ - через сеттеры
-$company = (new AtolOnline\Entities\Company())
+$company
     ->setEmail('company@example.com')
     ->setInn('5544332219')
     ->setSno(AtolOnline\Constants\SnoTypes::USN_INCOME)
@@ -39,19 +39,6 @@ $company = (new AtolOnline\Entities\Company())
 
 // либо комбинация этих способов
 ```
-
-Метод `setEmail()` проверяет входную строку на длину (до 64 символов) и валидность формата email.
-Выбрасывает исключения:
-* `AtolEmailTooLongException` (если слишком длинный email);
-* `AtolEmailValidateException` (если email невалиден).
-
-Метод `setInn()` чистит входную строку от всех символов, кроме цифр, и проверяет длину (либо 10, либо 12 цифр).
-Выбрасывает исключение `AtolInnWrongLengthException` (если длина ИНН некорректна).
-
-Метод `setPaymentAddress()` проверяет длину (до 256 символов).
-Выбрасывает исключение `AtolPaymentAddressTooLongException` (если слишком длинный адрес места расчётов).
-
-Конструктор может выбрасывать любое из указанных выше исключений, если в него передаются параметры.
 
 Получить установленные значения параметров можно через геттеры:
 
@@ -62,7 +49,7 @@ $company->getPaymentAddress();
 $company->getSno();
 ```
 
-Объект класса приводится к JSON-строке автоматически или принудительным приведением к `string`:
+Объект класса приводится к JSON-строке автоматически или принудительно:
 
 ```php
 echo $company;

@@ -50,25 +50,26 @@ class Client extends Entity
      * Конструктор объекта покупателя
      *
      * @param string|null $name Наименование. Тег ФФД - 1227.
-     * @param string|null $phone Email. Тег ФФД -  1008.
+     * @param string|null $phone Email. Тег ФФД - 1008.
      * @param string|null $email Телефон покупателя. Тег ФФД - 1008.
-     * @param string|null $inn ИНН. Тег ФФД -  1228.
-     * @throws TooLongNameException Слишком длинное имя
-     * @throws TooLongPhoneException Слишком длинный телефон
-     * @throws TooLongEmailException Слишком длинный email
-     * @throws InvalidEmailException Невалидный email
-     * @throws InvalidInnLengthException Некорректная длина ИНН
+     * @param string|null $inn ИНН. Тег ФФД - 1228.
+     * @throws TooLongNameException
+     * @throws TooLongPhoneException
+     * @throws TooLongEmailException
+     * @throws InvalidEmailException
+     * @throws InvalidInnLengthException
      */
     public function __construct(
         ?string $name = null,
         ?string $email = null,
         ?string $phone = null,
         ?string $inn = null
-    ) {
-        $name && $this->setName($name);
-        $email && $this->setEmail($email);
-        $phone && $this->setPhone($phone);
-        $inn && $this->setInn($inn);
+    )
+    {
+        !is_null($name) && $this->setName($name);
+        !is_null($email) && $this->setEmail($email);
+        !is_null($phone) && $this->setPhone($phone);
+        !is_null($inn) && $this->setInn($inn);
     }
 
     /**
@@ -92,7 +93,7 @@ class Client extends Entity
      * @return $this
      * @throws TooLongNameException
      */
-    public function setName(?string $name): Client
+    public function setName(?string $name): self
     {
         if (is_string($name)) {
             $name = preg_replace('/[\n\r\t]/', '', trim($name));
@@ -157,7 +158,7 @@ class Client extends Entity
      * @return $this
      * @throws TooLongPhoneException
      */
-    public function setPhone(?string $phone): Client
+    public function setPhone(?string $phone): self
     {
         if (is_string($phone)) {
             $phone = preg_replace('/[^\d]/', '', trim($phone));

@@ -125,7 +125,7 @@ class Company extends Entity
      * @return $this
      * @throws InvalidSnoException
      */
-    public function setSno(string $sno): Company
+    public function setSno(string $sno): self
     {
         $sno = trim($sno);
         if (empty($sno) || !in_array($sno, SnoTypes::toArray())) {
@@ -188,7 +188,7 @@ class Company extends Entity
      * @throws TooLongPaymentAddressException
      * @throws InvalidPaymentAddressException
      */
-    public function setPaymentAddress(string $payment_address): Company
+    public function setPaymentAddress(string $payment_address): self
     {
         $payment_address = trim($payment_address);
         if (empty($payment_address)) {

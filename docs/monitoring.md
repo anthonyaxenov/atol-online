@@ -79,6 +79,19 @@ $kkt->networkErrorCode; // Код ошибки сети
 
 Сопоставления кодов ошибок и их описаний доступны в массиве `AtolOnline\Entities\Kkt::ERROR_CODES`.
 
+Объект класса приводится к JSON-строке автоматически или принудительно:
+
+```php
+echo $kkt;
+$json_string = (string)$kkt;
+```
+
+Чтобы получить те же данные в виде массива, нужно вызвать метод `jsonSerialize()`:
+
+```php
+$json_array = $kkt->jsonSerialize();
+```
+
 ## Получение данных об одной из своих ККТ
 
 Для этого следует вызвать метод `AtolOnline\Api\KktMonitor::getOne()`, передав на вход серийный номер (`serialNumber`)
