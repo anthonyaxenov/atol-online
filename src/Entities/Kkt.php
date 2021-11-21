@@ -127,19 +127,6 @@ final class Kkt extends Entity
     }
 
     /**
-     * Возвращает объект с информацией о сетевой ошибке
-     *
-     * @return object
-     */
-    public function getNetworkError(): object
-    {
-        return (object)[
-            'code' => $this->data->networkErrorCode,
-            'text' => self::ERROR_CODES[$this->data->networkErrorCode],
-        ];
-    }
-
-    /**
      * @inheritDoc
      */
     public function jsonSerialize()

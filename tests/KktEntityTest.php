@@ -133,21 +133,4 @@ class KktEntityTest extends BasicTestCase
         $this->expectException(Exception::class);
         (new Kkt((object)$this->sample_data))->firstUnsetDocTimestamp;
     }
-
-    /**
-     * Тестирует получение данных о сетевой ошибке
-     *
-     * @covers \AtolOnline\Entities\Kkt::getNetworkError
-     * @throws EmptyMonitorDataException
-     * @throws NotEnoughMonitorDataException
-     */
-    public function testGetNetworkError(): void
-    {
-        $kkt = new Kkt((object)$this->sample_data);
-        $this->assertIsObject($kkt->getNetworkError());
-        $this->assertEquals((object)[
-            'code' => $kkt->networkErrorCode,
-            'text' => $kkt::ERROR_CODES[$kkt->networkErrorCode],
-        ], $kkt->getNetworkError());
-    }
 }
