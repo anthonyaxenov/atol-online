@@ -56,8 +56,8 @@ class KktMonitor extends AtolClient
     protected function fetchAll(?int $limit = null, ?int $offset = null): KktResponse
     {
         $params = [];
-        $limit && $params['limit'] = $limit;
-        $offset && $params['offset'] = $offset;
+        !is_null($limit) && $params['limit'] = $limit;
+        !is_null($offset) && $params['offset'] = $offset;
         return $this->sendRequest('GET', self::getUrlToMethod('cash-registers'), $params);
     }
 
