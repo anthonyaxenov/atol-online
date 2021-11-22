@@ -11,13 +11,13 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use AtolOnline\Constants\Constraints;
+
 /**
  * Исключение, возникающее при попытке указать слишком длинный пароль ККТ
  */
-class TooLongPasswordException extends BasicTooLongException
+class TooLongPasswordException extends TooLongException
 {
-    /**
-     * @var string Сообщение об ошибке
-     */
-    protected $message = 'KKT password is too long';
+    protected $message = 'Слишком длинный пароль';
+    protected int $max = Constraints::MAX_LENGTH_PASSWORD;
 }

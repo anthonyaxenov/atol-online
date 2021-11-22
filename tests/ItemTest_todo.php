@@ -14,11 +14,11 @@ use AtolOnline\{
     Enums\PaymentMethods,
     Enums\PaymentObjects,
     Enums\VatTypes,
-    Exceptions\BasicTooManyException,
     Exceptions\TooHighPriceException,
-    Exceptions\TooLongNameException,
+    Exceptions\TooLongItemNameException,
     Exceptions\TooLongUnitException,
-    Exceptions\TooLongUserdataException,};
+    Exceptions\TooLongUserdataException,
+    Exceptions\TooManyException,};
 
 /**
  * Class ItemTest
@@ -102,12 +102,12 @@ class ItemTestTodo extends BasicTestCase
     /**
      * Тестирует исключение о слишком длинном наименовании
      *
-     * @throws TooLongNameException
+     * @throws TooLongItemNameException
      */
     public function testAtolNameTooLongException()
     {
         $item = new Item();
-        $this->expectException(TooLongNameException::class);
+        $this->expectException(TooLongItemNameException::class);
         $item->setName(Helpers::randomStr(130));
     }
 
@@ -115,13 +115,13 @@ class ItemTestTodo extends BasicTestCase
      * Тестирует исключение о слишком высоком количестве
      *
      * @throws TooHighPriceException
-     * @throws BasicTooManyException
+     * @throws TooManyException
      * @throws TooLongUnitException
      */
     public function testAtolQuantityTooHighException()
     {
         $item = new Item();
-        $this->expectException(BasicTooManyException::class);
+        $this->expectException(TooManyException::class);
         $item->setQuantity(100000.1);
     }
 

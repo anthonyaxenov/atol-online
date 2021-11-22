@@ -13,11 +13,11 @@ use AtolOnline\{
     Entities\Client,
     Exceptions\InvalidEmailException,
     Exceptions\InvalidInnLengthException,
+    Exceptions\TooLongClientContactException,
+    Exceptions\TooLongClientNameException,
     Exceptions\TooLongEmailException,
-    Exceptions\TooLongNameException,
-    Exceptions\TooLongPhoneException,
-    Helpers
-};
+    Exceptions\TooLongItemNameException,
+    Helpers};
 
 /**
  * Набор тестов для проверки работы класс покупателя
@@ -135,7 +135,7 @@ class ClientTest extends BasicTestCase
      * @covers       \AtolOnline\Entities\Client
      * @covers       \AtolOnline\Entities\Client::setName
      * @covers       \AtolOnline\Entities\Client::getName
-     * @throws TooLongNameException
+     * @throws TooLongClientNameException
      */
     public function testNullableNames(mixed $name): void
     {
@@ -149,7 +149,7 @@ class ClientTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Client
      * @covers \AtolOnline\Entities\Client::setName
      * @covers \AtolOnline\Entities\Client::getName
-     * @throws TooLongNameException
+     * @throws TooLongItemNameException
      */
     public function testValidName(): void
     {
@@ -163,12 +163,11 @@ class ClientTest extends BasicTestCase
      *
      * @covers \AtolOnline\Entities\Client
      * @covers \AtolOnline\Entities\Client::setName
-     * @covers \AtolOnline\Exceptions\TooLongNameException
-     * @throws TooLongNameException
+     * @covers \AtolOnline\Exceptions\TooLongClientNameException
      */
     public function testInvalidName(): void
     {
-        $this->expectException(TooLongNameException::class);
+        $this->expectException(TooLongClientNameException::class);
         (new Client())->setName(Helpers::randomStr(400));
     }
 
@@ -182,7 +181,7 @@ class ClientTest extends BasicTestCase
      * @covers       \AtolOnline\Entities\Client
      * @covers       \AtolOnline\Entities\Client::setPhone
      * @covers       \AtolOnline\Entities\Client::getPhone
-     * @throws TooLongPhoneException
+     * @throws TooLongClientContactException
      */
     public function testNullablePhones(mixed $phone): void
     {
@@ -197,7 +196,7 @@ class ClientTest extends BasicTestCase
      * @covers       \AtolOnline\Entities\Client
      * @covers       \AtolOnline\Entities\Client::setPhone
      * @covers       \AtolOnline\Entities\Client::getPhone
-     * @throws TooLongPhoneException
+     * @throws TooLongClientContactException
      */
     public function testValidPhone(string $input, string $output): void
     {
@@ -210,12 +209,12 @@ class ClientTest extends BasicTestCase
      *
      * @covers \AtolOnline\Entities\Client
      * @covers \AtolOnline\Entities\Client::setPhone
-     * @covers \AtolOnline\Exceptions\TooLongPhoneException
-     * @throws TooLongPhoneException
+     * @covers \AtolOnline\Exceptions\TooLongClientContactException
+     * @throws TooLongClientContactException
      */
-    public function testInvalidPhone(): void
+    public function testTooLongClientPhone(): void
     {
-        $this->expectException(TooLongPhoneException::class);
+        $this->expectException(TooLongClientContactException::class);
         (new Client())->setPhone('99999999999999999999999999999999999999999999999999999999999999999999999999');
     }
 

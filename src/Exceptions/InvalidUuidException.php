@@ -11,23 +11,21 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при ошибке валидации UUID
  */
 class InvalidUuidException extends AtolException
 {
     /**
-     * AtolInvalidUuidException constructor.
+     * Конструктор
      *
      * @param                 $uuid
      * @param string $message
      * @param int $code
      * @param Throwable|null $previous
      */
-    public function __construct($uuid, $message = "", $code = 0, Throwable $previous = null)
+    public function __construct(?string $uuid = null)
     {
-        parent::__construct($message ?: 'Invalid UUID: '.$uuid, $code, $previous);
+        parent::__construct('Невалидный UUID' . ($uuid ? ': ' . $uuid : ''));
     }
 }

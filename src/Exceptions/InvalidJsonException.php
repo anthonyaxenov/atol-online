@@ -11,26 +11,16 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при работе с невалидным JSON
  */
 class InvalidJsonException extends AtolException
 {
     /**
-     * AtolInnWrongLengthException constructor.
-     *
-     * @param string $message
-     * @param int $code
-     * @param Throwable|null $previous
+     * Конструктор
      */
-    public function __construct($message = "", $code = 0, Throwable $previous = null)
+    public function __construct()
     {
-        parent::__construct(
-            $message ?: 'Invalid JSON: [' . json_last_error() . '] ' . json_last_error_msg(),
-            $code,
-            $previous
-        );
+        parent::__construct('[' . json_last_error() . '] ' . json_last_error_msg());
     }
 }

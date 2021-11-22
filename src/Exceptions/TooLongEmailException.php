@@ -11,21 +11,14 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use AtolOnline\Constants\Constraints;
+
 /**
  * Исключение, возникающее при попытке указать слишком длинный email
  */
-class TooLongEmailException extends BasicTooLongException
+class TooLongEmailException extends TooLongException
 {
-    /**
-     * @inheritDoc
-     */
-    protected array $ffd_tags = [
-        1008,
-        1117,
-    ];
-
-    /**
-     * @var string Сообщение об ошибке
-     */
-    protected $message = 'Email is too long';
+    protected $message = 'Слишком длинный email';
+    protected int $max = Constraints::MAX_LENGTH_EMAIL;
+    protected array $ffd_tags = [1008, 1117];
 }

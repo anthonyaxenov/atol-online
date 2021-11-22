@@ -11,20 +11,14 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use AtolOnline\Constants\Constraints;
+
 /**
  * Исключение, возникающее при попытке указать слишком длинное имя кассира
  */
-class TooLongCashierException extends BasicTooLongException
+class TooLongCashierException extends TooLongException
 {
-    /**
-     * @inheritDoc
-     */
-    protected array $ffd_tags = [
-        1021,
-    ];
-
-    /**
-     * @var string Сообщение об ошибке
-     */
-    protected $message = 'Cashier name is too long';
+    protected $message = 'Слишком длинное имя кассира';
+    protected int $max = Constraints::MAX_LENGTH_CASHIER_NAME;
+    protected array $ffd_tags = [1021];
 }

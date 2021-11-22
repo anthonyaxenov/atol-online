@@ -11,34 +11,22 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
- * Исключение, возникающее при попытке указать некорректный платёжный адрес
+ * Исключение, возникающее при попытке указать некорректный адрес места расчётов
+ * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 35
  */
 class InvalidPaymentAddressException extends AtolException
 {
-    /**
-     * @inheritDoc
-     */
-    protected array $ffd_tags = [
-        1187,
-    ];
+    protected array $ffd_tags = [1187];
 
     /**
      * Конструктор
      *
      * @param string $address
      * @param string $message
-     * @param int $code
-     * @param Throwable|null $previous
      */
-    public function __construct($address = '', $message = "", $code = 0, Throwable $previous = null)
+    public function __construct($address = '', $message = "")
     {
-        parent::__construct(
-            $message ?: "Wrong payment address: '$address'",
-            $code,
-            $previous
-        );
+        parent::__construct($message ?: "Некорректный адрес места расчётов: '$address'");
     }
 }

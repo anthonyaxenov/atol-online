@@ -16,8 +16,5 @@ namespace AtolOnline\Exceptions;
  */
 class EmptyMonitorDataException extends AtolException
 {
-    /**
-     * @var string Сообщение об ошибке
-     */
-    protected $message = 'Cannot create KKT entity without data from monitor';
+    protected $message = 'Не возможно создать объект ККт без данных от мониторинга';
 }

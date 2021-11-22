@@ -13,18 +13,18 @@ namespace AtolOnline\Entities;
 
 use AtolOnline\Constants\Constraints;
 use AtolOnline\Exceptions\AtolException;
-use AtolOnline\Exceptions\BasicTooManyException;
 use AtolOnline\Exceptions\InvalidEmailException;
 use AtolOnline\Exceptions\InvalidInnLengthException;
 use AtolOnline\Exceptions\InvalidJsonException;
 use AtolOnline\Exceptions\TooHighPriceException;
 use AtolOnline\Exceptions\TooLongCashierException;
+use AtolOnline\Exceptions\TooLongClientContactException;
 use AtolOnline\Exceptions\TooLongEmailException;
-use AtolOnline\Exceptions\TooLongNameException;
+use AtolOnline\Exceptions\TooLongItemNameException;
 use AtolOnline\Exceptions\TooLongPaymentAddressException;
-use AtolOnline\Exceptions\TooLongPhoneException;
 use AtolOnline\Exceptions\TooLongUnitException;
 use AtolOnline\Exceptions\TooLongUserdataException;
+use AtolOnline\Exceptions\TooManyException;
 use AtolOnline\Exceptions\TooManyItemsException;
 use AtolOnline\Exceptions\TooManyPaymentsException;
 use AtolOnline\Exceptions\TooManyVatsException;
@@ -66,7 +66,7 @@ class Document extends Entity
      * @var float Итоговая сумма чека. Тег ФФД - 1020.
      */
     protected float $total = 0;
-    
+
     /**
      * @var string ФИО кассира. Тег ФФД - 1021.
      */
@@ -76,7 +76,7 @@ class Document extends Entity
      * @var CorrectionInfo Данные коррекции
      */
     protected CorrectionInfo $correction_info;
-    
+
     /**
      * Document constructor.
      */
@@ -211,7 +211,7 @@ class Document extends Entity
         $this->items->set($items);
         return $this;
     }
-    
+
     /**
      * Возвращает заданного клиента (покупателя)
      *
@@ -221,7 +221,7 @@ class Document extends Entity
     {
         return $this->client;
     }
-    
+
     /**
      * Устанавливает клиента (покупателя)
      *
@@ -233,7 +233,7 @@ class Document extends Entity
         $this->client = $client;
         return $this;
     }
-    
+
     /**
      * Возвращает заданную компанию (продавца)
      *
@@ -243,7 +243,7 @@ class Document extends Entity
     {
         return $this->company;
     }
-    
+
     /**
      * Устанавливает компанию (продавца)
      *
@@ -255,7 +255,7 @@ class Document extends Entity
         $this->company = $company;
         return $this;
     }
-    
+
     /**
      * Возвращает ФИО кассира. Тег ФФД - 1021.
      *
@@ -323,7 +323,7 @@ class Document extends Entity
         }
         return $this->total = round($sum, 2);
     }
-    
+
     /**
      * Возвращает итоговую сумму чека. Тег ФФД - 1020.
      *
@@ -344,11 +344,11 @@ class Document extends Entity
      * @throws AtolException
      * @throws InvalidInnLengthException
      * @throws InvalidJsonException
-     * @throws TooLongNameException
+     * @throws TooLongItemNameException
      * @throws TooLongPaymentAddressException
-     * @throws TooLongPhoneException
+     * @throws TooLongClientContactException
      * @throws TooHighPriceException
-     * @throws BasicTooManyException
+     * @throws TooManyException
      * @throws TooManyItemsException
      * @throws TooManyPaymentsException
      * @throws TooLongUnitException

@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace AtolOnlineTests;
 
 use AtolOnline\Entities\Entity;
+use AtolOnline\Helpers;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
@@ -89,57 +90,40 @@ class BasicTestCase extends TestCase
      */
     public function assertIsSameClass(object|string $expected, object|string $actual): void
     {
-        $this->assertEquals(
-            is_object($expected) ? $expected::class : $expected,
-            is_object($actual) ? $actual::class : $actual
-        );
+        $this->assertTrue(Helpers::isSameClass($expected, $actual));
     }
 
     /**
      * Тестирует наследование класса (объекта) от указанных классов
      *
+     * @param object|string $class
      * @param string[] $parents
-     * @param object|string $actual
      */
-    public function assertExtendsClasses(array $parents, object|string $actual): void
+    public function assertExtendsClasses(object|string $class, array $parents): void
     {
-        $this->checkClassesIntersection($parents, $actual, 'class_parents');
+        $this->assertTrue(Helpers::checkExtendsClasses($class, $parents));
     }
 
     /**
      * Тестирует имплементацию классом (объектом) указанных интерфейсов
      *
-     * @param string[] $parents
-     * @param object|string $actual
+     * @param object|string $class
+     * @param string[] $interfaces
      */
-    public function assertImplementsInterfaces(array $parents, object|string $actual): void
+    public function assertImplementsInterfaces(object|string $class, array $interfaces): void
     {
-        $this->checkClassesIntersection($parents, $actual, 'class_implements');
+        $this->assertTrue(Helpers::checkImplementsInterfaces($class, $interfaces));
     }
 
     /**
      * Тестирует использование классом (объектом) указанных трейтов
      *
-     * @param string[] $parents
-     * @param object|string $actual
+     * @param object|string $class
+     * @param string[] $traits
      */
-    public function assertUsesTraits(array $parents, object|string $actual): void
+    public function assertUsesTraits(object|string $class, array $traits): void
     {
-        $this->checkClassesIntersection($parents, $actual, 'class_uses');
-    }
-
-    /**
-     * Проверяет пересечение классов указанной функцией SPL
-     *
-     * @param object|string $class Класс для проверки на вхождение, или объект, класс коего нужно проверить
-     * @param array $classes Массив классов, вхождение в который нужно проверить
-     * @param string $function class_parents|class_implements|class_uses
-     */
-    protected function checkClassesIntersection(array $classes, object|string $class, string $function): void
-    {
-        $actual_classes = is_object($class) ? $function($class) : [$class::class];
-        $this->assertIsArray($actual_classes);
-        $this->assertNotEmpty(array_intersect($classes, $actual_classes));
+        $this->assertTrue(Helpers::checkUsesTraits($traits, $class));
     }
 
     /**

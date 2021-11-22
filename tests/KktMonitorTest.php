@@ -56,7 +56,7 @@ class KktMonitorTest extends BasicTestCase
         $client = new KktMonitor();
         $this->assertIsObject($client);
         $this->assertIsSameClass(KktMonitor::class, $client);
-        $this->assertExtendsClasses([AtolClient::class], $client);
+        $this->assertExtendsClasses($client, [AtolClient::class]);
     }
 
     /**
@@ -76,8 +76,8 @@ class KktMonitorTest extends BasicTestCase
     {
         $client = new KktMonitor(false, 'login', 'password', []);
         $this->assertIsObject($client);
-        $this->assertIsSameClass(KktMonitor::class, $client);
-        $this->assertExtendsClasses([AtolClient::class], $client);
+        $this->assertIsSameClass($client, KktMonitor::class);
+        $this->assertExtendsClasses($client, [AtolClient::class]);
     }
 
     /**

@@ -12,7 +12,6 @@ declare(strict_types = 1);
 namespace AtolOnline\Exceptions;
 
 use Exception;
-use Throwable;
 
 /**
  * Исключение, возникающее при работе с АТОЛ Онлайн
@@ -25,28 +24,15 @@ class AtolException extends Exception
     protected array $ffd_tags = [];
 
     /**
-     * AtolException constructor.
+     * Конструктор
      *
-     * @param string $message
-     * @param int $code
-     * @param Throwable|null $previous
+     * @param string $message Сообщение
+     * @param int[] $ffd_tags Переопредление тегов ФФД
      */
-    public function __construct($message = "", $code = 0, Throwable $previous = null)
+    public function __construct(string $message = '', array $ffd_tags = [])
     {
-        $message = $message ?: $this->message;
-        if ($this->getFfdTags()) {
-            $message .= ' [FFD tags: '.implode(', ', $this->getFfdTags()).']';
-        }
-        parent::__construct($message, $code, $previous);
-    }
-
-    /**
-     * Возвращает теги ФФД, с которыми связано исключение
-     *
-     * @return array
-     */
-    protected function getFfdTags(): array
-    {
-        return $this->ffd_tags;
+        parent::__construct(
+            ($message ?: $this->message) . ' [Теги ФФД: ' . implode(', ', $ffd_tags ?: $this->ffd_tags) . ']'
+        );
     }
 }

@@ -13,9 +13,9 @@ use AtolOnline\{
     Entities\Company,
     Enums\SnoTypes,
     Exceptions\InvalidEmailException,
+    Exceptions\InvalidEnumValueException,
     Exceptions\InvalidInnLengthException,
     Exceptions\InvalidPaymentAddressException,
-    Exceptions\InvalidSnoException,
     Exceptions\TooLongEmailException,
     Exceptions\TooLongPaymentAddressException,
     Helpers};
@@ -85,11 +85,11 @@ class CompanyTest extends BasicTestCase
      *
      * @covers \AtolOnline\Entities\Company
      * @covers \AtolOnline\Entities\Company::setSno
-     * @covers \AtolOnline\Exceptions\InvalidSnoException
+     * @covers \AtolOnline\Exceptions\InvalidEnumValueException
      */
     public function testInvalidSnoException()
     {
-        $this->expectException(InvalidSnoException::class);
+        $this->expectException(InvalidEnumValueException::class);
         new Company('company@example.com', 'test', '1234567890', 'https://example.com');
     }
 

@@ -11,13 +11,13 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use AtolOnline\Constants\Constraints;
+
 /**
  * Исключение, возникающее при попытке добавить слишком много предметов расчёта в массив
  */
-class TooManyItemsException extends BasicTooManyException
+class TooManyItemsException extends TooManyException
 {
-    /**
-     * @var string Сообщение об ошибке
-     */
-    protected $message = 'Too many items';
+    protected $message = 'Слишком много предметов расчёта в документе';
+    protected int $max = Constraints::MAX_COUNT_DOC_ITEMS;
 }

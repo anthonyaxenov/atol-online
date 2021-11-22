@@ -15,9 +15,9 @@ use AtolOnline\{
     Constants\Constraints,
     Enums\SnoTypes,
     Exceptions\InvalidEmailException,
+    Exceptions\InvalidEnumValueException,
     Exceptions\InvalidInnLengthException,
     Exceptions\InvalidPaymentAddressException,
-    Exceptions\InvalidSnoException,
     Exceptions\TooLongEmailException,
     Exceptions\TooLongPaymentAddressException};
 
@@ -58,7 +58,7 @@ class Company extends Entity
      * @throws InvalidEmailException
      * @throws InvalidInnLengthException
      * @throws InvalidPaymentAddressException
-     * @throws InvalidSnoException
+     * @throws InvalidEnumValueException
      * @throws TooLongEmailException
      * @throws TooLongPaymentAddressException
      */
@@ -96,7 +96,7 @@ class Company extends Entity
     {
         $email = preg_replace('/[\n\r\t]/', '', trim($email));
         if (mb_strlen($email) > Constraints::MAX_LENGTH_EMAIL) {
-            throw new TooLongEmailException($email, Constraints::MAX_LENGTH_EMAIL);
+            throw new TooLongEmailException($email);
         } elseif (empty($email) || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
             throw new InvalidEmailException($email);
         }
@@ -123,14 +123,12 @@ class Company extends Entity
      *
      * @param string $sno
      * @return $this
-     * @throws InvalidSnoException
+     * @throws InvalidEnumValueException
      */
     public function setSno(string $sno): self
     {
         $sno = trim($sno);
-        if (empty($sno) || !in_array($sno, SnoTypes::toArray())) {
-            throw new InvalidSnoException($sno);
-        }
+        SnoTypes::isValid($sno);
         $this->sno = $sno;
         return $this;
     }
@@ -194,7 +192,7 @@ class Company extends Entity
         if (empty($payment_address)) {
             throw new InvalidPaymentAddressException();
         } elseif (mb_strlen($payment_address) > Constraints::MAX_LENGTH_PAYMENT_ADDRESS) {
-            throw new TooLongPaymentAddressException($payment_address, Constraints::MAX_LENGTH_PAYMENT_ADDRESS);
+            throw new TooLongPaymentAddressException($payment_address);
         }
         $this->payment_address = $payment_address;
         return $this;
@@ -203,7 +201,7 @@ class Company extends Entity
     /**
      * @inheritDoc
      * @throws InvalidEmailException
-     * @throws InvalidSnoException
+     * @throws InvalidEnumValueException
      * @throws InvalidInnLengthException
      * @throws InvalidPaymentAddressException
      */
@@ -215,7 +213,7 @@ class Company extends Entity
                 : throw new InvalidEmailException(),
             'sno' => $this->sno
                 ? $this->getSno()
-                : throw new InvalidSnoException(),
+                : throw new InvalidEnumValueException(SnoTypes::class, 'null'),
             'inn' => $this->inn
                 ? $this->getInn()
                 : throw new InvalidInnLengthException(),

@@ -11,20 +11,14 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use AtolOnline\Constants\Constraints;
+
 /**
  * Исключение, возникающее при попытке указать слишком длинный дополнительный реквизит
  */
-class TooLongUserdataException extends BasicTooLongException
+class TooLongUserdataException extends TooLongException
 {
-    /**
-     * @inheritDoc
-     */
-    protected array $ffd_tags = [
-        1191,
-    ];
-
-    /**
-     * @var string Сообщение об ошибке
-     */
-    protected $message = 'User data is too long';
+    protected $message = 'Слишком длинный дополнительный реквизит предмета расчёта';
+    protected int $max = Constraints::MAX_LENGTH_USER_DATA;
+    protected array $ffd_tags = [1191];
 }

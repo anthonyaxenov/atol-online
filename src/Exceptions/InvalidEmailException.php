@@ -11,31 +11,21 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при ошибке валидации email
+ * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 17
  */
 class InvalidEmailException extends AtolException
 {
-    /**
-     * @inheritDoc
-     */
-    protected array $ffd_tags = [
-        1008,
-        1117,
-    ];
+    protected array $ffd_tags = [1008, 1117];
 
     /**
-     * AtolEmailValidateException constructor.
+     * Конструктор
      *
      * @param string $email
-     * @param string $message
-     * @param int $code
-     * @param Throwable|null $previous
      */
-    public function __construct(string $email = '', $message = "", $code = 0, Throwable $previous = null)
+    public function __construct(string $email = '')
     {
-        parent::__construct($message ?: "Invalid email: '$email'", $code, $previous);
+        parent::__construct("Невалидный email: '$email'");
     }
 }

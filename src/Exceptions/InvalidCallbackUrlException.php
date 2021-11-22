@@ -16,8 +16,5 @@ namespace AtolOnline\Exceptions;
  */
 class InvalidCallbackUrlException extends AtolException
 {
-    /**
-     * @var string Сообщение об ошибке
-     */
-    protected $message = 'Invalid callback URL';
+    protected $message = 'Невалидный callback_url';
 }

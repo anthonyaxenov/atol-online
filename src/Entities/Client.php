@@ -15,9 +15,10 @@ use AtolOnline\{
     Constants\Constraints,
     Exceptions\InvalidEmailException,
     Exceptions\InvalidInnLengthException,
+    Exceptions\TooLongClientContactException,
+    Exceptions\TooLongClientNameException,
     Exceptions\TooLongEmailException,
-    Exceptions\TooLongNameException,
-    Exceptions\TooLongPhoneException};
+    Exceptions\TooLongItemNameException};
 
 /**
  * Класс Client, описывающий сущность покупателя
@@ -53,8 +54,8 @@ class Client extends Entity
      * @param string|null $phone Email. Тег ФФД - 1008.
      * @param string|null $email Телефон покупателя. Тег ФФД - 1008.
      * @param string|null $inn ИНН. Тег ФФД - 1228.
-     * @throws TooLongNameException
-     * @throws TooLongPhoneException
+     * @throws TooLongItemNameException
+     * @throws TooLongClientContactException
      * @throws TooLongEmailException
      * @throws InvalidEmailException
      * @throws InvalidInnLengthException
@@ -91,14 +92,14 @@ class Client extends Entity
      *
      * @param string|null $name
      * @return $this
-     * @throws TooLongNameException
+     * @throws TooLongClientNameException
      */
     public function setName(?string $name): self
     {
         if (is_string($name)) {
             $name = preg_replace('/[\n\r\t]/', '', trim($name));
             if (mb_strlen($name) > Constraints::MAX_LENGTH_CLIENT_NAME) {
-                throw new TooLongNameException($name, Constraints::MAX_LENGTH_CLIENT_NAME);
+                throw new TooLongClientNameException($name);
             }
         }
         $this->name = empty($name) ? null : $name;
@@ -128,7 +129,7 @@ class Client extends Entity
         if (is_string($email)) {
             $email = preg_replace('/[\n\r\t]/', '', trim($email));
             if (mb_strlen($email) > Constraints::MAX_LENGTH_EMAIL) {
-                throw new TooLongEmailException($email, Constraints::MAX_LENGTH_EMAIL);
+                throw new TooLongEmailException($email);
             } elseif (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
                 throw new InvalidEmailException($email);
             }
@@ -156,14 +157,14 @@ class Client extends Entity
      *
      * @param string|null $phone Номер телефона
      * @return $this
-     * @throws TooLongPhoneException
+     * @throws TooLongClientContactException
      */
     public function setPhone(?string $phone): self
     {
         if (is_string($phone)) {
             $phone = preg_replace('/[^\d]/', '', trim($phone));
-            if (mb_strlen($phone) > Constraints::MAX_LENGTH_CLIENT_PHONE) {
-                throw new TooLongPhoneException($phone, Constraints::MAX_LENGTH_CLIENT_PHONE);
+            if (mb_strlen($phone) > Constraints::MAX_LENGTH_CLIENT_CONTACT) {
+                throw new TooLongClientContactException($phone);
             }
         }
         $this->phone = empty($phone) ? null : "+$phone";

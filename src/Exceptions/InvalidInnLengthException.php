@@ -11,37 +11,23 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
-use Throwable;
-
 /**
  * Исключение, возникающее при попытке указать ИНН некорректной длины
  */
 class InvalidInnLengthException extends AtolException
 {
-    /**
-     * @inheritDoc
-     */
-    protected array $ffd_tags = [
-        1016,
-        1018,
-        1226,
-        1228,
-    ];
+    protected array $ffd_tags = [1016, 1018, 1226, 1228];
 
     /**
-     * AtolInnWrongLengthException constructor.
+     * Конструктор
      *
      * @param string $inn
      * @param string $message
-     * @param int $code
-     * @param Throwable|null $previous
      */
-    public function __construct($inn = '', $message = "", $code = 0, Throwable $previous = null)
+    public function __construct(string $inn = '', string $message = '')
     {
         parent::__construct(
-            $message ?: 'INN length must be 10 or 12 digits only, actual is ' . strlen($inn),
-            $code,
-            $previous
+            $message ?: 'Длина ИНН должна быть 10 или 12 цифр, фактически - ' . strlen($inn),
         );
     }
 }

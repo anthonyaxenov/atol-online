@@ -11,23 +11,13 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use AtolOnline\Constants\Constraints;
+
 /**
  * Исключение, возникающее при попытке добавить слишком много платежей в массив
  */
-class TooManyPaymentsException extends BasicTooManyException
+class TooManyPaymentsException extends TooManyException
 {
-    /**
-     * @inheritDoc
-     */
-    protected array $ffd_tags = [
-        1031,
-        1081,
-        1215,
-        1217,
-    ];
-    
-    /**
-     * @var string Сообщение об ошибке
-     */
-    protected $message = 'Too many payments';
+    protected $message = 'Слишком много платежей в документе';
+    protected int $max = Constraints::MAX_COUNT_DOC_PAYMENTS;
 }

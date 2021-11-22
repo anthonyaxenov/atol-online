@@ -11,20 +11,14 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
-/**
- * Исключение, возникающее при попытке указать слишком длинный телефон
- */
-class TooLongUnitException extends BasicTooLongException
-{
-    /**
-     * @inheritDoc
-     */
-    protected array $ffd_tags = [
-        1197,
-    ];
+use AtolOnline\Constants\Constraints;
 
-    /**
-     * @var string Сообщение об ошибке
-     */
-    protected $message = 'Measurement unit is too long';
+/**
+ * Исключение, возникающее при попытке указать слишком длинную единицу измерения предмета расчёта
+ */
+class TooLongUnitException extends TooLongException
+{
+    protected $message = 'Слишком длинная единица измерения предмета расчёта';
+    protected int $max = Constraints::MAX_LENGTH_MEASUREMENT_UNIT;
+    protected array $ffd_tags = [1197];
 }

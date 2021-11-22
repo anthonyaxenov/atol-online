@@ -161,7 +161,7 @@ abstract class AtolClient
         if (empty($login)) {
             throw new EmptyLoginException();
         } elseif (mb_strlen($login) > Constraints::MAX_LENGTH_LOGIN) {
-            throw new TooLongLoginException($login, Constraints::MAX_LENGTH_LOGIN);
+            throw new TooLongLoginException($login);
         }
         $this->login = $login;
         return $this;
@@ -190,7 +190,7 @@ abstract class AtolClient
         if (empty($password)) {
             throw new EmptyPasswordException();
         } elseif (mb_strlen($password) > Constraints::MAX_LENGTH_PASSWORD) {
-            throw new TooLongPasswordException($password, Constraints::MAX_LENGTH_PASSWORD);
+            throw new TooLongPasswordException($password);
         }
         $this->password = $password;
         return $this;

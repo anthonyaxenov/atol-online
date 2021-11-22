@@ -13,11 +13,11 @@ namespace AtolOnline\Entities;
 
 use AtolOnline\{
     Constants\Constraints,
-    Exceptions\BasicTooManyException,
     Exceptions\TooHighPriceException,
-    Exceptions\TooLongNameException,
+    Exceptions\TooLongItemNameException,
     Exceptions\TooLongUnitException,
-    Exceptions\TooLongUserdataException};
+    Exceptions\TooLongUserdataException,
+    Exceptions\TooManyException};
 
 /**
  * Предмет расчёта (товар, услуга)
@@ -30,22 +30,22 @@ class Item extends Entity
      * @var string Наименование. Тег ФФД - 1030.
      */
     protected string $name;
-    
+
     /**
      * @var int Цена в копейках (с учётом скидок и наценок). Тег ФФД - 1079.
      */
     protected int $price = 0;
-    
+
     /**
      * @var float Количество, вес. Тег ФФД - 1023.
      */
     protected float $quantity = 0.0;
-    
+
     /**
      * @var float Сумма в копейках. Тег ФФД - 1043.
      */
     protected float $sum = 0;
-    
+
     /**
      * @var string Единица измерения количества. Тег ФФД - 1197.
      */
@@ -55,17 +55,17 @@ class Item extends Entity
      * @var Vat|null Ставка НДС
      */
     protected ?Vat $vat;
-    
+
     /**
      * @var string Признак способа расчёта. Тег ФФД - 1214.
      */
     protected string $payment_method;
-    
+
     /**
      * @var string Признак объекта расчёта. Тег ФФД - 1212.
      */
     protected string $payment_object;
-    
+
     /**
      * @var string Дополнительный реквизит. Тег ФФД - 1191.
      */
@@ -81,9 +81,9 @@ class Item extends Entity
      * @param string|null $vat_type Ставка НДС
      * @param string|null $payment_object Признак
      * @param string|null $payment_method Способ расчёта
-     * @throws TooLongNameException Слишком длинное наименование
+     * @throws TooLongItemNameException Слишком длинное наименование
      * @throws TooHighPriceException Слишком высокая цена за одну единицу
-     * @throws BasicTooManyException Слишком большое количество
+     * @throws TooManyException Слишком большое количество
      * @throws TooLongUnitException Слишком длинное название единицы измерения
      */
     public function __construct(
@@ -117,7 +117,7 @@ class Item extends Entity
             $this->setPaymentMethod($payment_method);
         }
     }
-    
+
     /**
      * Возвращает наименование. Тег ФФД - 1030.
      *
@@ -133,18 +133,18 @@ class Item extends Entity
      *
      * @param string $name Наименование
      * @return $this
-     * @throws TooLongNameException Слишком длинное имя/наименование
+     * @throws TooLongItemNameException Слишком длинное имя/наименование
      */
     public function setName(string $name): self
     {
         $name = trim($name);
         if (mb_strlen($name) > Constraints::MAX_LENGTH_ITEM_NAME) {
-            throw new TooLongNameException($name, Constraints::MAX_LENGTH_ITEM_NAME);
+            throw new TooLongItemNameException($name, Constraints::MAX_LENGTH_ITEM_NAME);
         }
         $this->name = $name;
         return $this;
     }
-    
+
     /**
      * Возвращает цену в рублях. Тег ФФД - 1079.
      *
@@ -171,7 +171,7 @@ class Item extends Entity
         $this->calcSum();
         return $this;
     }
-    
+
     /**
      * Возвращает количество. Тег ФФД - 1023.
      *
@@ -188,7 +188,7 @@ class Item extends Entity
      * @param float $quantity Количество
      * @param string|null $measurement_unit Единица измерения количества
      * @return $this
-     * @throws BasicTooManyException Слишком большое количество
+     * @throws TooManyException Слишком большое количество
      * @throws TooHighPriceException Слишком высокая общая стоимость
      * @throws TooLongUnitException Слишком длинное название единицы измерения
      */
@@ -196,7 +196,7 @@ class Item extends Entity
     {
         $quantity = round($quantity, 3);
         if ($quantity > 99999.999) {
-            throw new BasicTooManyException($quantity, 99999.999);
+            throw new TooManyException($quantity, 99999.999);
         }
         $this->quantity = $quantity;
         $this->calcSum();
@@ -205,7 +205,7 @@ class Item extends Entity
         }
         return $this;
     }
-    
+
     /**
      * Возвращает заданную единицу измерения количества. Тег ФФД - 1197.
      *
@@ -232,7 +232,7 @@ class Item extends Entity
         $this->measurement_unit = $measurement_unit;
         return $this;
     }
-    
+
     /**
      * Возвращает признак способа оплаты. Тег ФФД - 1214.
      *
@@ -242,7 +242,7 @@ class Item extends Entity
     {
         return $this->payment_method;
     }
-    
+
     /**
      * Устанавливает признак способа оплаты. Тег ФФД - 1214.
      *
@@ -255,7 +255,7 @@ class Item extends Entity
         $this->payment_method = trim($payment_method);
         return $this;
     }
-    
+
     /**
      * Возвращает признак предмета расчёта. Тег ФФД - 1212.
      *
@@ -265,7 +265,7 @@ class Item extends Entity
     {
         return $this->payment_object;
     }
-    
+
     /**
      * Устанавливает признак предмета расчёта. Тег ФФД - 1212.
      *
@@ -308,7 +308,7 @@ class Item extends Entity
         $this->calcSum();
         return $this;
     }
-    
+
     /**
      * Возвращает дополнительный реквизит. Тег ФФД - 1191.
      *
@@ -335,7 +335,7 @@ class Item extends Entity
         $this->user_data = $user_data;
         return $this;
     }
-    
+
     /**
      * Возвращает стоимость. Тег ФФД - 1043.
      *
@@ -364,7 +364,7 @@ class Item extends Entity
         }
         return $this->getSum();
     }
-    
+
     /**
      * @inheritDoc
      */

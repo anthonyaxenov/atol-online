@@ -11,25 +11,13 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use AtolOnline\Constants\Constraints;
+
 /**
  * Исключение, возникающее при попытке добавить слишком много ставок НДС в массив
  */
-class TooManyVatsException extends BasicTooManyException
+class TooManyVatsException extends TooManyException
 {
-    /**
-     * @inheritDoc
-     */
-    protected array $ffd_tags = [
-        1102,
-        1103,
-        1104,
-        1105,
-        1106,
-        1107,
-    ];
-    
-    /**
-     * @var string Сообщение об ошибке
-     */
-    protected $message = 'Too many vats';
+    protected $message = 'Слишком много ставок НДС в документе';
+    protected int $max = Constraints::MAX_COUNT_DOC_VATS;
 }

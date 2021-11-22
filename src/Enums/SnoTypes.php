@@ -11,7 +11,7 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Enums;
 
-use MyCLabs\Enum\Enum;
+use AtolOnline\Enum;
 
 /**
  * Константы, определяющие типы налогообложения
@@ -49,4 +49,12 @@ final class SnoTypes extends Enum
      * Патентная СН
      */
     const PATENT = 'patent';
+
+    /**
+     * @return int[] Возвращает массив тегов ФФД
+     */
+    public static function getFfdTags(): array
+    {
+        return [1055];
+    }
 }

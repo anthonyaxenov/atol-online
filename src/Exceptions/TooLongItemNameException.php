@@ -11,24 +11,14 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use AtolOnline\Constants\Constraints;
+
 /**
  * Исключение, возникающее при попытке указать слишком длинное имя
  */
-class TooLongNameException extends BasicTooLongException
+class TooLongItemNameException extends TooLongException
 {
-    /**
-     * @inheritDoc
-     */
-    protected array $ffd_tags = [
-        1026,
-        1030,
-        1085,
-        1225,
-        1227,
-    ];
-    
-    /**
-     * @var string Сообщение об ошибке
-     */
-    protected $message = 'Name is too long';
+    protected $message = 'Слишком длинное наименование предмета расчёта';
+    protected int $max = Constraints::MAX_LENGTH_ITEM_NAME;
+    protected array $ffd_tags = [1030];
 }

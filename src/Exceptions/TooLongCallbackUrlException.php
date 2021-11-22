@@ -11,13 +11,13 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use AtolOnline\Constants\Constraints;
+
 /**
  * Исключение, возникающее при попытке указать слишком длинный callback_url
  */
-class TooLongCallbackUrlException extends BasicTooLongException
+class TooLongCallbackUrlException extends TooLongException
 {
-    /**
-     * @var string Сообщение об ошибке
-     */
-    protected $message = 'Callback URL is too long';
+    protected $message = 'Слишком длинный адрес колбека';
+    protected int $max = Constraints::MAX_LENGTH_CALLBACK_URL;
 }

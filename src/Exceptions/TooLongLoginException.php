@@ -11,13 +11,13 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use AtolOnline\Constants\Constraints;
+
 /**
  * Исключение, возникающее при попытке указать слишком длинный логин ККТ
  */
-class TooLongLoginException extends BasicTooLongException
+class TooLongLoginException extends TooLongException
 {
-    /**
-     * @var string Сообщение об ошибке
-     */
-    protected $message = 'KKT login is too long';
+    protected $message = 'Слишком длинный логин';
+    protected int $max = Constraints::MAX_LENGTH_LOGIN;
 }

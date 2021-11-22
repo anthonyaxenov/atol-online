@@ -13,19 +13,10 @@ namespace AtolOnline\Exceptions;
 
 /**
  * Исключение, возникающее при попытке указать пустой email
+ * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 17
  */
 class EmptyEmailException extends AtolException
 {
-    /**
-     * @inheritDoc
-     */
-    protected array $ffd_tags = [
-        1008,
-        1117,
-    ];
-
-    /**
-     * @var string Сообщение об ошибке
-     */
-    protected $message = 'Email cannot be empty';
+    protected $message = 'Email не может быть пустым';
+    protected array $ffd_tags = [1008, 1117];
 }

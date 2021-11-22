@@ -14,7 +14,7 @@ namespace AtolOnline\Exceptions;
 /**
  * Исключение, возникающее при попытке указать слишком высокую цену (сумму)
  */
-class TooHighPriceException extends BasicTooManyException
+class TooHighPriceException extends TooManyException
 {
     /**
      * @inheritDoc
