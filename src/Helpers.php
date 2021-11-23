@@ -39,7 +39,7 @@ final class Helpers
     /**
      * Генерирует случайную строку указанной длины
      *
-     * @param int $length Длина, по умолчнанию 8
+     * @param int $length Длина, по умолчанию 8
      * @param bool $with_digits Включать ли цифры
      * @return string
      */

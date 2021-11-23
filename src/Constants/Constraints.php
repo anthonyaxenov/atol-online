@@ -25,17 +25,17 @@ final class Constraints
      * Максимальная длина email
      */
     const MAX_LENGTH_EMAIL = 64;
-    
+
     /**
      * Максимальная длина логина ККТ
      */
     const MAX_LENGTH_LOGIN = 100;
-    
+
     /**
      * Максимальная длина пароля ККТ
      */
     const MAX_LENGTH_PASSWORD = 100;
-    
+
     /**
      * Максимальная длина адреса места расчётов
      */
@@ -116,17 +116,31 @@ final class Constraints
 
     /**
      * Максимальная длина имени кассира (1021)
+     *
      * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 32
      */
     const MAX_LENGTH_CASHIER_NAME = 64;
-    
+
     /**
      * Регулярное выражание для валидации строки ИНН
+     *
+     * @see https://online.atol.ru/possystem/v4/schema/sell Схема "#/receipt/client/inn"
      */
-    const PATTERN_INN = "/(^[0-9]{10}$)|(^[0-9]{12}$)/";
-    
+    const PATTERN_INN = /* @lang PhpRegExp */
+        '/(^[\d]{10}$)|(^[\d]{12}$)/';
+
+    /**
+     * Регулярное выражение для валидации номера телефона
+     *
+     * @see https://online.atol.ru/possystem/v4/schema/sell Схема "#/definitions/phone_number"
+     */
+    const PATTERN_PHONE = /* @lang PhpRegExp */
+        '/^([^\s\\\]{0,17}|\+[^\s\\\]{1,18})$/';
+
     /**
      * Регулярное выражание для валидации строки Callback URL
      */
-    const PATTERN_CALLBACK_URL = "/^http(s?)\:\/\/[0-9a-zA-Zа-яА-Я]([-.\w]*[0-9a-zA-Zа-яА-Я])*(:(0-9)*)*(\/?)([a-zAZ0-9а-яА-Я\-\.\?\,\'\/\\\+&=%\$#_]*)?$/";
+    const PATTERN_CALLBACK_URL = /* @lang PhpRegExp */
+        '/^http(s?)\:\/\/[0-9a-zA-Zа-яА-Я]' .
+        '([-.\w]*[0-9a-zA-Zа-яА-Я])*(:(0-9)*)*(\/?)([a-zAZ0-9а-яА-Я\-\.\?\,\'\/\\\+&=%\$#_]*)?$/';
 }

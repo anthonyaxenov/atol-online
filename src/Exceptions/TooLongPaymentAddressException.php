@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace AtolOnline\Exceptions;
 
 use AtolOnline\Constants\Constraints;
+use AtolOnline\Constants\Ffd105Tags;
 
 /**
  * Исключение, возникающее при попытке указать слишком длинный адрес места расчётов
@@ -19,6 +20,6 @@ use AtolOnline\Constants\Constraints;
 class TooLongPaymentAddressException extends TooLongException
 {
     protected $message = 'Слишком длинный адрес места расчётов';
-    protected int $max = Constraints::MAX_LENGTH_PAYMENT_ADDRESS;
-    protected array $ffd_tags = [1187];
+    protected float $max = Constraints::MAX_LENGTH_PAYMENT_ADDRESS;
+    protected array $ffd_tags = [Ffd105Tags::COMPANY_PADDRESS];
 }

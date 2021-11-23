@@ -19,5 +19,5 @@ use AtolOnline\Constants\Constraints;
 class TooManyPaymentsException extends TooManyException
 {
     protected $message = 'Слишком много платежей в документе';
-    protected int $max = Constraints::MAX_COUNT_DOC_PAYMENTS;
+    protected float $max = Constraints::MAX_COUNT_DOC_PAYMENTS;
 }

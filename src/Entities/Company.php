@@ -205,9 +205,9 @@ class Company extends Entity
      * @throws InvalidInnLengthException
      * @throws InvalidPaymentAddressException
      */
-    public function jsonSerialize(): object
+    public function jsonSerialize(): array
     {
-        return (object)[
+        return [
             'email' => $this->email
                 ? $this->getEmail()
                 : throw new InvalidEmailException(),

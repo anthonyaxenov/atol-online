@@ -22,9 +22,9 @@ class TooLongException extends AtolException
     protected $message = 'Слишком длинное значение';
 
     /**
-     * @var int Максимальная длина строки
+     * @var float Максимальная длина строки
      */
-    protected int $max = 0;
+    protected float $max = 0;
 
     /**
      * Конструктор

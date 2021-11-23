@@ -19,5 +19,5 @@ use AtolOnline\Constants\Constraints;
 class TooManyVatsException extends TooManyException
 {
     protected $message = 'Слишком много ставок НДС в документе';
-    protected int $max = Constraints::MAX_COUNT_DOC_VATS;
+    protected float $max = Constraints::MAX_COUNT_DOC_VATS;
 }

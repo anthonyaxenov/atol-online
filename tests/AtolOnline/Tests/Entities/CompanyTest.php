@@ -7,7 +7,7 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-namespace AtolOnlineTests;
+namespace AtolOnline\Tests\Entities;
 
 use AtolOnline\{
     Entities\Company,
@@ -18,7 +18,9 @@ use AtolOnline\{
     Exceptions\InvalidPaymentAddressException,
     Exceptions\TooLongEmailException,
     Exceptions\TooLongPaymentAddressException,
-    Helpers};
+    Helpers,
+    Tests\BasicTestCase
+};
 
 /**
  * Набор тестов для проверки работы класс продавца

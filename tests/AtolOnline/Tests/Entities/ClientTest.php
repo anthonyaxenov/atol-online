@@ -7,7 +7,7 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-namespace AtolOnlineTests;
+namespace AtolOnline\Tests\Entities;
 
 use AtolOnline\{
     Entities\Client,
@@ -16,91 +16,28 @@ use AtolOnline\{
     Exceptions\TooLongClientContactException,
     Exceptions\TooLongClientNameException,
     Exceptions\TooLongEmailException,
-    Exceptions\TooLongItemNameException,
-    Helpers};
+    Helpers,
+    Tests\BasicTestCase
+};
 
 /**
- * Набор тестов для проверки работы класс покупателя
+ * Набор тестов для проверки работы класса покупателя
  */
 class ClientTest extends BasicTestCase
 {
     /**
-     * Провайдер строк, которые приводятся к null
-     *
-     * @return array<array<string|null>>
-     */
-    public function providerNullableStrings(): array
-    {
-        return [
-            [''],
-            [' '],
-            [null],
-            ["\n\r\t"],
-        ];
-    }
-
-    /**
-     * Провайдер телефонов, которые приводятся к null
-     *
-     * @return array<array<string>>
-     */
-    public function providerNullablePhones(): array
-    {
-        return array_merge(
-            $this->providerNullableStrings(),
-            [
-                [Helpers::randomStr(10, false)],
-                ["asdfgvs \n\rtt\t*/(*&%^*$%"],
-            ]
-        );
-    }
-
-    /**
-     * Провайдер невалидных email-ов
-     *
-     * @return array<array<string>>
-     */
-    public function providerInvalidEmails(): array
-    {
-        return [
-            ['@example'],
-            [Helpers::randomStr(15)],
-            ['@example.com'],
-            ['abc.def@mail'],
-            ['.abc@mail.com'],
-            ['example@example'],
-            ['abc..def@mail.com'],
-            ['abc.def@mail..com'],
-            ['abc.def@mail#archive.com'],
-        ];
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Тестирует приведение покупателя к json
-     *
-     * @covers \AtolOnline\Entities\Client
-     * @covers \AtolOnline\Entities\Client::jsonSerialize
-     */
-    public function testAtolable(): void
-    {
-        $this->assertAtolable(new Client());
-    }
-
-    /**
-     * Тестирует конструктор покупателя без передачи значений
+     * Тестирует конструктор без передачи значений и приведение к json
      *
      * @covers \AtolOnline\Entities\Client
      * @covers \AtolOnline\Entities\Client::jsonSerialize
      */
     public function testConstructorWithoutArgs(): void
     {
-        $this->assertEquals('{}', (string)(new Client()));
+        $this->assertEquals('[]', (string)(new Client()));
     }
 
     /**
-     * Тестирует конструктор с передачей значений (внутри работают сеттеры)
+     * Тестирует конструктор с передачей значений и приведение к json
      *
      * @covers \AtolOnline\Entities\Client
      * @covers \AtolOnline\Entities\Client::jsonSerialize
@@ -108,16 +45,23 @@ class ClientTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Client::setPhone
      * @covers \AtolOnline\Entities\Client::setEmail
      * @covers \AtolOnline\Entities\Client::setInn
+     * @covers \AtolOnline\Entities\Client::getName
+     * @covers \AtolOnline\Entities\Client::getPhone
+     * @covers \AtolOnline\Entities\Client::getEmail
+     * @covers \AtolOnline\Entities\Client::getInn
      */
     public function testConstructorWithArgs(): void
     {
-        $customer = new Client(
+        $this->assertAtolable(new Client('John Doe'), ['name' => 'John Doe']);
+        $this->assertAtolable(new Client(email: 'john@example.com'), ['email' => 'john@example.com']);
+        $this->assertAtolable(new Client(phone: '+1/22/99*73s dsdas654 5s6'), ['phone' => '+122997365456']);
+        $this->assertAtolable(new Client(inn: '+fasd3\qe3fs_=nac99013928czc'), ['inn' => '3399013928']);
+        $this->assertAtolable(new Client(
             'John Doe',
             'john@example.com',
             '+1/22/99*73s dsdas654 5s6', // +122997365456
             '+fasd3\qe3fs_=nac99013928czc' // 3399013928
-        );
-        $this->assertAtolable($customer, [
+        ), [
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'phone' => '+122997365456',
@@ -125,10 +69,8 @@ class ClientTest extends BasicTestCase
         ]);
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-
     /**
-     * Тестирует установку имён покупателя, которые приводятся к null
+     * Тестирует установку имён, которые приводятся к null
      *
      * @param mixed $name
      * @dataProvider providerNullableStrings
@@ -139,27 +81,25 @@ class ClientTest extends BasicTestCase
      */
     public function testNullableNames(mixed $name): void
     {
-        $customer = (new Client())->setName($name);
-        $this->assertNull($customer->getName());
+        $this->assertNull((new Client())->setName($name)->getName());
     }
 
     /**
-     * Тестирует установку валидного имени покупателя
+     * Тестирует установку валидного имени
      *
      * @covers \AtolOnline\Entities\Client
      * @covers \AtolOnline\Entities\Client::setName
      * @covers \AtolOnline\Entities\Client::getName
-     * @throws TooLongItemNameException
+     * @throws TooLongClientNameException
      */
     public function testValidName(): void
     {
         $name = Helpers::randomStr();
-        $customer = (new Client())->setName($name);
-        $this->assertEquals($name, $customer->getName());
+        $this->assertEquals($name, (new Client())->setName($name)->getName());
     }
 
     /**
-     * Тестирует установку невалидного имени покупателя
+     * Тестирует установку невалидного имени
      *
      * @covers \AtolOnline\Entities\Client
      * @covers \AtolOnline\Entities\Client::setName
@@ -174,7 +114,7 @@ class ClientTest extends BasicTestCase
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Тестирует установку телефонов покупателя, которые приводятся к null
+     * Тестирует установку телефонов, которые приводятся к null
      *
      * @param mixed $phone
      * @dataProvider providerNullablePhones
@@ -185,13 +125,13 @@ class ClientTest extends BasicTestCase
      */
     public function testNullablePhones(mixed $phone): void
     {
-        $customer = (new Client())->setPhone($phone);
-        $this->assertNull($customer->getPhone());
+        $this->assertNull((new Client())->setPhone($phone)->getPhone());
     }
 
     /**
-     * Тестирует установку валидного телефона покупателя
+     * Тестирует установку валидного телефона
      *
+     * @todo актуализировать при доработатанной валидации
      * @dataProvider providerValidPhones
      * @covers       \AtolOnline\Entities\Client
      * @covers       \AtolOnline\Entities\Client::setPhone
@@ -200,13 +140,13 @@ class ClientTest extends BasicTestCase
      */
     public function testValidPhone(string $input, string $output): void
     {
-        $customer = (new Client())->setPhone($input);
-        $this->assertEquals($output, $customer->getPhone());
+        $this->assertEquals($output, (new Client())->setPhone($input)->getPhone());
     }
 
     /**
-     * Тестирует установку невалидного телефона покупателя
+     * Тестирует установку невалидного телефона
      *
+     * @todo актуализировать при доработатанной валидации
      * @covers \AtolOnline\Entities\Client
      * @covers \AtolOnline\Entities\Client::setPhone
      * @covers \AtolOnline\Exceptions\TooLongClientContactException
@@ -221,7 +161,7 @@ class ClientTest extends BasicTestCase
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Тестирует установку валидных email-ов покупателя
+     * Тестирует установку валидных email-ов
      *
      * @param mixed $email
      * @dataProvider providerValidEmails
@@ -233,12 +173,11 @@ class ClientTest extends BasicTestCase
      */
     public function testValidEmails(mixed $email): void
     {
-        $customer = (new Client())->setEmail($email);
-        $this->assertEquals($email, $customer->getEmail());
+        $this->assertEquals($email, (new Client())->setEmail($email)->getEmail());
     }
 
     /**
-     * Тестирует установку слишком длинного email покупателя
+     * Тестирует установку слишком длинного email
      *
      * @covers \AtolOnline\Entities\Client
      * @covers \AtolOnline\Entities\Client::setEmail
@@ -253,7 +192,7 @@ class ClientTest extends BasicTestCase
     }
 
     /**
-     * Тестирует установку невалидного email покупателя
+     * Тестирует установку невалидного email
      *
      * @param mixed $email
      * @dataProvider providerInvalidEmails
@@ -281,10 +220,8 @@ class ClientTest extends BasicTestCase
      */
     public function testValidInn(): void
     {
-        $customer = (new Client())->setInn('1234567890');
-        $this->assertEquals('1234567890', $customer->getInn());
-        $customer = $customer->setInn('123456789012');
-        $this->assertEquals('123456789012', $customer->getInn());
+        $this->assertEquals('1234567890', (new Client())->setInn('1234567890')->getInn());
+        $this->assertEquals('123456789012', (new Client())->setInn('123456789012')->getInn());
     }
 
     /**

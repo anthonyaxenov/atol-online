@@ -11,13 +11,19 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use AtolOnline\Constants\Ffd105Tags;
+
 /**
  * Исключение, возникающее при ошибке валидации email
+ *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 17
  */
 class InvalidEmailException extends AtolException
 {
-    protected array $ffd_tags = [1008, 1117];
+    protected array $ffd_tags = [
+        Ffd105Tags::CLIENT_CONTACT,
+        Ffd105Tags::COMPANY_EMAIL,
+    ];
 
     /**
      * Конструктор

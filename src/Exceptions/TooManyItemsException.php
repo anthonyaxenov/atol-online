@@ -19,5 +19,5 @@ use AtolOnline\Constants\Constraints;
 class TooManyItemsException extends TooManyException
 {
     protected $message = 'Слишком много предметов расчёта в документе';
-    protected int $max = Constraints::MAX_COUNT_DOC_ITEMS;
+    protected float $max = Constraints::MAX_COUNT_DOC_ITEMS;
 }

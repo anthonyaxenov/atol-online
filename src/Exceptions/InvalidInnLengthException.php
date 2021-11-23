@@ -11,12 +11,19 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use AtolOnline\Constants\Ffd105Tags;
+
 /**
  * Исключение, возникающее при попытке указать ИНН некорректной длины
  */
 class InvalidInnLengthException extends AtolException
 {
-    protected array $ffd_tags = [1016, 1018, 1226, 1228];
+    protected array $ffd_tags = [
+        Ffd105Tags::MTO_INN,
+        Ffd105Tags::COMPANY_INN,
+        Ffd105Tags::SUPPLIER_INN,
+        Ffd105Tags::CLIENT_INN,
+    ];
 
     /**
      * Конструктор

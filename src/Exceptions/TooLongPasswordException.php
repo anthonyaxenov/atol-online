@@ -19,5 +19,5 @@ use AtolOnline\Constants\Constraints;
 class TooLongPasswordException extends TooLongException
 {
     protected $message = 'Слишком длинный пароль';
-    protected int $max = Constraints::MAX_LENGTH_PASSWORD;
+    protected float $max = Constraints::MAX_LENGTH_PASSWORD;
 }

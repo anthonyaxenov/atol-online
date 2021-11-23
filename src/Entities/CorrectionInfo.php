@@ -123,12 +123,12 @@ class CorrectionInfo extends Entity
     /**
      * @inheritDoc
      */
-    public function jsonSerialize(): object
+    public function jsonSerialize(): array
     {
-        return (object)[
-            'type' => $this->getType() ?? '', // обязателен
-            'base_date' => $this->getDate() ?? '', // обязателен
-            'base_number' => $this->getNumber() ?? '', // обязателен
+        return [
+            'type' => $this->getType() ?? '',
+            'base_date' => $this->getDate() ?? '',
+            'base_number' => $this->getNumber() ?? '',
         ];
     }
 }

@@ -7,7 +7,7 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-namespace AtolOnlineTests;
+namespace AtolOnline\Tests\Api;
 
 use AtolOnline\Api\AtolClient;
 use AtolOnline\Api\KktMonitor;
@@ -22,6 +22,7 @@ use AtolOnline\Exceptions\TooLongLoginException;
 use AtolOnline\Exceptions\TooLongPasswordException;
 use AtolOnline\Helpers;
 use AtolOnline\TestEnvParams;
+use AtolOnline\Tests\BasicTestCase;
 use GuzzleHttp\Exception\GuzzleException;
 
 /**

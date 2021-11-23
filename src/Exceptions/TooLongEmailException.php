@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace AtolOnline\Exceptions;
 
 use AtolOnline\Constants\Constraints;
+use AtolOnline\Constants\Ffd105Tags;
 
 /**
  * Исключение, возникающее при попытке указать слишком длинный email
@@ -19,6 +20,9 @@ use AtolOnline\Constants\Constraints;
 class TooLongEmailException extends TooLongException
 {
     protected $message = 'Слишком длинный email';
-    protected int $max = Constraints::MAX_LENGTH_EMAIL;
-    protected array $ffd_tags = [1008, 1117];
+    protected float $max = Constraints::MAX_LENGTH_EMAIL;
+    protected array $ffd_tags = [
+        Ffd105Tags::CLIENT_CONTACT,
+        Ffd105Tags::COMPANY_EMAIL,
+    ];
 }

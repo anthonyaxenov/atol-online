@@ -9,7 +9,7 @@
 
 declare(strict_types = 1);
 
-namespace AtolOnlineTests;
+namespace AtolOnline\Tests;
 
 use AtolOnline\Entities\Entity;
 use AtolOnline\Helpers;
@@ -19,7 +19,7 @@ use Illuminate\Support\Collection;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class BasicTestCase
+ * Базовый класс для тестов
  */
 class BasicTestCase extends TestCase
 {
@@ -73,8 +73,7 @@ class BasicTestCase extends TestCase
      */
     public function assertAtolable(Entity $entity, array $json_structure = []): void
     {
-        $this->assertIsObject($entity);
-        $this->assertIsObject($entity->jsonSerialize());
+        $this->assertIsArray($entity->jsonSerialize());
         $this->assertIsString((string)$entity);
         $this->assertJson((string)$entity);
         if ($json_structure) {
@@ -138,6 +137,23 @@ class BasicTestCase extends TestCase
         $this->assertIsSameClass($expected, Collection::class);
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Провайдер строк, которые приводятся к null
+     *
+     * @return array<array<string|null>>
+     */
+    public function providerNullableStrings(): array
+    {
+        return [
+            [''],
+            [' '],
+            [null],
+            ["\n\r\t"],
+        ];
+    }
+
     /**
      * Провайдер валидных телефонов
      *
@@ -156,6 +172,22 @@ class BasicTestCase extends TestCase
     }
 
     /**
+     * Провайдер телефонов, которые приводятся к null
+     *
+     * @return array<array<string>>
+     */
+    public function providerNullablePhones(): array
+    {
+        return array_merge(
+            $this->providerNullableStrings(),
+            [
+                [Helpers::randomStr(10, false)],
+                ["asdfgvs \n\rtt\t*/(*&%^*$%"],
+            ]
+        );
+    }
+
+    /**
      * Провайдер валидных email-ов
      *
      * @return array<array<string>>
@@ -168,6 +200,26 @@ class BasicTestCase extends TestCase
             ['abc.def@mail.com'],
             ['abc.def@mail.org'],
             ['abc.def@mail-archive.com'],
+        ];
+    }
+
+    /**
+     * Провайдер невалидных email-ов
+     *
+     * @return array<array<string>>
+     */
+    public function providerInvalidEmails(): array
+    {
+        return [
+            ['@example'],
+            [Helpers::randomStr(15)],
+            ['@example.com'],
+            ['abc.def@mail'],
+            ['.abc@mail.com'],
+            ['example@example'],
+            ['abc..def@mail.com'],
+            ['abc.def@mail..com'],
+            ['abc.def@mail#archive.com'],
         ];
     }
 }

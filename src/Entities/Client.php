@@ -17,8 +17,8 @@ use AtolOnline\{
     Exceptions\InvalidInnLengthException,
     Exceptions\TooLongClientContactException,
     Exceptions\TooLongClientNameException,
-    Exceptions\TooLongEmailException,
-    Exceptions\TooLongItemNameException};
+    Exceptions\TooLongEmailException
+};
 
 /**
  * Класс Client, описывающий сущность покупателя
@@ -50,11 +50,11 @@ class Client extends Entity
     /**
      * Конструктор объекта покупателя
      *
-     * @param string|null $name Наименование. Тег ФФД - 1227.
-     * @param string|null $phone Email. Тег ФФД - 1008.
-     * @param string|null $email Телефон покупателя. Тег ФФД - 1008.
-     * @param string|null $inn ИНН. Тег ФФД - 1228.
-     * @throws TooLongItemNameException
+     * @param string|null $name Наименование (1227)
+     * @param string|null $phone Email (1008)
+     * @param string|null $email Телефон покупателя (1008)
+     * @param string|null $inn ИНН (1228)
+     * @throws TooLongClientNameException
      * @throws TooLongClientContactException
      * @throws TooLongEmailException
      * @throws InvalidEmailException
@@ -90,6 +90,7 @@ class Client extends Entity
      *
      * Тег ФФД - 1227
      *
+     * @todo улучшить валидацию по Constraints::PATTERN_PHONE
      * @param string|null $name
      * @return $this
      * @throws TooLongClientNameException
@@ -203,13 +204,13 @@ class Client extends Entity
     /**
      * @inheritDoc
      */
-    public function jsonSerialize(): object
+    public function jsonSerialize(): array
     {
         $json = [];
         $this->getName() && $json['name'] = $this->getName();
         $this->getEmail() && $json['email'] = $this->getEmail();
         $this->getPhone() && $json['phone'] = $this->getPhone();
         $this->getInn() && $json['inn'] = $this->getInn();
-        return (object)$json;
+        return $json;
     }
 }

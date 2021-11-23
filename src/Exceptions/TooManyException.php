@@ -22,9 +22,9 @@ class TooManyException extends AtolException
     protected $message = 'Слишком большое количество';
 
     /**
-     * @var int Максимальное количество
+     * @var float Максимальное количество
      */
-    protected int $max = 0;
+    protected float $max = 0;
 
     /**
      * Конструктор

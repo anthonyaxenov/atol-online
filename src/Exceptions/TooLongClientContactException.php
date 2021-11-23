@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace AtolOnline\Exceptions;
 
 use AtolOnline\Constants\Constraints;
+use AtolOnline\Constants\Ffd105Tags;
 
 /**
  * Исключение, возникающее при попытке указать слишком длинный телефон или email покупателя
@@ -19,6 +20,6 @@ use AtolOnline\Constants\Constraints;
 class TooLongClientContactException extends TooLongException
 {
     protected $message = 'Cлишком длинный телефон или email покупателя';
-    protected int $max = Constraints::MAX_LENGTH_CLIENT_CONTACT;
-    protected array $ffd_tags = [1008];
+    protected float $max = Constraints::MAX_LENGTH_CLIENT_CONTACT;
+    protected array $ffd_tags = [Ffd105Tags::CLIENT_CONTACT];
 }

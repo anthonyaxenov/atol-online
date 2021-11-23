@@ -11,7 +11,10 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
-use AtolOnline\Constants\Constraints;
+use AtolOnline\Constants\{
+    Constraints,
+    Ffd105Tags
+};
 
 /**
  * Исключение, возникающее при попытке указать слишком длинную операцию для платёжного агента
@@ -19,6 +22,6 @@ use AtolOnline\Constants\Constraints;
 class TooLongPayingAgentOperationException extends TooLongException
 {
     protected $message = 'Слишком длинное yаименование операции платёжного агента';
-    protected int $max = Constraints::MAX_LENGTH_PAYING_AGENT_OPERATION;
-    protected array $ffd_tags = [1073];
+    protected float $max = Constraints::MAX_LENGTH_PAYING_AGENT_OPERATION;
+    protected array $ffd_tags = [Ffd105Tags::PAGENT_PHONE];
 }

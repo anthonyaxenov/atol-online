@@ -19,5 +19,5 @@ use AtolOnline\Constants\Constraints;
 class TooLongLoginException extends TooLongException
 {
     protected $message = 'Слишком длинный логин';
-    protected int $max = Constraints::MAX_LENGTH_LOGIN;
+    protected float $max = Constraints::MAX_LENGTH_LOGIN;
 }

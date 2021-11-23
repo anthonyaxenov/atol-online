@@ -129,8 +129,8 @@ final class Kkt extends Entity
     /**
      * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
-        return $this->data;
+        return (array)$this->data;
     }
 }

@@ -14,15 +14,22 @@ namespace AtolOnline\Exceptions;
 use AtolOnline\Constants\Ffd105Tags;
 
 /**
- * Исключение, возникающее при попытке указать пустой email
- *
- * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 17
+ * Исключение, возникающее при ошибке валидации телефона
  */
-class EmptyEmailException extends AtolException
+class InvalidPhoneException extends AtolException
 {
-    protected $message = 'Email не может быть пустым';
     protected array $ffd_tags = [
         Ffd105Tags::CLIENT_CONTACT,
-        Ffd105Tags::COMPANY_EMAIL,
+        Ffd105Tags::PAGENT_PHONE,
     ];
+
+    /**
+     * Конструктор
+     *
+     * @param string $phone
+     */
+    public function __construct(string $phone = '')
+    {
+        parent::__construct("Невалидный номер телефона: '$phone'");
+    }
 }

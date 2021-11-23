@@ -57,9 +57,9 @@
         }
     },
     "autoload-dev": {
-        "psr-4": {
-            "AtolOnlineTests\\": "tests/"
-        }
+        "classmap": [
+            "tests/"
+        ]
     },
     "scripts": {
         "test": "vendor/bin/phpunit --colors=always",

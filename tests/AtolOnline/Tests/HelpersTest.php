@@ -7,7 +7,7 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-namespace AtolOnlineTests;
+namespace AtolOnline\Tests;
 
 use AtolOnline\Helpers;
 

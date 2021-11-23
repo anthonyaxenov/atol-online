@@ -9,11 +9,12 @@
 
 declare(strict_types = 1);
 
-namespace AtolOnlineTests;
+namespace AtolOnline\Tests\Entities;
 
 use AtolOnline\Entities\Kkt;
 use AtolOnline\Exceptions\EmptyMonitorDataException;
 use AtolOnline\Exceptions\NotEnoughMonitorDataException;
+use AtolOnline\Tests\BasicTestCase;
 use DateTime;
 use Exception;
 
