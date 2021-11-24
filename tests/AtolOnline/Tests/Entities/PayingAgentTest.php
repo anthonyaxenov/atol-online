@@ -14,8 +14,7 @@ use AtolOnline\{
     Exceptions\InvalidPhoneException,
     Exceptions\TooLongPayingAgentOperationException,
     Helpers,
-    Tests\BasicTestCase
-};
+    Tests\BasicTestCase};
 
 /**
  * Набор тестов для проверки работы класса платёжного агента
@@ -81,7 +80,7 @@ class PayingAgentTest extends BasicTestCase
     }
 
     /**
-     * Тестирует установку невалидного имени покупателя
+     * Тестирует установку невалидной операции
      *
      * @covers \AtolOnline\Entities\PayingAgent
      * @covers \AtolOnline\Entities\PayingAgent::setOperation
@@ -96,7 +95,7 @@ class PayingAgentTest extends BasicTestCase
     /**
      * Провайдер массивов телефонов, которые приводятся к null
      *
-     * @return array<array<mixed>>
+     * @return array<array>
      */
     public function providerNullablePhonesArrays(): array
     {

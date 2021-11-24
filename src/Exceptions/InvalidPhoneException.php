@@ -14,13 +14,14 @@ namespace AtolOnline\Exceptions;
 use AtolOnline\Constants\Ffd105Tags;
 
 /**
- * Исключение, возникающее при ошибке валидации телефона
+ * Исключение, возникающее при ошибке валидации номера телефона
  */
 class InvalidPhoneException extends AtolException
 {
     protected array $ffd_tags = [
         Ffd105Tags::CLIENT_CONTACT,
         Ffd105Tags::PAGENT_PHONE,
+        Ffd105Tags::RPO_PHONES,
     ];
 
     /**

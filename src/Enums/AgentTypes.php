@@ -23,22 +23,22 @@ use AtolOnline\Enum;
 final class AgentTypes extends Enum
 {
     /**
-     * Банковский платежный агент
+     * Банковский платёжный агент
      */
     const BANK_PAYING_AGENT = 'bank_paying_agent';
 
     /**
-     * Банковский платежный субагент
+     * Банковский платёжный субагент
      */
     const BANK_PAYING_SUBAGENT = 'bank_paying_subagent';
 
     /**
-     * Платежный агент
+     * Платёжный агент
      */
     const PAYING_AGENT = 'paying_agent';
 
     /**
-     * Платежный субагент
+     * Платёжный субагент
      */
     const PAYING_SUBAGENT = 'paying_subagent';
 

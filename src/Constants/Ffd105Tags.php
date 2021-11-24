@@ -45,12 +45,17 @@ final class Ffd105Tags
     const COMPANY_PADDRESS = 1187;
 
     /**
+     * Телефон оператора по приёму платежей
+     */
+    const RPO_PHONES = 1074;
+
+    /**
      * ИНН оператора перевода
      */
     const MTO_INN = 1016;
 
     /**
-     * Телефон платежного агента
+     * Телефон платёжного агента
      */
     const PAGENT_PHONE = 1073;
 
