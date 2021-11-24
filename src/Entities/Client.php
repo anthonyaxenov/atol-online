@@ -17,8 +17,7 @@ use AtolOnline\{
     Exceptions\InvalidInnLengthException,
     Exceptions\TooLongClientContactException,
     Exceptions\TooLongClientNameException,
-    Exceptions\TooLongEmailException
-};
+    Exceptions\TooLongEmailException};
 
 /**
  * Класс Client, описывающий сущность покупателя
@@ -28,22 +27,22 @@ use AtolOnline\{
 class Client extends Entity
 {
     /**
-     * @var string|null Наименование. Тег ФФД - 1227.
+     * @var string|null Наименование (1227)
      */
     protected ?string $name = null;
 
     /**
-     * @var string|null Email. Тег ФФД -  1008.
+     * @var string|null Email (1008)
      */
     protected ?string $email = null;
 
     /**
-     * @var string|null Телефон покупателя. Тег ФФД - 1008.
+     * @var string|null Телефон (1008)
      */
     protected ?string $phone = null;
 
     /**
-     * @var string|null ИНН. Тег ФФД -  1228.
+     * @var string|null ИНН (1228)
      */
     protected ?string $inn = null;
 
@@ -52,7 +51,7 @@ class Client extends Entity
      *
      * @param string|null $name Наименование (1227)
      * @param string|null $phone Email (1008)
-     * @param string|null $email Телефон покупателя (1008)
+     * @param string|null $email Телефон (1008)
      * @param string|null $inn ИНН (1228)
      * @throws TooLongClientNameException
      * @throws TooLongClientContactException
@@ -65,8 +64,7 @@ class Client extends Entity
         ?string $email = null,
         ?string $phone = null,
         ?string $inn = null
-    )
-    {
+    ) {
         !is_null($name) && $this->setName($name);
         !is_null($email) && $this->setEmail($email);
         !is_null($phone) && $this->setPhone($phone);
@@ -75,8 +73,6 @@ class Client extends Entity
 
     /**
      * Возвращает наименование покупателя
-     *
-     * Тег ФФД - 1227
      *
      * @return string|null
      */
@@ -87,8 +83,6 @@ class Client extends Entity
 
     /**
      * Устанавливает наименование покупателя
-     *
-     * Тег ФФД - 1227
      *
      * @todo улучшить валидацию по Constraints::PATTERN_PHONE
      * @param string|null $name
@@ -142,8 +136,6 @@ class Client extends Entity
     /**
      * Возвращает установленный телефон
      *
-     * Тег ФФД - 1008
-     *
      * @return string|null
      */
     public function getPhone(): ?string
@@ -153,8 +145,6 @@ class Client extends Entity
 
     /**
      * Устанавливает телефон
-     *
-     * Тег ФФД - 1008
      *
      * @param string|null $phone Номер телефона
      * @return $this

@@ -21,5 +21,5 @@ class TooLongClientContactException extends TooLongException
 {
     protected $message = 'Cлишком длинный телефон или email покупателя';
     protected float $max = Constraints::MAX_LENGTH_CLIENT_CONTACT;
-    protected array $ffd_tags = [Ffd105Tags::CLIENT_CONTACT];
+    protected array $ffd_tags = [Ffd105Tags::CLIENT_PHONE_EMAIL];
 }

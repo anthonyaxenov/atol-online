@@ -19,7 +19,7 @@ use AtolOnline\Constants\Ffd105Tags;
 class InvalidPhoneException extends AtolException
 {
     protected array $ffd_tags = [
-        Ffd105Tags::CLIENT_CONTACT,
+        Ffd105Tags::CLIENT_PHONE_EMAIL,
         Ffd105Tags::PAGENT_PHONE,
         Ffd105Tags::RPO_PHONES,
         Ffd105Tags::MTO_PHONES,

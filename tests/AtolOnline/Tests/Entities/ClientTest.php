@@ -17,8 +17,7 @@ use AtolOnline\{
     Exceptions\TooLongClientNameException,
     Exceptions\TooLongEmailException,
     Helpers,
-    Tests\BasicTestCase
-};
+    Tests\BasicTestCase};
 
 /**
  * Набор тестов для проверки работы класса покупателя
@@ -111,8 +110,6 @@ class ClientTest extends BasicTestCase
         (new Client())->setName(Helpers::randomStr(400));
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-
     /**
      * Тестирует установку телефонов, которые приводятся к null
      *
@@ -157,8 +154,6 @@ class ClientTest extends BasicTestCase
         $this->expectException(TooLongClientContactException::class);
         (new Client())->setPhone('99999999999999999999999999999999999999999999999999999999999999999999999999');
     }
-
-    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * Тестирует установку валидных email-ов
@@ -207,8 +202,6 @@ class ClientTest extends BasicTestCase
         $this->expectException(InvalidEmailException::class);
         (new Client())->setEmail($email);
     }
-
-    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * Тестирует исключение о корректной длине ИНН

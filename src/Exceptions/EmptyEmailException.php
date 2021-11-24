@@ -22,7 +22,7 @@ class EmptyEmailException extends AtolException
 {
     protected $message = 'Email не может быть пустым';
     protected array $ffd_tags = [
-        Ffd105Tags::CLIENT_CONTACT,
+        Ffd105Tags::CLIENT_PHONE_EMAIL,
         Ffd105Tags::COMPANY_EMAIL,
     ];
 }

@@ -67,16 +67,17 @@ class PayingAgentTest extends BasicTestCase
     /**
      * Тестирует установку операций, которые приводятся к null
      *
-     * @param mixed $name
+     * @param mixed $operation
      * @dataProvider providerNullableStrings
      * @covers       \AtolOnline\Entities\PayingAgent
      * @covers       \AtolOnline\Entities\PayingAgent::setOperation
      * @covers       \AtolOnline\Entities\PayingAgent::getOperation
      * @throws TooLongPayingAgentOperationException
+     * @throws InvalidPhoneException
      */
-    public function testNullableOperations(mixed $name): void
+    public function testNullableOperations(mixed $operation): void
     {
-        $this->assertNull((new PayingAgent())->setOperation($name)->getOperation());
+        $this->assertNull((new PayingAgent($operation))->getOperation());
     }
 
     /**

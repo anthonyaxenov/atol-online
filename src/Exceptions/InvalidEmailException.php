@@ -21,7 +21,7 @@ use AtolOnline\Constants\Ffd105Tags;
 class InvalidEmailException extends AtolException
 {
     protected array $ffd_tags = [
-        Ffd105Tags::CLIENT_CONTACT,
+        Ffd105Tags::CLIENT_PHONE_EMAIL,
         Ffd105Tags::COMPANY_EMAIL,
     ];
 
