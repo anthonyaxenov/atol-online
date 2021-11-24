@@ -22,6 +22,8 @@ class InvalidPhoneException extends AtolException
         Ffd105Tags::CLIENT_CONTACT,
         Ffd105Tags::PAGENT_PHONE,
         Ffd105Tags::RPO_PHONES,
+        Ffd105Tags::MTO_PHONES,
+        Ffd105Tags::SUPPLIER_PHONES,
     ];
 
     /**

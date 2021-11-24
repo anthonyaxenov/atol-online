@@ -17,7 +17,7 @@ final class Ffd105Tags
     /**
      * Телефон или электронный адрес покупателя
      */
-    const CLIENT_CONTACT = 1008;
+    const CLIENT_PHONE_EMAIL = 1008;
 
     /**
      * Наименование организации или фамилия, имя, отчество (при наличии), серия и номер паспорта покупателя (клиента)
@@ -50,6 +50,11 @@ final class Ffd105Tags
     const RPO_PHONES = 1074;
 
     /**
+     * Телефон оператора перевода
+     */
+    const MTO_PHONES = 1075;
+
+    /**
      * ИНН оператора перевода
      */
     const MTO_INN = 1016;
@@ -58,6 +63,16 @@ final class Ffd105Tags
      * Телефон платёжного агента
      */
     const PAGENT_PHONE = 1073;
+
+    /**
+     * Телефон поставщика
+     */
+    const SUPPLIER_PHONES = 1171;
+
+    /**
+     * Наименование поставщика
+     */
+    const SUPPLIER_NAME = 1225;
 
     /**
      * ИНН поставщика
