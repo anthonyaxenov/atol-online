@@ -20,17 +20,17 @@ use Illuminate\Support\Collection;
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 19-20
  */
-class MoneyTransferOperator extends Entity
+class ReceivePaymentsOperator extends Entity
 {
     /**
-     * @var Collection Телефоны платёжного агента (1073)
+     * @var Collection Телефоны оператора по приёму платежей (1074)
      */
     protected Collection $phones;
 
     /**
      * Конструктор
      *
-     * @param array|Collection|null $phones Телефон оператора по приёму платежей (1074)
+     * @param array|Collection|null $phones Телефоны оператора по приёму платежей (1074)
      * @throws InvalidPhoneException
      */
     public function __construct(
