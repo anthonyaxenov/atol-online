@@ -24,37 +24,37 @@ use AtolOnline\{
 /**
  * Класс, описывающий сущность компании-продавца
  *
- * @package AtolOnline\Entities
+ * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 17
  */
 class Company extends Entity
 {
     /**
-     * @var string|null Почта. Тег ФФД -  1117.
+     * @var string|null Почта (1117)
      */
     protected ?string $email;
 
     /**
-     * @var string|null Система налогообложения продавца. Тег ФФД - 1055.
+     * @var string|null Система налогообложения продавца (1055)
      */
     protected ?string $sno;
 
     /**
-     * @var string|null ИНН. Тег ФФД -  1018.
+     * @var string|null ИНН (1018)
      */
     protected ?string $inn;
 
     /**
-     * @var string|null Место расчётов (адрес интернет-магазина). Тег ФФД - 1187.
+     * @var string|null Место расчётов (адрес интернет-магазина) (1187)
      */
     protected ?string $payment_address;
 
     /**
      * Company constructor.
      *
-     * @param string $sno
-     * @param string $inn
-     * @param string $payment_address
-     * @param string $email
+     * @param string $sno Система налогообложения продавца (1055)
+     * @param string $inn ИНН (1018)
+     * @param string $payment_address Место расчётов (адрес интернет-магазина) (1187)
+     * @param string $email Почта (1117)
      * @throws InvalidEmailException
      * @throws InvalidInnLengthException
      * @throws InvalidPaymentAddressException
