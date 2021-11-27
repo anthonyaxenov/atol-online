@@ -67,16 +67,16 @@ class BasicTestCase extends TestCase
      * Тестирует является ли объект приводимым к json-строке согласно схеме АТОЛ Онлайн
      *
      * @param Entity $entity
-     * @param array $json_structure
+     * @param array|null $json_structure
      * @covers \AtolOnline\Entities\Entity::jsonSerialize
      * @covers \AtolOnline\Entities\Entity::__toString
      */
-    public function assertAtolable(Entity $entity, array $json_structure = []): void
+    public function assertAtolable(Entity $entity, ?array $json_structure = null): void
     {
         $this->assertIsArray($entity->jsonSerialize());
         $this->assertIsString((string)$entity);
         $this->assertJson((string)$entity);
-        if ($json_structure) {
+        if (!is_null($json_structure)) {
             $this->assertEquals(json_encode($json_structure), (string)$entity);
         }
     }
