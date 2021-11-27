@@ -12,78 +12,52 @@ declare(strict_types = 1);
 namespace AtolOnline\Entities;
 
 use AtolOnline\Enums\VatTypes;
+use AtolOnline\Helpers;
 
 /**
  * Класс, описывающий ставку НДС
  *
- * @package AtolOnline\Entities
+ * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 25, 31
  */
 class Vat extends Entity
 {
     /**
-     * @var string Выбранный тип ставки НДС. Тег ФФД - 1199, 1105, 1104, 1103, 1102, 1107, 1106.
+     * @var string Тип ставки НДС (1199, 1105, 1104, 1103, 1102, 1107, 1106)
      */
     private string $type;
-    
+
     /**
-     * @var int Сумма в копейках, от которой пересчитывается размер НДС
+     * @var float Сумма в рублях, от которой пересчитывается размер НДС
      */
-    private int $sum_original = 0;
-    
+    private float $sum;
+
     /**
-     * @var int Сумма НДС в копейках
-     */
-    private int $sum_final = 0;
-    
-    /**
-     * Vat constructor.
+     * Конструктор
      *
-     * @param string     $type   Тип ставки НДС
-     * @param float|null $rubles Исходная сумма в рублях, от которой нужно расчитать размер НДС
+     * @param string $type Тип ставки НДС (1199, 1105, 1104, 1103, 1102, 1107, 1106)
+     * @param float $rubles Исходная сумма в рублях, от которой нужно расчитать размер НДС
      */
-    public function __construct(string $type = VatTypes::NONE, float $rubles = null)
+    public function __construct(string $type, float $rubles)
     {
-        $this->type = $type;
-        if ($rubles) {
-            $this->setSum($rubles);
-        }
+        $this->setType($type)->setSum($rubles);
     }
-    
+
     /**
-     * Устанавливает:
-     * размер НДС от суммы в копейках
+     * Устанавливает тип ставки НДС
+     * Автоматически пересчитывает итоговый размер НДС от исходной суммы.
      *
-     * @param string $type   Тип ставки НДС
-     * @param int    $kopeks Копейки
-     * @return float|int
-     * @see https://nalog-nalog.ru/nds/nalogovaya_baza_nds/kak-schitat-nds-pravilno-vychislyaem-20-ot-summy-primer-algoritm/
-     * @see https://glavkniga.ru/situations/k500734
-     * @see https://www.b-kontur.ru/nds-kalkuljator-online
+     * @param string $type Тип ставки НДС
+     * @return $this
      */
-    protected static function calculator(string $type, int $kopeks)
+    public function setType(string $type): self
     {
-        switch ($type) {
-            case VatTypes::NONE:
-            case VatTypes::VAT0:
-                return 0;
-            case VatTypes::VAT10:
-                //return $kopeks * 10 / 100;
-            case VatTypes::VAT110:
-                return $kopeks * 10 / 110;
-            case VatTypes::VAT18:
-                //return $kopeks * 18 / 100;
-            case VatTypes::VAT118:
-                return $kopeks * 18 / 118;
-            case VatTypes::VAT20:
-                //return $kopeks * 20 / 100;
-            case VatTypes::VAT120:
-                return $kopeks * 20 / 120;
-        }
-        return 0;
+        $type = trim($type);
+        VatTypes::isValid($type) && $this->type = $type;
+        return $this;
     }
-    
+
     /**
-     * Возвращает тип ставки НДС. Тег ФФД - 1199, 1105, 1104, 1103, 1102, 1107, 1106.
+     * Возвращает тип ставки НДС
      *
      * @return string
      */
@@ -91,45 +65,7 @@ class Vat extends Entity
     {
         return $this->type;
     }
-    
-    /**
-     * Устанавливает тип ставки НДС. Тег ФФД - 1199, 1105, 1104, 1103, 1102, 1107, 1106.
-     * Автоматически пересчитывает итоговый размер НДС от исходной суммы.
-     *
-     * @param string $type Тип ставки НДС
-     * @return $this
-     */
-    public function setType(string $type): Vat
-    {
-        $this->type = $type;
-        $this->setFinal();
-        return $this;
-    }
-    
-    /**
-     * Возвращает расчитанный итоговый размер ставки НДС в рублях. Тег ФФД - 1200.
-     *
-     * @return float
-     */
-    public function getFinalSum(): float
-    {
-        return rubles($this->sum_final);
-    }
-    
-    /**
-     * Устанавливает исходную сумму, от которой будет расчитываться итоговый размер НДС.
-     * Автоматически пересчитывает итоговый размер НДС от исходной суммы.
-     *
-     * @param float $rubles Сумма в рублях за предмет расчёта, из которой высчитывается размер НДС
-     * @return $this
-     */
-    public function setSum(float $rubles): Vat
-    {
-        $this->sum_original = kopeks($rubles);
-        $this->setFinal();
-        return $this;
-    }
-    
+
     /**
      * Возвращает исходную сумму, от которой расчитывается размер налога
      *
@@ -137,52 +73,64 @@ class Vat extends Entity
      */
     public function getSum(): float
     {
-        return rubles($this->sum_original);
+        return $this->sum;
     }
-    
+
     /**
-     * Прибавляет указанную сумму к общей исходной сумме.
-     * Автоматически пересчитывает итоговый размер НДС от новой исходной суммы.
+     * Устанавливает исходную сумму, от которой будет расчитываться итоговый размер НДС.
+     * Автоматически пересчитывает итоговый размер НДС от исходной суммы.
+     *
+     * @param float $rubles Сумма в рублях за предмет расчёта, из которой высчитывается размер НДС
+     * @return $this
+     */
+    public function setSum(float $rubles): self
+    {
+        $this->sum = $rubles;
+        return $this;
+    }
+
+    /**
+     * Возвращает sdрасчитанный итоговый размер ставки НДС в рублях
+     *
+     * @return float
+     * @see https://nalog-nalog.ru/nds/nalogovaya_baza_nds/kak-schitat-nds-pravilno-vychislyaem-20-ot-summy-primer-algoritm/
+     * @see  https://glavkniga.ru/situations/k500734
+     * @see https://www.b-kontur.ru/nds-kalkuljator-online
+     */
+    public function getCalculated(): float
+    {
+        $kopeks = Helpers::toKop($this->sum);
+        return Helpers::toRub(match ($this->getType()) {
+            VatTypes::VAT10 => $kopeks * 10 / 100,
+            VatTypes::VAT18 => $kopeks * 18 / 100,
+            VatTypes::VAT20 => $kopeks * 20 / 100,
+            VatTypes::VAT110 => $kopeks * 10 / 110,
+            VatTypes::VAT118 => $kopeks * 18 / 118,
+            VatTypes::VAT120 => $kopeks * 20 / 120,
+            default => 0,
+        });
+    }
+
+    /**
+     * Прибавляет указанную сумму к исходной
      *
      * @param float $rubles
      * @return $this
      */
-    public function addSum(float $rubles): Vat
+    public function addSum(float $rubles): self
     {
-        $this->sum_original += kopeks($rubles);
-        $this->setFinal();
+        $this->sum += $rubles;
         return $this;
     }
-    
-    /**
-     * Расчитывает и возвращает размер НДС от указанной суммы в рублях.
-     * Не изменяет итоговый размер НДС.
-     *
-     * @param float|null $rubles
-     * @return float
-     */
-    public function calc(float $rubles): float
-    {
-        return rubles(self::calculator($this->type, kopeks($rubles)));
-    }
-    
+
     /**
      * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'type' => $this->getType(),
-            'sum' => $this->getFinalSum(),
+            'sum' => $this->getCalculated(),
         ];
-    }
-    
-    /**
-     * Расчитывает и устанавливает итоговый размер ставки от исходной суммы в копейках
-     */
-    protected function setFinal(): Vat
-    {
-        $this->sum_final = self::calculator($this->type, $this->sum_original);
-        return $this;
     }
 }

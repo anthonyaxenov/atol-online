@@ -32,7 +32,7 @@ class ClientTest extends BasicTestCase
      */
     public function testConstructorWithoutArgs(): void
     {
-        $this->assertEquals('[]', (string)(new Client()));
+        $this->assertAtolable(new Client(), []);
     }
 
     /**

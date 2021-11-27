@@ -84,11 +84,11 @@ class HelpersTest extends BasicTestCase
      * Тестирует перевод копеек в рубли
      *
      * @dataProvider providerKopeksToRubles
-     * @covers       \AtolOnline\Helpers::KopToRub
+     * @covers       \AtolOnline\Helpers::toRub
      */
     public function testKopeksToRubles(?int $kopeks, float $rubles): void
     {
-        $result = Helpers::KopToRub($kopeks);
+        $result = Helpers::toRub($kopeks);
         $this->assertIsFloat($result);
         $this->assertEquals($result, $rubles);
     }
@@ -97,11 +97,11 @@ class HelpersTest extends BasicTestCase
      * Тестирует перевод копеек в рубли
      *
      * @dataProvider providerRublesToKopeks
-     * @covers       \AtolOnline\Helpers::RubToKop
+     * @covers       \AtolOnline\Helpers::toKop
      */
     public function testRublesToKopeks(?float $rubles, int $kopeks): void
     {
-        $result = Helpers::RubToKop($rubles);
+        $result = Helpers::toKop($rubles);
         $this->assertIsInt($result);
         $this->assertEquals($result, $kopeks);
     }
