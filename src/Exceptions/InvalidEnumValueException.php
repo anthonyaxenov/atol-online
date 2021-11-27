@@ -11,7 +11,7 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
-use AtolOnline\Enum;
+use AtolOnline\Enums\Enum;
 
 /**
  * Исключение, возникающее при ошибке валидации типа агента

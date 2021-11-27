@@ -11,14 +11,10 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Enums;
 
-use MyCLabs\Enum\Enum;
-
 /**
  * Константы, определяющие признаки способов расчёта
  *
- * Тег ФФД -  1214
- *
- * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 22 (payment_method)
+ * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 22
  */
 final class PaymentMethods extends Enum
 {
@@ -56,4 +52,12 @@ final class PaymentMethods extends Enum
      * Оплата кредита
      */
     const CREDIT_PAYMENT = 'credit_payment';
+
+    /**
+     * @inheritDoc
+     */
+    public static function getFfdTags(): array
+    {
+        return [1214];
+    }
 }

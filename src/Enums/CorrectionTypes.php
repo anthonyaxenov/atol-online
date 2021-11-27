@@ -11,14 +11,10 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Enums;
 
-use MyCLabs\Enum\Enum;
-
 /**
  * Константы, определяющие типы документов коррекции
  *
- * Тег ФФД -  1173
- *
- * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 35 (correction_info)
+ * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 35
  */
 final class CorrectionTypes extends Enum
 {
@@ -31,4 +27,12 @@ final class CorrectionTypes extends Enum
      * По предписанию
      */
     const INSTRUCTION = 'instruction';
+
+    /**
+     * @inheritDoc
+     */
+    public static function getFfdTags(): array
+    {
+        return [1173];
+    }
 }

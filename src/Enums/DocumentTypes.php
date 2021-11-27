@@ -11,8 +11,6 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Enums;
 
-use MyCLabs\Enum\Enum;
-
 /**
  * Константы, определяющие типы документов
  */
@@ -27,4 +25,12 @@ final class DocumentTypes extends Enum
      * Чек коррекции
      */
     const CORRECTION = 'correction';
+
+    /**
+     * @inheritDoc
+     */
+    public static function getFfdTags(): array
+    {
+        return [];
+    }
 }

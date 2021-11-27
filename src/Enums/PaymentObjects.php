@@ -11,14 +11,10 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Enums;
 
-use MyCLabs\Enum\Enum;
-
 /**
  * Константы, определяющие признаки предметов расчёта
  *
- * Тег ФФД -  1212
- *
- * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 23 (payment_object)
+ * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 23
  */
 final class PaymentObjects extends Enum
 {
@@ -115,7 +111,7 @@ final class PaymentObjects extends Enum
     const RESORT_FEE = 'resort_fee';
 
     /**
-     * Взнос в счёт оплаты пени, штрафе, вознаграждении, бонусе и ином аналогичном предмете расчета
+     * Взнос в счёт оплаты пени, штрафе, вознаграждении, бонусе и ином аналогичном предмете расчёта
      */
     const AWARD = 'award';
 
@@ -158,4 +154,12 @@ final class PaymentObjects extends Enum
      * Платёж казино
      */
     const CASINO_PAYMENT = 'casino_payment';
+
+    /**
+     * @inheritDoc
+     */
+    public static function getFfdTags(): array
+    {
+        return [1212];
+    }
 }

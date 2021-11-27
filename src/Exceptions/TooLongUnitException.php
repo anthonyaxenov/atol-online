@@ -21,5 +21,5 @@ class TooLongUnitException extends TooLongException
 {
     protected $message = 'Слишком длинная единица измерения предмета расчёта';
     protected float $max = Constraints::MAX_LENGTH_MEASUREMENT_UNIT;
-    protected array $ffd_tags = [Ffd105Tags::ITEM_MEASURE];
+    protected array $ffd_tags = [Ffd105Tags::ITEM_MEASUREMENT_UNIT];
 }

@@ -11,12 +11,10 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Enums;
 
-use AtolOnline\Enum;
-
 /**
  * Константы, определяющие типы налогообложения
  *
- * Тег ФДД - 1055
+ * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 35
  */
 final class SnoTypes extends Enum
 {
@@ -51,7 +49,7 @@ final class SnoTypes extends Enum
     const PATENT = 'patent';
 
     /**
-     * @return int[] Возвращает массив тегов ФФД
+     * @inheritDoc
      */
     public static function getFfdTags(): array
     {
