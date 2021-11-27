@@ -17,12 +17,12 @@ final class Helpers
     /**
      * Конвертирует копейки в рубли, оставляя только 2 знака после запятой
      *
-     * @param int|null $kopeks Копейки
+     * @param float|null $kopeks Копейки
      * @return float Рубли
      */
-    public static function KopToRub(?int $kopeks): float
+    public static function toRub(?float $kopeks): float
     {
-        return round(abs((int)$kopeks) / 100, 2);
+        return round(abs((float)$kopeks) / 100, 2);
     }
 
     /**
@@ -31,7 +31,7 @@ final class Helpers
      * @param float|null $rubles Рубли
      * @return int Копейки
      */
-    public static function RubToKop(?float $rubles): int
+    public static function toKop(?float $rubles): int
     {
         return (int)round(abs((float)$rubles) * 100, 2);
     }
