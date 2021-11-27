@@ -12,11 +12,11 @@ declare(strict_types = 1);
 namespace AtolOnline;
 
 /**
- * Константы, определяющие параметры тестовой среды для ФФД 1.05
+ * Константы, определяющие параметры тестовых сред
  *
  * @see https://online.atol.ru/files/ffd/test_sreda.txt Параметры настройки тестовых сред
  */
-class TestEnvParams
+final class TestEnvParams
 {
     /**
      * Возвращает данные для работы с тестовой средой АТОЛ Онлайн ФФД 1.05

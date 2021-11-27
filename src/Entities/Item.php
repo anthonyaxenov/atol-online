@@ -22,32 +22,32 @@ use AtolOnline\{
 /**
  * Предмет расчёта (товар, услуга)
  *
- * @package AtolOnline\Entities
+ * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 21-30
  */
 class Item extends Entity
 {
     /**
-     * @var string Наименование. Тег ФФД - 1030.
+     * @var string Наименование (1030)
      */
     protected string $name;
 
     /**
-     * @var int Цена в копейках (с учётом скидок и наценок). Тег ФФД - 1079.
+     * @var int Цена в копейках (с учётом скидок и наценок) (1079)
      */
     protected int $price = 0;
 
     /**
-     * @var float Количество, вес. Тег ФФД - 1023.
+     * @var float Количество, вес (1023)
      */
     protected float $quantity = 0.0;
 
     /**
-     * @var float Сумма в копейках. Тег ФФД - 1043.
+     * @var float Сумма в копейках (1043)
      */
     protected float $sum = 0;
 
     /**
-     * @var string Единица измерения количества. Тег ФФД - 1197.
+     * @var string Единица измерения количества (1197)
      */
     protected string $measurement_unit;
 
@@ -57,17 +57,17 @@ class Item extends Entity
     protected ?Vat $vat;
 
     /**
-     * @var string Признак способа расчёта. Тег ФФД - 1214.
+     * @var string Признак способа расчёта (1214)
      */
     protected string $payment_method;
 
     /**
-     * @var string Признак объекта расчёта. Тег ФФД - 1212.
+     * @var string Признак объекта расчёта (1212)
      */
     protected string $payment_object;
 
     /**
-     * @var string Дополнительный реквизит. Тег ФФД - 1191.
+     * @var string Дополнительный реквизит (1191)
      */
     protected string $user_data;
 

@@ -49,7 +49,7 @@ class Company extends Entity
     protected ?string $payment_address;
 
     /**
-     * Company constructor.
+     * Конструктор
      *
      * @param string $sno Система налогообложения продавца (1055)
      * @param string $inn ИНН (1018)
@@ -107,8 +107,6 @@ class Company extends Entity
     /**
      * Возвращает установленный тип налогообложения
      *
-     * Тег ФФД - 1055
-     *
      * @return string
      */
     public function getSno(): string
@@ -118,8 +116,6 @@ class Company extends Entity
 
     /**
      * Устанавливает тип налогообложения
-     *
-     * Тег ФФД - 1055
      *
      * @param string $sno
      * @return $this
@@ -136,8 +132,6 @@ class Company extends Entity
     /**
      * Возвращает установленный ИНН
      *
-     * Тег ФФД - 1018
-     *
      * @return string
      */
     public function getInn(): string
@@ -147,8 +141,6 @@ class Company extends Entity
 
     /**
      * Устанавливает ИНН
-     *
-     * Тег ФФД - 1018
      *
      * @param string $inn
      * @return $this
@@ -167,8 +159,6 @@ class Company extends Entity
     /**
      * Возвращает установленный адрес места расчётов
      *
-     * Тег ФФД - 1187
-     *
      * @return string
      */
     public function getPaymentAddress(): string
@@ -178,8 +168,6 @@ class Company extends Entity
 
     /**
      * Устанавливает адрес места расчётов
-     *
-     * Тег ФФД - 1187
      *
      * @param string $payment_address
      * @return $this
