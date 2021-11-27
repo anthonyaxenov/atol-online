@@ -28,11 +28,17 @@
         }
     ],
     "support": {
+        "rss": "https://t.me/atolonline_php",
+        "chat": "https://t.me/+Rky7ia68fctjZmUy",
         "source": "https://github.com/anthonyaxenov/atol-online",
         "issues": "https://github.com/anthonyaxenov/atol-online/issues",
         "docs": "https://github.com/anthonyaxenov/atol-online/blob/master/docs/readme.md"
     },
     "funding": [
+        {
+            "type": "Patreon",
+            "url": "https://www.patreon.com/anthonyaxenov"
+        },
         {
             "type": "Yoomoney",
             "url": "https://yoomoney.ru/to/41001685237530"
