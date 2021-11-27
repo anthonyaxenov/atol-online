@@ -56,7 +56,7 @@ class AgentInfo extends Entity
         ?ReceivePaymentsOperator $receive_payments_operator = null,
         ?MoneyTransferOperator $money_transfer_operator = null,
     ) {
-        !is_null($type) && AgentTypes::isValid($type) && $this->setType($type);
+        !is_null($type) && $this->setType($type);
         !is_null($paying_agent) && $this->setPayingAgent($paying_agent);
         !is_null($receive_payments_operator) && $this->setReceivePaymentsOperator($receive_payments_operator);
         !is_null($money_transfer_operator) && $this->setMoneyTransferOperator($money_transfer_operator);
@@ -77,10 +77,11 @@ class AgentInfo extends Entity
      *
      * @param string|null $type
      * @return AgentInfo
+     * @throws InvalidEnumValueException
      */
     public function setType(?string $type): AgentInfo
     {
-        $this->type = $type;
+        AgentTypes::isValid($type) && $this->type = $type;
         return $this;
     }
 
