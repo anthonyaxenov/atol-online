@@ -15,14 +15,15 @@ use AtolOnline\{
     Constants\Constraints,
     Exceptions\InvalidEmailException,
     Exceptions\InvalidInnLengthException,
+    Exceptions\InvalidPhoneException,
     Exceptions\TooLongClientContactException,
     Exceptions\TooLongClientNameException,
     Exceptions\TooLongEmailException};
 
 /**
- * Класс Client, описывающий сущность покупателя
+ * Класс, описывающий покупателя
  *
- * @package AtolOnline\Entities
+ * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 17
  */
 class Client extends Entity
 {
@@ -84,7 +85,6 @@ class Client extends Entity
     /**
      * Устанавливает наименование покупателя
      *
-     * @todo улучшить валидацию по Constraints::PATTERN_PHONE
      * @param string|null $name
      * @return $this
      * @throws TooLongClientNameException
@@ -148,14 +148,14 @@ class Client extends Entity
      *
      * @param string|null $phone Номер телефона
      * @return $this
-     * @throws TooLongClientContactException
+     * @throws InvalidPhoneException
      */
     public function setPhone(?string $phone): self
     {
         if (is_string($phone)) {
             $phone = preg_replace('/[^\d]/', '', trim($phone));
-            if (mb_strlen($phone) > Constraints::MAX_LENGTH_CLIENT_CONTACT) {
-                throw new TooLongClientContactException($phone);
+            if (preg_match(Constraints::PATTERN_PHONE, $phone) != 1) {
+                throw new InvalidPhoneException($phone);
             }
         }
         $this->phone = empty($phone) ? null : "+$phone";

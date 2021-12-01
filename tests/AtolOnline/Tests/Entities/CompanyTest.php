@@ -19,11 +19,10 @@ use AtolOnline\{
     Exceptions\TooLongEmailException,
     Exceptions\TooLongPaymentAddressException,
     Helpers,
-    Tests\BasicTestCase
-};
+    Tests\BasicTestCase};
 
 /**
- * Набор тестов для проверки работы класс продавца
+ * Набор тестов для проверки работы класса продавца
  */
 class CompanyTest extends BasicTestCase
 {

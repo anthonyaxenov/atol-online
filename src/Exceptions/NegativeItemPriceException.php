@@ -11,16 +11,14 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
-use AtolOnline\Constants\Constraints;
 use AtolOnline\Constants\Ffd105Tags;
 
 /**
- * Исключение, возникающее при попытке указать слишком высокую цену (сумму)
+ * Исключение, возникающее при попытке указать предмету расчёта отрицательную цену
  */
-class TooHighPriceException extends TooManyException
+class NegativeItemPriceException extends AtolException
 {
     protected array $ffd_tags = [Ffd105Tags::ITEM_PRICE];
-    protected float $max = Constraints::MAX_COUNT_ITEM_PRICE;
 
     /**
      * Конструктор
@@ -30,6 +28,6 @@ class TooHighPriceException extends TooManyException
      */
     public function __construct(string $name, float $price)
     {
-        parent::__construct($price, "Слишком высокая цена для предмета расчёта '$name'");
+        parent::__construct("Предмет расчёта '$name' не может иметь отрицательную цену $price");
     }
 }

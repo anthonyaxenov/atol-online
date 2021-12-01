@@ -31,8 +31,9 @@ class AtolException extends Exception
      */
     public function __construct(string $message = '', array $ffd_tags = [])
     {
+        $tags = implode(', ', $ffd_tags ?: $this->ffd_tags);
         parent::__construct(
-            ($message ?: $this->message) . ' [Теги ФФД: ' . implode(', ', $ffd_tags ?: $this->ffd_tags) . ']'
+            ($message ?: $this->message) . ($tags ? ' [Теги ФФД: ' . $tags : '') . ']'
         );
     }
 }

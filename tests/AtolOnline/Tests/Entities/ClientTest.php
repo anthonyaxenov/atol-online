@@ -13,7 +13,7 @@ use AtolOnline\{
     Entities\Client,
     Exceptions\InvalidEmailException,
     Exceptions\InvalidInnLengthException,
-    Exceptions\TooLongClientContactException,
+    Exceptions\InvalidPhoneException,
     Exceptions\TooLongClientNameException,
     Exceptions\TooLongEmailException,
     Helpers,
@@ -118,7 +118,7 @@ class ClientTest extends BasicTestCase
      * @covers       \AtolOnline\Entities\Client
      * @covers       \AtolOnline\Entities\Client::setPhone
      * @covers       \AtolOnline\Entities\Client::getPhone
-     * @throws TooLongClientContactException
+     * @throws InvalidPhoneException
      */
     public function testNullablePhones(mixed $phone): void
     {
@@ -133,7 +133,7 @@ class ClientTest extends BasicTestCase
      * @covers       \AtolOnline\Entities\Client
      * @covers       \AtolOnline\Entities\Client::setPhone
      * @covers       \AtolOnline\Entities\Client::getPhone
-     * @throws TooLongClientContactException
+     * @throws InvalidPhoneException
      */
     public function testValidPhone(string $input, string $output): void
     {
@@ -146,13 +146,13 @@ class ClientTest extends BasicTestCase
      * @todo актуализировать при доработатанной валидации
      * @covers \AtolOnline\Entities\Client
      * @covers \AtolOnline\Entities\Client::setPhone
-     * @covers \AtolOnline\Exceptions\TooLongClientContactException
-     * @throws TooLongClientContactException
+     * @covers \AtolOnline\Exceptions\InvalidPhoneException
+     * @throws InvalidPhoneException
      */
-    public function testTooLongClientPhone(): void
+    public function testInvalidPhoneException(): void
     {
-        $this->expectException(TooLongClientContactException::class);
-        (new Client())->setPhone('99999999999999999999999999999999999999999999999999999999999999999999999999');
+        $this->expectException(InvalidPhoneException::class);
+        (new Client())->setPhone(Helpers::randomStr(500));
     }
 
     /**

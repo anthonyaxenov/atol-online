@@ -14,7 +14,7 @@ namespace AtolOnline\Exceptions;
 use AtolOnline\Enums\Enum;
 
 /**
- * Исключение, возникающее при ошибке валидации типа агента
+ * Исключение, возникающее при ошибке валидации перечислимых значений
  */
 class InvalidEnumValueException extends AtolException
 {
@@ -29,10 +29,11 @@ class InvalidEnumValueException extends AtolException
     public function __construct(string $enum, mixed $value, string $message = '', array $ffd_tags = [])
     {
         /** @var $enum Enum */
-        parent::__construct(
-            ($message ?: "Некорректное значение $enum::$value.") .
-                " Допустимые значения: " . implode(', ', $enum::toArray()),
-            $ffd_tags ?: $enum::getFfdTags()
-        );
+        $own_message = (
+            empty($value)
+                ? "Значение из $enum не может быть пустым."
+                : "Некорректное значение $enum::$value."
+            ) . " Допустимые значения: " . implode(', ', $enum::toArray());
+        parent::__construct($message ?: $own_message, $ffd_tags ?: $enum::getFfdTags());
     }
 }

@@ -17,7 +17,7 @@ use AtolOnline\Constants\Ffd105Tags;
 /**
  * Исключение, возникающее при попытке указать слишком длинную единицу измерения предмета расчёта
  */
-class TooLongUnitException extends TooLongException
+class TooLongMeasurementUnitException extends TooLongException
 {
     protected $message = 'Слишком длинная единица измерения предмета расчёта';
     protected float $max = Constraints::MAX_LENGTH_MEASUREMENT_UNIT;

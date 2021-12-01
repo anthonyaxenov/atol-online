@@ -31,14 +31,13 @@ class TooManyException extends AtolException
      *
      * @param float $value
      * @param string $message
-     * @param float $max
+     * @param float|null $max
      */
-    public function __construct(float $value, string $message = '', float $max = 0)
+    public function __construct(float $value, string $message = '', ?float $max = null)
     {
-        $message = ($message ?: $this->message) . ': ' . $value;
-        if ($max > 0 || $this->max > 0) {
-            $message .= ' (макс. = ' . ($max ?? $this->max) . ', фактически = ' . $value . ')';
-        }
-        parent::__construct($message);
+        parent::__construct(
+            ($message ?: $this->message) . (((float)$max > 0 || (float)$this->max > 0) ?
+                ' (макс = ' . ($max ?? $this->max) . ', фактически = ' . $value . ')' : '')
+        );
     }
 }

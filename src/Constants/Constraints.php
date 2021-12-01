@@ -103,6 +103,20 @@ final class Constraints
     const MAX_LENGTH_USER_DATA = 64;
 
     /**
+     * Минимальная длина кода таможенной декларации (1231)
+     *
+     * @see https://online.atol.ru/possystem/v4/schema/sell Схема receipt.items.declaration_number
+     */
+    const MIN_LENGTH_DECLARATION_NUMBER = 1;
+
+    /**
+     * Максимальная длина кода таможенной декларации (1231)
+     *
+     * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 30
+     */
+    const MAX_LENGTH_DECLARATION_NUMBER = 32;
+
+    /**
      * Максимальное количество платежей в любом документе
      * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 30 и 35
      */
@@ -122,7 +136,7 @@ final class Constraints
     const MAX_LENGTH_CASHIER_NAME = 64;
 
     /**
-     * Регулярное выражание для валидации строки ИНН
+     * Регулярное выражение для валидации строки ИНН
      *
      * @see https://online.atol.ru/possystem/v4/schema/sell Схема "#/receipt/client/inn"
      */
@@ -138,9 +152,15 @@ final class Constraints
         '/^([^\s\\\]{0,17}|\+[^\s\\\]{1,18})$/';
 
     /**
-     * Регулярное выражание для валидации строки Callback URL
+     * Регулярное выражение для валидации строки Callback URL
      */
     const PATTERN_CALLBACK_URL = /* @lang PhpRegExp */
         '/^http(s?)\:\/\/[0-9a-zA-Zа-яА-Я]' .
         '([-.\w]*[0-9a-zA-Zа-яА-Я])*(:(0-9)*)*(\/?)([a-zAZ0-9а-яА-Я\-\.\?\,\'\/\\\+&=%\$#_]*)?$/';
+
+    /**
+     * Регулярное выражение для валидации кода страны происхождения товара
+     */
+    const PATTERN_OKSM_CODE = /* @lang PhpRegExp */
+        '/^[\d]{3}$/';
 }

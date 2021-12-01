@@ -21,8 +21,8 @@ use AtolOnline\Exceptions\TooLongCashierException;
 use AtolOnline\Exceptions\TooLongClientContactException;
 use AtolOnline\Exceptions\TooLongEmailException;
 use AtolOnline\Exceptions\TooLongItemNameException;
+use AtolOnline\Exceptions\TooLongMeasurementUnitException;
 use AtolOnline\Exceptions\TooLongPaymentAddressException;
-use AtolOnline\Exceptions\TooLongUnitException;
 use AtolOnline\Exceptions\TooLongUserdataException;
 use AtolOnline\Exceptions\TooManyException;
 use AtolOnline\Exceptions\TooManyItemsException;
@@ -351,7 +351,7 @@ class Document extends Entity
      * @throws TooManyException
      * @throws TooManyItemsException
      * @throws TooManyPaymentsException
-     * @throws TooLongUnitException
+     * @throws TooLongMeasurementUnitException
      * @throws TooLongUserdataException
      * @throws Exception
      */

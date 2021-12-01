@@ -16,7 +16,7 @@ use AtolOnline\{
     Tests\BasicTestCase};
 
 /**
- * Набор тестов для проверки работы класса поставщика
+ * Набор тестов для проверки работы класса оператора перевода
  */
 class MoneyTransferOperatorTest extends BasicTestCase
 {

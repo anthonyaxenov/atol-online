@@ -13,9 +13,20 @@ namespace AtolOnline\Entities;
 
 use AtolOnline\{
     Constants\Constraints,
+    Enums\PaymentMethods,
+    Enums\PaymentObjects,
+    Enums\VatTypes,
+    Exceptions\EmptyItemNameException,
+    Exceptions\InvalidDeclarationNumberException,
+    Exceptions\InvalidEnumValueException,
+    Exceptions\InvalidOKSMCodeException,
+    Exceptions\NegativeItemPriceException,
+    Exceptions\NegativeItemQuantityException,
+    Exceptions\TooHighItemQuantityException,
     Exceptions\TooHighPriceException,
+    Exceptions\TooHighSumException,
     Exceptions\TooLongItemNameException,
-    Exceptions\TooLongUnitException,
+    Exceptions\TooLongMeasurementUnitException,
     Exceptions\TooLongUserdataException,
     Exceptions\TooManyException};
 
@@ -32,94 +43,85 @@ class Item extends Entity
     protected string $name;
 
     /**
-     * @var int Цена в копейках (с учётом скидок и наценок) (1079)
+     * @var float Цена в рублях (с учётом скидок и наценок) (1079)
      */
-    protected int $price = 0;
+    protected float $price;
 
     /**
-     * @var float Количество, вес (1023)
+     * @var float Количество/вес (1023)
      */
-    protected float $quantity = 0.0;
+    protected float $quantity;
 
     /**
-     * @var float Сумма в копейках (1043)
+     * @var string|null Единица измерения (1197)
      */
-    protected float $sum = 0;
+    protected ?string $measurement_unit = null;
 
     /**
-     * @var string Единица измерения количества (1197)
+     * @var string|null Признак способа расчёта (1214)
      */
-    protected string $measurement_unit;
+    protected ?string $payment_method = null;
+
+    /**
+     * @var string|null Признак предмета расчёта (1212)
+     */
+    protected ?string $payment_object = null;
+
+    /**
+     * @var string|null Номер таможенной декларации (1321)
+     */
+    protected ?string $declaration_number = null;
 
     /**
      * @var Vat|null Ставка НДС
      */
-    protected ?Vat $vat;
+    protected ?Vat $vat = null;
 
     /**
-     * @var string Признак способа расчёта (1214)
+     * @var AgentInfo|null Атрибуты агента
      */
-    protected string $payment_method;
+    protected ?AgentInfo $agent_info = null;
 
     /**
-     * @var string Признак объекта расчёта (1212)
+     * @var Supplier|null Атрибуты поставшика
      */
-    protected string $payment_object;
+    protected ?Supplier $supplier = null;
 
     /**
-     * @var string Дополнительный реквизит (1191)
+     * @var string|null Дополнительный реквизит (1191)
      */
-    protected string $user_data;
+    protected ?string $user_data = null;
 
     /**
-     * Item constructor.
+     * @var string|null Цифровой код страны происхождения товара (1230)
+     */
+    protected ?string $country_code = null;
+
+    /**
+     * Конструктор
      *
      * @param string|null $name Наименование
      * @param float|null $price Цена за одну единицу
      * @param float|null $quantity Количество
-     * @param string|null $measurement_unit Единица измерения
-     * @param string|null $vat_type Ставка НДС
-     * @param string|null $payment_object Признак
-     * @param string|null $payment_method Способ расчёта
-     * @throws TooLongItemNameException Слишком длинное наименование
-     * @throws TooHighPriceException Слишком высокая цена за одну единицу
-     * @throws TooManyException Слишком большое количество
-     * @throws TooLongUnitException Слишком длинное название единицы измерения
+     * @throws TooLongItemNameException
+     * @throws TooHighPriceException
+     * @throws TooManyException
+     * @throws NegativeItemPriceException
+     * @throws EmptyItemNameException
+     * @throws NegativeItemQuantityException
      */
     public function __construct(
-        ?string $name = null,
-        ?float $price = null,
-        ?float $quantity = null,
-        ?string $measurement_unit = null,
-        ?string $vat_type = null,
-        ?string $payment_object = null,
-        ?string $payment_method = null
+        string $name = null,
+        float $price = null,
+        float $quantity = null,
     ) {
-        if ($name) {
-            $this->setName($name);
-        }
-        if ($price) {
-            $this->setPrice($price);
-        }
-        if ($quantity) {
-            $this->setQuantity($quantity);
-        }
-        if ($measurement_unit) {
-            $this->setMeasurementUnit($measurement_unit);
-        }
-        if ($vat_type) {
-            $this->setVatType($vat_type);
-        }
-        if ($payment_object) {
-            $this->setPaymentObject($payment_object);
-        }
-        if ($payment_method) {
-            $this->setPaymentMethod($payment_method);
-        }
+        !is_null($name) && $this->setName($name);
+        !is_null($price) && $this->setPrice($price);
+        !is_null($quantity) && $this->setQuantity($quantity);
     }
 
     /**
-     * Возвращает наименование. Тег ФФД - 1030.
+     * Возвращает наименование
      *
      * @return string
      */
@@ -129,51 +131,59 @@ class Item extends Entity
     }
 
     /**
-     * Устаналивает наименование. Тег ФФД - 1030.
+     * Устаналивает наименование
      *
      * @param string $name Наименование
      * @return $this
      * @throws TooLongItemNameException Слишком длинное имя/наименование
+     * @throws EmptyItemNameException
      */
     public function setName(string $name): self
     {
         $name = trim($name);
         if (mb_strlen($name) > Constraints::MAX_LENGTH_ITEM_NAME) {
-            throw new TooLongItemNameException($name, Constraints::MAX_LENGTH_ITEM_NAME);
+            throw new TooLongItemNameException($name);
+        }
+        if (empty($name)) {
+            throw new EmptyItemNameException();
         }
         $this->name = $name;
         return $this;
     }
 
     /**
-     * Возвращает цену в рублях. Тег ФФД - 1079.
+     * Возвращает цену в рублях
      *
      * @return float
      */
     public function getPrice(): float
     {
-        return rubles($this->price);
+        return $this->price;
     }
 
     /**
-     * Устанавливает цену в рублях. Тег ФФД - 1079.
+     * Устанавливает цену в рублях
      *
-     * @param float $rubles Цена за одну единицу в рублях
+     * @param float $rubles
      * @return $this
-     * @throws TooHighPriceException Слишком высокая цена за одну единицу
+     * @throws NegativeItemPriceException
+     * @throws TooHighPriceException
      */
-    public function setPrice(float $rubles): Item
+    public function setPrice(float $rubles): self
     {
-        if ($rubles > 42949672.95) {
-            throw new TooHighPriceException($rubles, 42949672.95);
+        if ($rubles > Constraints::MAX_COUNT_ITEM_PRICE) {
+            throw new TooHighPriceException($this->getName(), $rubles);
         }
-        $this->price = kopeks($rubles);
-        $this->calcSum();
+        if ($rubles < 0) {
+            throw new NegativeItemPriceException($this->getName(), $rubles);
+        }
+        $this->price = $rubles;
+        //$this->calcSum();
         return $this;
     }
 
     /**
-     * Возвращает количество. Тег ФФД - 1023.
+     * Возвращает количество
      *
      * @return float
      */
@@ -183,99 +193,115 @@ class Item extends Entity
     }
 
     /**
-     * Устанавливает количество. Тег ФФД - 1023.
+     * Устанавливает количество
      *
      * @param float $quantity Количество
-     * @param string|null $measurement_unit Единица измерения количества
      * @return $this
-     * @throws TooManyException Слишком большое количество
-     * @throws TooHighPriceException Слишком высокая общая стоимость
-     * @throws TooLongUnitException Слишком длинное название единицы измерения
+     * @throws TooHighItemQuantityException
+     * @throws NegativeItemQuantityException
      */
-    public function setQuantity(float $quantity, string $measurement_unit = null): Item
+    public function setQuantity(float $quantity): self
     {
         $quantity = round($quantity, 3);
-        if ($quantity > 99999.999) {
-            throw new TooManyException($quantity, 99999.999);
+        if ($quantity > Constraints::MAX_COUNT_ITEM_QUANTITY) {
+            throw new TooHighItemQuantityException($this->getName(), $quantity);
+        }
+        if ($quantity < 0) {
+            throw new NegativeItemQuantityException($this->getName(), $quantity);
         }
         $this->quantity = $quantity;
-        $this->calcSum();
-        if ($measurement_unit) {
-            $this->setMeasurementUnit($measurement_unit);
-        }
         return $this;
     }
 
     /**
-     * Возвращает заданную единицу измерения количества. Тег ФФД - 1197.
+     * Возвращает стоимость
      *
-     * @return string
+     * @return float
+     * @throws TooHighSumException
      */
-    public function getMeasurementUnit(): string
+    public function getSum(): float
+    {
+        $sum = $this->price * $this->quantity;
+        if ($sum > Constraints::MAX_COUNT_ITEM_PRICE) {
+            throw new TooHighSumException($this->getName(), $sum);
+        }
+        return $sum;
+    }
+
+    /**
+     * Возвращает заданную единицу измерения количества
+     *
+     * @return string|null
+     */
+    public function getMeasurementUnit(): ?string
     {
         return $this->measurement_unit;
     }
 
     /**
-     * Устанавливает единицу измерения количества. Тег ФФД - 1197.
+     * Устанавливает единицу измерения количества
      *
-     * @param string $measurement_unit Единица измерения количества
+     * @param string|null $measurement_unit
      * @return $this
-     * @throws TooLongUnitException Слишком длинное название единицы измерения
+     * @throws TooLongMeasurementUnitException
      */
-    public function setMeasurementUnit(string $measurement_unit): Item
+    public function setMeasurementUnit(?string $measurement_unit): self
     {
-        $measurement_unit = trim($measurement_unit);
+        $measurement_unit = trim((string)$measurement_unit);
         if (mb_strlen($measurement_unit) > Constraints::MAX_LENGTH_MEASUREMENT_UNIT) {
-            throw new TooLongUnitException($measurement_unit, Constraints::MAX_LENGTH_MEASUREMENT_UNIT);
+            throw new TooLongMeasurementUnitException($measurement_unit);
         }
-        $this->measurement_unit = $measurement_unit;
+        $this->measurement_unit = $measurement_unit ?: null;
         return $this;
     }
 
     /**
-     * Возвращает признак способа оплаты. Тег ФФД - 1214.
+     * Возвращает признак способа оплаты
      *
-     * @return string
+     * @return string|null
      */
-    public function getPaymentMethod(): string
+    public function getPaymentMethod(): ?string
     {
         return $this->payment_method;
     }
 
     /**
-     * Устанавливает признак способа оплаты. Тег ФФД - 1214.
+     * Устанавливает признак способа оплаты
      *
-     * @param string $payment_method Признак способа оплаты
+     * @param string|null $payment_method Признак способа оплаты
      * @return $this
-     * @todo Проверка допустимых значений
+     * @throws InvalidEnumValueException
      */
-    public function setPaymentMethod(string $payment_method): Item
+    public function setPaymentMethod(?string $payment_method): self
     {
-        $this->payment_method = trim($payment_method);
+        $payment_method = trim((string)$payment_method);
+        PaymentMethods::isValid($payment_method);
+        $this->payment_method = $payment_method ?: null;
         return $this;
     }
 
     /**
-     * Возвращает признак предмета расчёта. Тег ФФД - 1212.
+     * Возвращает признак предмета расчёта
      *
-     * @return string
+     * @return string|null
      */
-    public function getPaymentObject(): string
+    public function getPaymentObject(): ?string
     {
         return $this->payment_object;
     }
 
     /**
-     * Устанавливает признак предмета расчёта. Тег ФФД - 1212.
+     * Устанавливает признак предмета расчёта
      *
-     * @param string $payment_object Признак предмета расчёта
+     * @param string|null $payment_object Признак предмета расчёта
      * @return $this
-     * @todo Проверка допустимых значений
+     * @throws InvalidEnumValueException
      */
-    public function setPaymentObject(string $payment_object): Item
+    public function setPaymentObject(?string $payment_object): self
     {
-        $this->payment_object = trim($payment_object);
+        $payment_object = trim((string)$payment_object);
+        PaymentObjects::isValid($payment_object);
+        $this->payment_object = $payment_object ?: null;
         return $this;
     }
 
@@ -292,25 +318,68 @@ class Item extends Entity
     /**
      * Устанавливает ставку НДС
      *
-     * @param string|null $vat_type Тип ставки НДС. Передать null, чтобы удалить ставку.
+     * @param Vat|string|null $vat Объект ставки, одно из значений VatTypes или null для удаления ставки
      * @return $this
-     * @throws TooHighPriceException
+     * @throws TooHighSumException
      */
-    public function setVatType(?string $vat_type): Item
+    public function setVat(Vat|string|null $vat): self
     {
-        if ($vat_type) {
-            $this->vat
-                ? $this->vat->setType($vat_type)
-                : $this->vat = new Vat($vat_type);
-        } else {
-            $this->vat = null;
+        if (is_string($vat)) {
+            $vat = trim($vat);
+            VatTypes::isValid($vat) && $vat = new Vat($vat, $this->getSum());
+        } elseif ($vat instanceof Vat) {
+            $vat->setSum($this->getSum());
         }
-        $this->calcSum();
+        $this->vat = $vat ?: null;
         return $this;
     }
 
     /**
-     * Возвращает дополнительный реквизит. Тег ФФД - 1191.
+     * Возвращает установленный объект атрибутов агента
+     *
+     * @return AgentInfo|null
+     */
+    public function getAgentInfo(): ?AgentInfo
+    {
+        return $this->agent_info;
+    }
+
+    /**
+     * Устанавливает атрибуты агента
+     *
+     * @param AgentInfo|null $agent_info
+     * @return Item
+     */
+    public function setAgentInfo(?AgentInfo $agent_info): self
+    {
+        $this->agent_info = $agent_info;
+        return $this;
+    }
+
+    /**
+     * Возвращает установленного поставщика
+     *
+     * @return Supplier|null
+     */
+    public function getSupplier(): ?Supplier
+    {
+        return $this->supplier;
+    }
+
+    /**
+     * Устанавливает поставщика
+     *
+     * @param Supplier|null $supplier
+     * @return Item
+     */
+    public function setSupplier(?Supplier $supplier): self
+    {
+        $this->supplier = $supplier;
+        return $this;
+    }
+
+    /**
+     * Возвращает дополнительный реквизит
      *
      * @return string|null
      */
@@ -320,30 +389,83 @@ class Item extends Entity
     }
 
     /**
-     * Устанавливает дополнительный реквизит. Тег ФФД - 1191.
+     * Устанавливает дополнительный реквизит
      *
-     * @param string $user_data Дополнительный реквизит. Тег ФФД - 1191.
+     * @param string|null $user_data Дополнительный реквизит
      * @return $this
      * @throws TooLongUserdataException Слишком длинный дополнительный реквизит
      */
-    public function setUserData(string $user_data): self
+    public function setUserData(?string $user_data): self
     {
-        $user_data = trim($user_data);
+        $user_data = trim((string)$user_data);
         if (mb_strlen($user_data) > Constraints::MAX_LENGTH_USER_DATA) {
-            throw new TooLongUserdataException($user_data, Constraints::MAX_LENGTH_USER_DATA);
+            throw new TooLongUserdataException($user_data);
         }
-        $this->user_data = $user_data;
+        $this->user_data = $user_data ?: null;
         return $this;
     }
 
     /**
-     * Возвращает стоимость. Тег ФФД - 1043.
+     * Возвращает установленный код страны происхождения товара
      *
-     * @return float
+     * @return string|null
+     * @see https://ru.wikipedia.org/wiki/Общероссийский_классификатор_стран_мира
+     * @see https://classifikators.ru/oksm
      */
-    public function getSum(): float
+    public function getCountryCode(): ?string
     {
-        return rubles($this->sum);
+        return $this->country_code;
+    }
+
+    /**
+     * Устанавливает код страны происхождения товара
+     *
+     * @param string|null $country_code
+     * @return Item
+     * @throws InvalidOKSMCodeException
+     * @see https://classifikators.ru/oksm
+     * @see https://ru.wikipedia.org/wiki/Общероссийский_классификатор_стран_мира
+     */
+    public function setCountryCode(?string $country_code): self
+    {
+        $country_code = trim((string)$country_code);
+        if (preg_match(Constraints::PATTERN_OKSM_CODE, $country_code) != 1) {
+            throw new InvalidOKSMCodeException($country_code);
+        }
+        $this->country_code = $country_code ?: null;
+        return $this;
+    }
+
+    /**
+     * Возвращает установленный код таможенной декларации
+     *
+     * @return string|null
+     */
+    public function getDeclarationNumber(): ?string
+    {
+        return $this->declaration_number;
+    }
+
+    /**
+     * Устанавливает код таможенной декларации
+     *
+     * @param string|null $declaration_number
+     * @return Item
+     * @throws InvalidDeclarationNumberException
+     */
+    public function setDeclarationNumber(?string $declaration_number): self
+    {
+        if (is_string($declaration_number)) {
+            $declaration_number = trim($declaration_number);
+            if (
+                mb_strlen($declaration_number) < Constraints::MIN_LENGTH_DECLARATION_NUMBER ||
+                mb_strlen($declaration_number) > Constraints::MAX_LENGTH_DECLARATION_NUMBER
+            ) {
+                throw new InvalidDeclarationNumberException($declaration_number);
+            }
+        }
+        $this->declaration_number = $declaration_number;
+        return $this;
     }
 
     /**
@@ -352,45 +474,42 @@ class Item extends Entity
      * @return float
      * @throws TooHighPriceException Слишком большая сумма
      */
-    public function calcSum(): float
-    {
-        $sum = $this->quantity * $this->price;
-        if (rubles($sum) > 42949672.95) {
-            throw new TooHighPriceException($sum, 42949672.95);
-        }
-        $this->sum = $sum;
-        if ($this->vat) {
-            $this->vat->setSum(rubles($sum));
-        }
-        return $this->getSum();
-    }
+    //public function calcSum(): float
+    //{
+    //    $sum = $this->quantity * $this->price;
+    //    if (rubles($sum) > 42949672.95) {
+    //        throw new TooHighPriceException($sum, 42949672.95);
+    //    }
+    //    $this->sum = $sum;
+    //    if ($this->vat) {
+    //        $this->vat->setSum(rubles($sum));
+    //    }
+    //    return $this->getSum();
+    //}
 
     /**
      * @inheritDoc
+     * @throws TooHighSumException
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $json = [
-            'name' => $this->getName(), // обязательно
-            'price' => $this->getPrice(), // обязательно
-            'quantity' => $this->getQuantity(), // обязательно
-            'sum' => $this->getSum(), // обязательно
-            'measurement_unit' => $this->getMeasurementUnit(),
-            'payment_method' => $this->getPaymentMethod(),
-            'payment_object' => $this->getPaymentObject()
-            //TODO nomenclature_code
-            //TODO agent_info
-            //TODO supplier_info
-            //TODO excise
-            //TODO country_code
-            //TODO declaration_number
+            'name' => $this->getName(),
+            'price' => $this->getPrice(),
+            'quantity' => $this->getQuantity(),
+            'sum' => $this->getSum(),
         ];
-        if ($this->getVat()) {
-            $json['vat'] = $this->getVat()->jsonSerialize();
-        }
-        if ($this->getUserData()) {
-            $json['user_data'] = $this->getUserData();
-        }
+        $this->getMeasurementUnit() && $json['measurement_unit'] = $this->getMeasurementUnit();
+        $this->getPaymentMethod() && $json['payment_method'] = $this->getPaymentMethod();
+        $this->getPaymentObject() && $json['payment_object'] = $this->getPaymentObject();
+        $this->getDeclarationNumber() && $json['declaration_number'] = $this->getDeclarationNumber();
+        $this->getVat()?->jsonSerialize() && $json['vat'] = $this->getVat()->jsonSerialize();
+        $this->getAgentInfo()?->jsonSerialize() && $json['agent_info'] = $this->getAgentInfo()->jsonSerialize();
+        $this->getSupplier()?->jsonSerialize() && $json['supplier_info'] = $this->getSupplier()->jsonSerialize();
+        $this->getUserData() && $json['user_data'] = $this->getUserData();
+        //TODO excise
+        $this->getCountryCode() && $json['country_code'] = $this->getCountryCode();
+        //TODO nomenclature_code
         return $json;
     }
 }

@@ -145,5 +145,5 @@ final class Ffd105Tags
     /**
      * Номер таможенной декларации (в соотв. с приказом ФНС России от 24.03.2016 N ММВ-7-15/155)
      */
-    const DECLARATION_NUMBER = 1231;
+    const ITEM_DECLARATION_NUMBER = 1231;
 }

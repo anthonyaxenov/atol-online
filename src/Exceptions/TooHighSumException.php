@@ -15,21 +15,21 @@ use AtolOnline\Constants\Constraints;
 use AtolOnline\Constants\Ffd105Tags;
 
 /**
- * Исключение, возникающее при попытке указать слишком высокую цену (сумму)
+ * Исключение, возникающее при попытке получеиня слишком высокой стоимости
  */
-class TooHighPriceException extends TooManyException
+class TooHighSumException extends TooManyException
 {
-    protected array $ffd_tags = [Ffd105Tags::ITEM_PRICE];
+    protected array $ffd_tags = [Ffd105Tags::ITEM_SUM];
     protected float $max = Constraints::MAX_COUNT_ITEM_PRICE;
 
     /**
      * Конструктор
      *
      * @param string $name
-     * @param float $price
+     * @param float $sum
      */
-    public function __construct(string $name, float $price)
+    public function __construct(string $name, float $sum)
     {
-        parent::__construct($price, "Слишком высокая цена для предмета расчёта '$name'");
+        parent::__construct($sum, "Слишком высокая стоимость предмета расчёта '$name'");
     }
 }
