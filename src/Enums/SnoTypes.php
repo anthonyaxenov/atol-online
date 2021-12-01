@@ -11,6 +11,8 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Enums;
 
+use AtolOnline\Constants\Ffd105Tags;
+
 /**
  * Константы, определяющие типы налогообложения
  *
@@ -53,6 +55,6 @@ final class SnoTypes extends Enum
      */
     public static function getFfdTags(): array
     {
-        return [1055];
+        return [Ffd105Tags::COMPANY_SNO];
     }
 }

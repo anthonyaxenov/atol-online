@@ -11,10 +11,12 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Enums;
 
+use AtolOnline\Constants\Ffd105Tags;
+
 /**
  * Константы, определяющие типы агента
  *
- * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 18
+ * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 18, 26
  */
 final class AgentTypes extends Enum
 {
@@ -58,6 +60,6 @@ final class AgentTypes extends Enum
      */
     public static function getFfdTags(): array
     {
-        return [1057];
+        return [Ffd105Tags::AGENT_TYPE];
     }
 }

@@ -11,6 +11,8 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Enums;
 
+use AtolOnline\Constants\Ffd105Tags;
+
 /**
  * Константы, определяющие признаки способов расчёта
  *
@@ -58,6 +60,6 @@ final class PaymentMethods extends Enum
      */
     public static function getFfdTags(): array
     {
-        return [1214];
+        return [Ffd105Tags::ITEM_PAYMENT_METHOD];
     }
 }

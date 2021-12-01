@@ -11,6 +11,8 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Enums;
 
+use AtolOnline\Constants\Ffd105Tags;
+
 /**
  * Константы, определяющие виды оплат
  *
@@ -31,7 +33,7 @@ final class PaymentTypes extends Enum
     /**
      * Предварительная оплата (зачёт аванса)
      */
-    const PRE_PAID = 2;
+    const PREPAID = 2;
 
     /**
      * Предварительная оплата (кредит)
@@ -78,6 +80,12 @@ final class PaymentTypes extends Enum
      */
     public static function getFfdTags(): array
     {
-        return [1031, 1081, 1215, 1216, 1217];
+        return [
+            Ffd105Tags::PAYMENT_TYPE_CASH,
+            Ffd105Tags::PAYMENT_TYPE_ELECTRON,
+            Ffd105Tags::PAYMENT_TYPE_PREPAID,
+            Ffd105Tags::PAYMENT_TYPE_CREDIT,
+            Ffd105Tags::PAYMENT_TYPE_OTHER,
+        ];
     }
 }

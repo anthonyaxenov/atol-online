@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace AtolOnline\Entities;
 
 use AtolOnline\Enums\VatTypes;
+use AtolOnline\Exceptions\InvalidEnumValueException;
 use AtolOnline\Helpers;
 
 /**
@@ -48,6 +49,7 @@ class Vat extends Entity
      *
      * @param string $type Тип ставки НДС
      * @return $this
+     * @throws InvalidEnumValueException
      */
     public function setType(string $type): self
     {

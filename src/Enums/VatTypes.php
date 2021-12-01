@@ -11,12 +11,10 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Enums;
 
-use MyCLabs\Enum\Enum;
+use AtolOnline\Constants\Ffd105Tags;
 
 /**
  * Константы, определяющие типы ставок НДС
- *
- * Теги ФФД: 1199, 1105, 1104, 1103, 1102, 1107, 1106
  */
 final class VatTypes extends Enum
 {
@@ -59,4 +57,20 @@ final class VatTypes extends Enum
      * НДС 20/120%
      */
     const VAT120 = 'vat120';
+
+    /**
+     * @inheritDoc
+     */
+    public static function getFfdTags(): array
+    {
+        return [
+            Ffd105Tags::ITEM_VAT_TYPE,
+            Ffd105Tags::DOC_VAT_TYPE_NONE,
+            Ffd105Tags::DOC_VAT_TYPE_VAT0,
+            Ffd105Tags::DOC_VAT_TYPE_VAT10,
+            Ffd105Tags::DOC_VAT_TYPE_VAT20,
+            Ffd105Tags::DOC_VAT_TYPE_VAT110,
+            Ffd105Tags::DOC_VAT_TYPE_VAT120,
+        ];
+    }
 }
