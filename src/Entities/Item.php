@@ -20,6 +20,7 @@ use AtolOnline\{
     Exceptions\InvalidDeclarationNumberException,
     Exceptions\InvalidEnumValueException,
     Exceptions\InvalidOKSMCodeException,
+    Exceptions\NegativeItemExciseException,
     Exceptions\NegativeItemPriceException,
     Exceptions\NegativeItemQuantityException,
     Exceptions\TooHighItemQuantityException,
@@ -28,7 +29,8 @@ use AtolOnline\{
     Exceptions\TooLongItemNameException,
     Exceptions\TooLongMeasurementUnitException,
     Exceptions\TooLongUserdataException,
-    Exceptions\TooManyException};
+    Exceptions\TooManyException
+};
 
 /**
  * Предмет расчёта (товар, услуга)
@@ -91,6 +93,11 @@ class Item extends Entity
      * @var string|null Дополнительный реквизит (1191)
      */
     protected ?string $user_data = null;
+
+    /**
+     * @var float|null Сумма акциза, включенная в стоимость (1229)
+     */
+    protected ?float $excise = null;
 
     /**
      * @var string|null Цифровой код страны происхождения товара (1230)
@@ -214,14 +221,14 @@ class Item extends Entity
     }
 
     /**
-     * Возвращает стоимость
+     * Возвращает стоимость (цена * количество + акциз)
      *
      * @return float
      * @throws TooHighSumException
      */
     public function getSum(): float
     {
-        $sum = $this->price * $this->quantity;
+        $sum = $this->getPrice() * $this->getQuantity() + (float)$this->getExcise();
         if ($sum > Constraints::MAX_COUNT_ITEM_PRICE) {
             throw new TooHighSumException($this->getName(), $sum);
         }
@@ -321,16 +328,19 @@ class Item extends Entity
      * @param Vat|string|null $vat Объект ставки, одно из значений VatTypes или null для удаления ставки
      * @return $this
      * @throws TooHighSumException
+     * @throws InvalidEnumValueException
      */
     public function setVat(Vat|string|null $vat): self
     {
         if (is_string($vat)) {
             $vat = trim($vat);
-            VatTypes::isValid($vat) && $vat = new Vat($vat, $this->getSum());
+            empty($vat)
+                ? $this->vat = null
+                : VatTypes::isValid($vat) && $this->vat = new Vat($vat, $this->getSum());
         } elseif ($vat instanceof Vat) {
             $vat->setSum($this->getSum());
+            $this->vat = $vat;
         }
-        $this->vat = $vat ?: null;
         return $this;
     }
 
@@ -402,6 +412,32 @@ class Item extends Entity
             throw new TooLongUserdataException($user_data);
         }
         $this->user_data = $user_data ?: null;
+        return $this;
+    }
+
+    /**
+     * Возвращает установленную сумму акциза
+     *
+     * @return float|null
+     */
+    public function getExcise(): ?float
+    {
+        return $this->excise;
+    }
+
+    /**
+     * Устанавливает сумму акциза
+     *
+     * @param float|null $excise
+     * @return Item
+     * @throws NegativeItemExciseException
+     */
+    public function setExcise(?float $excise): Item
+    {
+        if ($excise < 0) {
+            throw new NegativeItemExciseException($this->getName(), $excise);
+        }
+        $this->excise = $excise;
         return $this;
     }
 
@@ -499,16 +535,16 @@ class Item extends Entity
             'quantity' => $this->getQuantity(),
             'sum' => $this->getSum(),
         ];
-        $this->getMeasurementUnit() && $json['measurement_unit'] = $this->getMeasurementUnit();
-        $this->getPaymentMethod() && $json['payment_method'] = $this->getPaymentMethod();
-        $this->getPaymentObject() && $json['payment_object'] = $this->getPaymentObject();
-        $this->getDeclarationNumber() && $json['declaration_number'] = $this->getDeclarationNumber();
+        !is_null($this->getMeasurementUnit()) && $json['measurement_unit'] = $this->getMeasurementUnit();
+        !is_null($this->getPaymentMethod()) && $json['payment_method'] = $this->getPaymentMethod();
+        !is_null($this->getPaymentObject()) && $json['payment_object'] = $this->getPaymentObject();
+        !is_null($this->getDeclarationNumber()) && $json['declaration_number'] = $this->getDeclarationNumber();
         $this->getVat()?->jsonSerialize() && $json['vat'] = $this->getVat()->jsonSerialize();
         $this->getAgentInfo()?->jsonSerialize() && $json['agent_info'] = $this->getAgentInfo()->jsonSerialize();
         $this->getSupplier()?->jsonSerialize() && $json['supplier_info'] = $this->getSupplier()->jsonSerialize();
-        $this->getUserData() && $json['user_data'] = $this->getUserData();
-        //TODO excise
-        $this->getCountryCode() && $json['country_code'] = $this->getCountryCode();
+        !is_null($this->getUserData()) && $json['user_data'] = $this->getUserData();
+        !is_null($this->getExcise()) && $json['excise'] = $this->getExcise();
+        !is_null($this->getCountryCode()) && $json['country_code'] = $this->getCountryCode();
         //TODO nomenclature_code
         return $json;
     }

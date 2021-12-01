@@ -28,6 +28,7 @@ use AtolOnline\{
     Exceptions\InvalidInnLengthException,
     Exceptions\InvalidOKSMCodeException,
     Exceptions\InvalidPhoneException,
+    Exceptions\NegativeItemExciseException,
     Exceptions\NegativeItemPriceException,
     Exceptions\NegativeItemQuantityException,
     Exceptions\TooHighItemQuantityException,
@@ -390,15 +391,16 @@ class ItemTest extends BasicTestCase
      *
      * @param mixed $vat
      * @dataProvider providerNullableStrings
-     * @covers \AtolOnline\Entities\Item::setVat
-     * @covers \AtolOnline\Entities\Item::getVat
-     * @covers \AtolOnline\Entities\Item::jsonSerialize
+     * @covers       \AtolOnline\Entities\Item::setVat
+     * @covers       \AtolOnline\Entities\Item::getVat
+     * @covers       \AtolOnline\Entities\Item::jsonSerialize
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
      * @throws TooHighPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
+     * @throws InvalidEnumValueException
      */
     public function testNullableVatByString(mixed $vat): void
     {
@@ -655,5 +657,53 @@ class ItemTest extends BasicTestCase
         $this->expectException(InvalidDeclarationNumberException::class);
         (new Item('test item', 2, 3))
             ->setDeclarationNumber(Helpers::randomStr(Constraints::MAX_LENGTH_DECLARATION_NUMBER + 1));
+    }
+
+    /**
+     * Тестирует установку акциза и расчёт суммы с его учётом
+     *
+     * @covers \AtolOnline\Entities\Item::setExcise
+     * @covers \AtolOnline\Entities\Item::getExcise
+     * @covers \AtolOnline\Entities\Item::getSum
+     * @covers \AtolOnline\Entities\Item::jsonSerialize
+     * @throws TooLongItemNameException
+     * @throws TooHighPriceException
+     * @throws TooManyException
+     * @throws NegativeItemPriceException
+     * @throws EmptyItemNameException
+     * @throws NegativeItemQuantityException
+     * @throws NegativeItemExciseException
+     */
+    public function testExcise(): void
+    {
+        $this->assertAtolable(
+            (new Item('test item', 2, 3))->setExcise(1),
+            [
+                'name' => 'test item',
+                'price' => 2,
+                'quantity' => 3,
+                'sum' => 7,
+                'excise' => 1,
+            ]
+        );
+    }
+
+    /**
+     * Тестирует установку акциза и расчёт суммы с его учётом
+     *
+     * @covers \AtolOnline\Entities\Item::setExcise
+     * @covers \AtolOnline\Exceptions\NegativeItemExciseException
+     * @throws TooLongItemNameException
+     * @throws TooHighPriceException
+     * @throws TooManyException
+     * @throws NegativeItemPriceException
+     * @throws EmptyItemNameException
+     * @throws NegativeItemQuantityException
+     * @throws NegativeItemExciseException
+     */
+    public function testNegativeItemExciseException(): void
+    {
+        $this->expectException(NegativeItemExciseException::class);
+        (new Item('test item', 2, 3))->setExcise(-1);
     }
 }
