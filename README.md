@@ -84,9 +84,9 @@ composer test
 
 ## Дополнительные ресурсы
 
-* [Документация АТОЛ](https://online.atol.ru/lib/)
-  **[Документация к библиотеке](/docs/readme.md)**
+* **[Документация к библиотеке](/docs/readme.md)**
 * Telegram-канал: [@atolonline_php](https://t.me/atolonline_php)
+* [Документация АТОЛ Онлайн](https://online.atol.ru/lib/)
 * Функционал, находящийся в разработке: [ROADMAP.md](ROADMAP.md)
 
 ## Лицензия
