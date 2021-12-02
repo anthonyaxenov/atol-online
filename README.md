@@ -1,23 +1,24 @@
 # АТОЛ Онлайн
 
----
-
-**В этой ветке проводится глубокий рефакторинг, стабилизация и активная подготовка к `v1.0.0`. Документация
-актуализируется постепенно.**
-
----
-
-[![Master build](https://github.com/anthonyaxenov/atol-online/actions/workflows/master.yml/badge.svg)](https://github.com/anthonyaxenov/atol-online/actions/workflows/master.yml)
-[![Dev build](https://github.com/anthonyaxenov/atol-online/actions/workflows/dev.yml/badge.svg)](https://github.com/anthonyaxenov/atol-online/actions/workflows/dev.yml)
-[![Latest Stable Version](http://poser.pugx.org/axenov/atol-online/v)](https://packagist.org/packages/axenov/atol-online) 
-[![codecov](https://codecov.io/gh/anthonyaxenov/atol-online/branch/master/graph/badge.svg?token=WR2IV7FTF0)](https://codecov.io/gh/anthonyaxenov/atol-online)
+[![Latest Stable Version](http://poser.pugx.org/axenov/atol-online/v)](https://packagist.org/packages/axenov/atol-online)
+[![Latest Unstable Version](http://poser.pugx.org/axenov/atol-online/v/unstable)](https://packagist.org/packages/axenov/atol-online)
+[![Total Downloads](http://poser.pugx.org/axenov/atol-online/downloads)](https://packagist.org/packages/axenov/atol-online)
 [![License](http://poser.pugx.org/axenov/atol-online/license)](https://packagist.org/packages/axenov/atol-online)
-<!--[![Latest Unstable Version](http://poser.pugx.org/axenov/atol-online/v/unstable)](https://packagist.org/packages/axenov/atol-online)-->
-<!--[![Total Downloads](http://poser.pugx.org/axenov/atol-online/downloads)](https://packagist.org/packages/axenov/atol-online)-->
 
 Библиотека для фискализации чеков по 54-ФЗ через [облачную ККТ АТОЛ](https://online.atol.ru/).
 
 **[Документация](/docs/readme.md)**
+
+---
+
+**В ветке `dev` проводится глубокий рефакторинг, стабилизация и активная подготовка к `v1.0.0`.
+Документация актуализируется постепенно.**
+
+---
+
+| master | [![CI](https://github.com/anthonyaxenov/atol-online/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/anthonyaxenov/atol-online/actions/workflows/ci.yml) | [![codecov](https://codecov.io/gh/anthonyaxenov/atol-online/branch/master/graph/badge.svg?token=WR2IV7FTF0)](https://codecov.io/gh/anthonyaxenov/atol-online) |
+|---|---|---|
+| dev | [![CI dev](https://github.com/anthonyaxenov/atol-online/actions/workflows/ci.yml/badge.svg?branch=dev)](https://github.com/anthonyaxenov/atol-online/actions/workflows/ci.yml) | [![codecov dev](https://codecov.io/gh/anthonyaxenov/atol-online/branch/dev/graph/badge.svg?token=WR2IV7FTF0)](https://codecov.io/gh/anthonyaxenov/atol-online) |
 
 Текущие поддерживаемые версии АТОЛ Онлайн:
 
@@ -32,8 +33,8 @@
 * Фискализация докумнетов на облачной ККТ
 * Валидация данных до отправки документа на ККТ (насколько это возможно, согласно схеме)
 * Расчёты денег в копейках
-* Фактически полное покрытие тестами
 * PSR-4 автозагрузка
+<!--* Фактически полное покрытие тестами-->
 
 ## Системные требования
 
