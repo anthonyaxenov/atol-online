@@ -10,9 +10,10 @@
 [![Master build](https://github.com/anthonyaxenov/atol-online/actions/workflows/master.yml/badge.svg)](https://github.com/anthonyaxenov/atol-online/actions/workflows/master.yml)
 [![Dev build](https://github.com/anthonyaxenov/atol-online/actions/workflows/dev.yml/badge.svg)](https://github.com/anthonyaxenov/atol-online/actions/workflows/dev.yml)
 [![Latest Stable Version](http://poser.pugx.org/axenov/atol-online/v)](https://packagist.org/packages/axenov/atol-online) 
-[![Latest Unstable Version](http://poser.pugx.org/axenov/atol-online/v/unstable)](https://packagist.org/packages/axenov/atol-online)
-[![Total Downloads](http://poser.pugx.org/axenov/atol-online/downloads)](https://packagist.org/packages/axenov/atol-online)
+[![codecov](https://codecov.io/gh/anthonyaxenov/atol-online/branch/master/graph/badge.svg?token=WR2IV7FTF0)](https://codecov.io/gh/anthonyaxenov/atol-online)
 [![License](http://poser.pugx.org/axenov/atol-online/license)](https://packagist.org/packages/axenov/atol-online)
+<!--[![Latest Unstable Version](http://poser.pugx.org/axenov/atol-online/v/unstable)](https://packagist.org/packages/axenov/atol-online)-->
+<!--[![Total Downloads](http://poser.pugx.org/axenov/atol-online/downloads)](https://packagist.org/packages/axenov/atol-online)-->
 
 Библиотека для фискализации чеков по 54-ФЗ через [облачную ККТ АТОЛ](https://online.atol.ru/).
 
@@ -63,11 +64,14 @@
 
 Файлы тестов находятся в директории `/tests` корня репозитория.
 
-Для запуска тестов необходимо перейти в корень вашего проекта и выполнить команду:
+Для запуска тестов необходимо перейти в корень репозитория и выполнить одну из команд:
 
 ```bash
-composer test
+composer test # обычное тестирование
+composer test-cov # тестирование с покрытием
 ```
+
+После тестирования с покрытием создаётся отчёт в директории `.coverage-report` в корне репозитория.
 
 ## Использование библиотеки
 

@@ -5,3 +5,4 @@
 /config.php
 *cache*
 /test.php
+/.coverage-report

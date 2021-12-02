@@ -73,6 +73,6 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit --colors=always",
-        "test-cov": "vendor/bin/phpunit --coverage-html coverage"
+        "test-cov": "php -dxdebug.mode=coverage vendor/bin/phpunit --coverage-html .coverage-report"
     }
 }
