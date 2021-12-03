@@ -31,9 +31,9 @@ use AtolOnline\{
     Exceptions\NegativeItemExciseException,
     Exceptions\NegativeItemPriceException,
     Exceptions\NegativeItemQuantityException,
+    Exceptions\TooHighItemPriceException,
     Exceptions\TooHighItemQuantityException,
-    Exceptions\TooHighPriceException,
-    Exceptions\TooHighSumException,
+    Exceptions\TooHighItemSumException,
     Exceptions\TooLongItemCodeException,
     Exceptions\TooLongItemNameException,
     Exceptions\TooLongMeasurementUnitException,
@@ -62,7 +62,7 @@ class ItemTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Item::getSum
      * @covers \AtolOnline\Entities\Item::jsonSerialize
      * @throws TooLongItemNameException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooManyException
      * @throws NegativeItemPriceException
      * @throws EmptyItemNameException
@@ -88,7 +88,7 @@ class ItemTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Item::setName
      * @covers \AtolOnline\Exceptions\TooLongItemNameException
      * @throws TooLongItemNameException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooManyException
      * @throws NegativeItemPriceException
      * @throws EmptyItemNameException
@@ -107,7 +107,7 @@ class ItemTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Item::setName
      * @covers \AtolOnline\Exceptions\EmptyItemNameException
      * @throws TooLongItemNameException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooManyException
      * @throws NegativeItemPriceException
      * @throws EmptyItemNameException
@@ -124,9 +124,9 @@ class ItemTest extends BasicTestCase
      *
      * @covers \AtolOnline\Entities\Item
      * @covers \AtolOnline\Entities\Item::setPrice
-     * @covers \AtolOnline\Exceptions\TooHighPriceException
+     * @covers \AtolOnline\Exceptions\TooHighItemPriceException
      * @throws TooLongItemNameException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooManyException
      * @throws NegativeItemPriceException
      * @throws EmptyItemNameException
@@ -134,7 +134,7 @@ class ItemTest extends BasicTestCase
      */
     public function testTooHighPriceException(): void
     {
-        $this->expectException(TooHighPriceException::class);
+        $this->expectException(TooHighItemPriceException::class);
         new Item('test', Constraints::MAX_COUNT_ITEM_PRICE + 0.1, 3);
     }
 
@@ -143,12 +143,12 @@ class ItemTest extends BasicTestCase
      *
      * @covers \AtolOnline\Entities\Item
      * @covers \AtolOnline\Entities\Item::setPrice
-     * @covers \AtolOnline\Exceptions\TooHighSumException
-     * @throws TooHighSumException
+     * @covers \AtolOnline\Exceptions\TooHighItemSumException
+     * @throws TooHighItemSumException
      */
     public function testTooHighSumException(): void
     {
-        $this->expectException(TooHighSumException::class);
+        $this->expectException(TooHighItemSumException::class);
         (new Item('test', Constraints::MAX_COUNT_ITEM_PRICE, Constraints::MAX_COUNT_ITEM_QUANTITY))->getSum();
     }
 
@@ -159,7 +159,7 @@ class ItemTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Item::setPrice
      * @covers \AtolOnline\Exceptions\NegativeItemPriceException
      * @throws TooLongItemNameException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooManyException
      * @throws NegativeItemPriceException
      * @throws EmptyItemNameException
@@ -178,7 +178,7 @@ class ItemTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Item::setQuantity
      * @covers \AtolOnline\Exceptions\TooHighItemQuantityException
      * @throws TooLongItemNameException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooManyException
      * @throws NegativeItemPriceException
      * @throws EmptyItemNameException
@@ -197,7 +197,7 @@ class ItemTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Item::setQuantity
      * @covers \AtolOnline\Exceptions\NegativeItemQuantityException
      * @throws TooLongItemNameException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooManyException
      * @throws NegativeItemPriceException
      * @throws EmptyItemNameException
@@ -217,7 +217,7 @@ class ItemTest extends BasicTestCase
      * @covers       \AtolOnline\Entities\Item::getMeasurementUnit
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooLongMeasurementUnitException
      * @throws TooManyException
@@ -236,7 +236,7 @@ class ItemTest extends BasicTestCase
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooLongMeasurementUnitException
      * @throws TooManyException
@@ -260,7 +260,7 @@ class ItemTest extends BasicTestCase
      * @throws InvalidEnumValueException
      * @throws TooManyException
      * @throws NegativeItemPriceException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws NegativeItemQuantityException
      * @throws TooLongItemNameException
      */
@@ -294,7 +294,7 @@ class ItemTest extends BasicTestCase
      * @throws InvalidEnumValueException
      * @throws TooManyException
      * @throws NegativeItemPriceException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws NegativeItemQuantityException
      * @throws TooLongItemNameException
      */
@@ -314,7 +314,7 @@ class ItemTest extends BasicTestCase
      * @throws InvalidEnumValueException
      * @throws TooManyException
      * @throws NegativeItemPriceException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws NegativeItemQuantityException
      * @throws TooLongItemNameException
      */
@@ -334,7 +334,7 @@ class ItemTest extends BasicTestCase
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
      */
@@ -365,7 +365,7 @@ class ItemTest extends BasicTestCase
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
      */
@@ -399,7 +399,7 @@ class ItemTest extends BasicTestCase
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
      * @throws InvalidEnumValueException
@@ -422,7 +422,7 @@ class ItemTest extends BasicTestCase
      * @throws InvalidPhoneException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooLongPayingAgentOperationException
      * @throws TooManyException
@@ -450,7 +450,7 @@ class ItemTest extends BasicTestCase
      * @throws InvalidPhoneException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
      */
@@ -485,7 +485,7 @@ class ItemTest extends BasicTestCase
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooLongUserdataException
      * @throws TooManyException
@@ -514,7 +514,7 @@ class ItemTest extends BasicTestCase
      * @covers       \AtolOnline\Entities\Item::getUserData
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
      * @throws NegativeItemQuantityException
@@ -534,7 +534,7 @@ class ItemTest extends BasicTestCase
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooLongUserdataException
      * @throws TooManyException
@@ -555,7 +555,7 @@ class ItemTest extends BasicTestCase
      * @throws InvalidOKSMCodeException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
      */
@@ -582,7 +582,7 @@ class ItemTest extends BasicTestCase
      * @throws InvalidOKSMCodeException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
      */
@@ -601,7 +601,7 @@ class ItemTest extends BasicTestCase
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
      * @throws InvalidDeclarationNumberException
@@ -629,7 +629,7 @@ class ItemTest extends BasicTestCase
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws InvalidDeclarationNumberException
      * @throws TooManyException
@@ -649,7 +649,7 @@ class ItemTest extends BasicTestCase
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws InvalidDeclarationNumberException
      * @throws TooManyException
@@ -669,7 +669,7 @@ class ItemTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Item::getSum
      * @covers \AtolOnline\Entities\Item::jsonSerialize
      * @throws TooLongItemNameException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooManyException
      * @throws NegativeItemPriceException
      * @throws EmptyItemNameException
@@ -696,7 +696,7 @@ class ItemTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Item::setExcise
      * @covers \AtolOnline\Exceptions\NegativeItemExciseException
      * @throws TooLongItemNameException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooManyException
      * @throws NegativeItemPriceException
      * @throws EmptyItemNameException
@@ -719,7 +719,7 @@ class ItemTest extends BasicTestCase
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
      * @throws TooLongItemCodeException
@@ -756,7 +756,7 @@ class ItemTest extends BasicTestCase
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooLongItemCodeException
      * @throws TooLongItemNameException
      * @throws TooManyException
@@ -774,7 +774,7 @@ class ItemTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Item::setCode
      * @covers \AtolOnline\Exceptions\TooLongItemCodeException
      * @throws TooLongItemNameException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooManyException
      * @throws NegativeItemPriceException
      * @throws EmptyItemNameException

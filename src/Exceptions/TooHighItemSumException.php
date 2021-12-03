@@ -15,12 +15,12 @@ use AtolOnline\Constants\Constraints;
 use AtolOnline\Constants\Ffd105Tags;
 
 /**
- * Исключение, возникающее при попытке получеиня слишком высокой стоимости
+ * Исключение, возникающее при попытке получеиня слишком высокой стоимости предмета расчёта
  */
-class TooHighSumException extends TooManyException
+class TooHighItemSumException extends TooManyException
 {
     protected array $ffd_tags = [Ffd105Tags::ITEM_SUM];
-    protected float $max = Constraints::MAX_COUNT_ITEM_PRICE;
+    protected float $max = Constraints::MAX_COUNT_ITEM_SUM;
 
     /**
      * Конструктор

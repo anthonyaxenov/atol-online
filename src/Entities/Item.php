@@ -25,9 +25,9 @@ use AtolOnline\Exceptions\{
     NegativeItemExciseException,
     NegativeItemPriceException,
     NegativeItemQuantityException,
+    TooHighItemPriceException,
     TooHighItemQuantityException,
-    TooHighPriceException,
-    TooHighSumException,
+    TooHighItemSumException,
     TooLongItemCodeException,
     TooLongItemNameException,
     TooLongMeasurementUnitException,
@@ -124,7 +124,7 @@ final class Item extends Entity
      * @param float|null $price Цена за одну единицу
      * @param float|null $quantity Количество
      * @throws TooLongItemNameException
-     * @throws TooHighPriceException
+     * @throws TooHighItemPriceException
      * @throws TooManyException
      * @throws NegativeItemPriceException
      * @throws EmptyItemNameException
@@ -184,21 +184,22 @@ final class Item extends Entity
     /**
      * Устанавливает цену в рублях
      *
-     * @param float $rubles
+     * @param float $price
      * @return $this
      * @throws NegativeItemPriceException
-     * @throws TooHighPriceException
-     * @throws TooHighSumException
+     * @throws TooHighItemPriceException
+     * @throws TooHighItemSumException
      */
-    public function setPrice(float $rubles): self
+    public function setPrice(float $price): self
     {
-        if ($rubles > Constraints::MAX_COUNT_ITEM_PRICE) {
-            throw new TooHighPriceException($this->getName(), $rubles);
+        $price = round($price, 2);
+        if ($price > Constraints::MAX_COUNT_ITEM_PRICE) {
+            throw new TooHighItemPriceException($this->getName(), $price);
         }
-        if ($rubles < 0) {
-            throw new NegativeItemPriceException($this->getName(), $rubles);
+        if ($price < 0) {
+            throw new NegativeItemPriceException($this->getName(), $price);
         }
-        $this->price = $rubles;
+        $this->price = $price;
         $this->getVat()?->setSum($this->getSum());
         return $this;
     }
@@ -220,7 +221,7 @@ final class Item extends Entity
      * @return $this
      * @throws TooHighItemQuantityException
      * @throws NegativeItemQuantityException
-     * @throws TooHighSumException
+     * @throws TooHighItemSumException
      */
     public function setQuantity(float $quantity): self
     {
@@ -240,13 +241,13 @@ final class Item extends Entity
      * Возвращает стоимость (цена * количество + акциз)
      *
      * @return float
-     * @throws TooHighSumException
+     * @throws TooHighItemSumException
      */
     public function getSum(): float
     {
         $sum = $this->getPrice() * $this->getQuantity() + (float)$this->getExcise();
         if ($sum > Constraints::MAX_COUNT_ITEM_SUM) {
-            throw new TooHighSumException($this->getName(), $sum);
+            throw new TooHighItemSumException($this->getName(), $sum);
         }
         return $sum;
     }
@@ -386,7 +387,7 @@ final class Item extends Entity
      *
      * @param Vat|string|null $vat Объект ставки, одно из значений VatTypes или null для удаления ставки
      * @return $this
-     * @throws TooHighSumException
+     * @throws TooHighItemSumException
      * @throws InvalidEnumValueException
      */
     public function setVat(Vat|string|null $vat): self
@@ -490,7 +491,7 @@ final class Item extends Entity
      * @param float|null $excise
      * @return Item
      * @throws NegativeItemExciseException
-     * @throws TooHighSumException
+     * @throws TooHighItemSumException
      */
     public function setExcise(?float $excise): self
     {
@@ -567,7 +568,7 @@ final class Item extends Entity
 
     /**
      * @inheritDoc
-     * @throws TooHighSumException
+     * @throws TooHighItemSumException
      */
     public function jsonSerialize(): array
     {
