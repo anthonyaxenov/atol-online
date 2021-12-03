@@ -16,9 +16,9 @@
 
 ---
 
-| master | [![CI](https://github.com/anthonyaxenov/atol-online/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/anthonyaxenov/atol-online/actions/workflows/ci.yml) | [![codecov](https://codecov.io/gh/anthonyaxenov/atol-online/branch/master/graph/badge.svg?token=WR2IV7FTF0)](https://codecov.io/gh/anthonyaxenov/atol-online) |
-|---|---|---|
-| dev | [![CI dev](https://github.com/anthonyaxenov/atol-online/actions/workflows/ci.yml/badge.svg?branch=dev)](https://github.com/anthonyaxenov/atol-online/actions/workflows/ci.yml) | [![codecov dev](https://codecov.io/gh/anthonyaxenov/atol-online/branch/dev/graph/badge.svg?token=WR2IV7FTF0)](https://codecov.io/gh/anthonyaxenov/atol-online) |
+| master | [![CI](https://github.com/anthonyaxenov/atol-online/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/anthonyaxenov/atol-online/actions/workflows/ci.yml)  | [![codecov](https://codecov.io/gh/anthonyaxenov/atol-online/branch/master/graph/badge.svg?token=WR2IV7FTF0)](https://codecov.io/gh/anthonyaxenov/atol-online)  |
+|--------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| dev    | [![CI dev](https://github.com/anthonyaxenov/atol-online/actions/workflows/ci.yml/badge.svg?branch=dev)](https://github.com/anthonyaxenov/atol-online/actions/workflows/ci.yml) | [![codecov dev](https://codecov.io/gh/anthonyaxenov/atol-online/branch/dev/graph/badge.svg?token=WR2IV7FTF0)](https://codecov.io/gh/anthonyaxenov/atol-online) |
 
 Текущие поддерживаемые версии АТОЛ Онлайн:
 
@@ -92,7 +92,6 @@ composer test-cov # тестирование с покрытием
 * **[Документация к библиотеке](/docs/readme.md)**
 * Telegram-канал: [@atolonline_php](https://t.me/atolonline_php)
 * [Документация АТОЛ Онлайн](https://online.atol.ru/lib/)
-* Функционал, находящийся в разработке: [ROADMAP.md](ROADMAP.md)
 
 ## Лицензия
 
