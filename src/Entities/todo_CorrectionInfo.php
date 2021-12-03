@@ -12,9 +12,9 @@ declare(strict_types = 1);
 namespace AtolOnline\Entities;
 
 /**
- * Класс CorrectionInfo, описывающий данные чек коррекции
+ * Класс todoCorrectionInfo, описывающий данные чек коррекции
  */
-class CorrectionInfo extends Entity
+class todoCorrectionInfo extends Entity
 {
     /**
      * @var string Тип коррекции. Тег ФФД - 1173.
@@ -32,7 +32,7 @@ class CorrectionInfo extends Entity
     protected string $base_number;
 
     /**
-     * CorrectionInfo constructor.
+     * todoCorrectionInfo constructor.
      *
      * @param string|null $type Тип коррекции
      * @param string|null $base_date Дата документа
@@ -66,7 +66,7 @@ class CorrectionInfo extends Entity
      * @param string $number
      * @return $this
      */
-    public function setNumber(string $number): CorrectionInfo
+    public function setNumber(string $number): todoCorrectionInfo
     {
         $this->base_number = trim($number);
         return $this;
@@ -90,7 +90,7 @@ class CorrectionInfo extends Entity
      * @param string $date Строка в формате d.m.Y
      * @return $this
      */
-    public function setDate(string $date): CorrectionInfo
+    public function setDate(string $date): todoCorrectionInfo
     {
         $this->base_date = $date;
         return $this;
@@ -114,7 +114,7 @@ class CorrectionInfo extends Entity
      * @param string $type
      * @return $this
      */
-    public function setType(string $type): CorrectionInfo
+    public function setType(string $type): todoCorrectionInfo
     {
         $this->type = $type;
         return $this;

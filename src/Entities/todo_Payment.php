@@ -18,30 +18,30 @@ use AtolOnline\Enums\PaymentTypes;
  *
  * @package AtolOnline\Entities
  */
-class Payment extends Entity
+class todoPayment extends Entity
 {
     /**
      * @var int Тип оплаты
      */
     protected int $type;
-    
+
     /**
      * @var float Сумма оплаты
      */
     protected float $sum;
-    
+
     /**
-     * Payment constructor.
+     * todoPayment constructor.
      *
-     * @param int   $payment_type Тип оплаты
-     * @param float $sum          Сумма оплаты
+     * @param int $payment_type Тип оплаты
+     * @param float $sum Сумма оплаты
      */
     public function __construct(int $payment_type = PaymentTypes::ELECTRON, float $sum = 0.0)
     {
         $this->setType($payment_type);
         $this->setSum($sum);
     }
-    
+
     /**
      * Возвращает тип оплаты. Тег ФФД - 1031, 1081, 1215, 1216, 1217.
      *
@@ -51,19 +51,19 @@ class Payment extends Entity
     {
         return $this->type;
     }
-    
+
     /**
      * Устанавливает тип оплаты. Тег ФФД - 1031, 1081, 1215, 1216, 1217.
      *
      * @param int $type
      * @return $this
      */
-    public function setType(int $type): Payment
+    public function setType(int $type): todoPayment
     {
         $this->type = $type;
         return $this;
     }
-    
+
     /**
      * Возвращает сумму оплаты
      *
@@ -73,19 +73,19 @@ class Payment extends Entity
     {
         return $this->sum;
     }
-    
+
     /**
      * Устанавливает сумму оплаты
      *
      * @param float $sum
      * @return $this
      */
-    public function setSum(float $sum): Payment
+    public function setSum(float $sum): todoPayment
     {
         $this->sum = $sum;
         return $this;
     }
-    
+
     /**
      * @inheritDoc
      */

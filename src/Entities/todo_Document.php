@@ -35,7 +35,7 @@ use Exception;
  *
  * @package AtolOnline\Entities
  */
-class Document extends Entity
+class todoDocument extends Entity
 {
     /**
      * @var ItemArray Массив предметов расчёта
@@ -73,12 +73,12 @@ class Document extends Entity
     protected string $cashier;
 
     /**
-     * @var CorrectionInfo Данные коррекции
+     * @var todoCorrectionInfo Данные коррекции
      */
-    protected CorrectionInfo $correction_info;
+    protected todoCorrectionInfo $correction_info;
 
     /**
-     * Document constructor.
+     * todoDocument constructor.
      */
     public function __construct()
     {
@@ -93,7 +93,7 @@ class Document extends Entity
      * @return $this
      * @throws TooManyVatsException Слишком много ставок НДС
      */
-    public function clearVats(): Document
+    public function clearVats(): todoDocument
     {
         $this->setVats([]);
         return $this;
@@ -106,7 +106,7 @@ class Document extends Entity
      * @return $this
      * @throws TooManyVatsException Слишком много ставок НДС
      */
-    public function addVat(Vat $vat): Document
+    public function addVat(Vat $vat): todoDocument
     {
         $this->vats->add($vat);
         return $this;
@@ -130,7 +130,7 @@ class Document extends Entity
      * @throws TooManyVatsException Слишком много ставок НДС
      * @throws Exception
      */
-    public function setVats(array $vats): Document
+    public function setVats(array $vats): todoDocument
     {
         $this->vats->set($vats);
         return $this;
@@ -139,12 +139,12 @@ class Document extends Entity
     /**
      * Добавляет новую оплату в массив оплат
      *
-     * @param Payment $payment Объект оплаты
+     * @param todoPayment $payment Объект оплаты
      * @return $this
      * @throws Exception
      * @throws TooManyPaymentsException Слишком много оплат
      */
-    public function addPayment(Payment $payment): Document
+    public function addPayment(todoPayment $payment): todoDocument
     {
         if (count($this->getPayments()) == 0 && !$payment->getSum()) {
             $payment->setSum($this->calcTotal());
@@ -156,7 +156,7 @@ class Document extends Entity
     /**
      * Возвращает массив оплат
      *
-     * @return Payment[]
+     * @return todoPayment[]
      */
     public function getPayments(): array
     {
@@ -166,11 +166,11 @@ class Document extends Entity
     /**
      * Устанавливает массив оплат
      *
-     * @param Payment[] $payments Массив оплат
+     * @param todoPayment[] $payments Массив оплат
      * @return $this
      * @throws TooManyPaymentsException Слишком много оплат
      */
-    public function setPayments(array $payments): Document
+    public function setPayments(array $payments): todoDocument
     {
         $this->payments->set($payments);
         return $this;
@@ -183,7 +183,7 @@ class Document extends Entity
      * @return $this
      * @throws TooManyItemsException Слишком много предметов расчёта
      */
-    public function addItem(Item $item): Document
+    public function addItem(Item $item): todoDocument
     {
         $this->items->add($item);
         return $this;
@@ -206,7 +206,7 @@ class Document extends Entity
      * @return $this
      * @throws TooManyItemsException Слишком много предметов расчёта
      */
-    public function setItems(array $items): Document
+    public function setItems(array $items): todoDocument
     {
         $this->items->set($items);
         return $this;
@@ -228,7 +228,7 @@ class Document extends Entity
      * @param Client|null $client
      * @return $this
      */
-    public function setClient(?Client $client): Document
+    public function setClient(?Client $client): todoDocument
     {
         $this->client = $client;
         return $this;
@@ -250,7 +250,7 @@ class Document extends Entity
      * @param Company|null $company
      * @return $this
      */
-    public function setCompany(?Company $company): Document
+    public function setCompany(?Company $company): todoDocument
     {
         $this->company = $company;
         return $this;
@@ -273,7 +273,7 @@ class Document extends Entity
      * @return $this
      * @throws TooLongCashierException
      */
-    public function setCashier(?string $cashier): Document
+    public function setCashier(?string $cashier): todoDocument
     {
         if ($cashier !== null) {
             $cashier = trim($cashier);
@@ -288,9 +288,9 @@ class Document extends Entity
     /**
      * Возвращает данные коррекции
      *
-     * @return CorrectionInfo|null
+     * @return todoCorrectionInfo|null
      */
-    public function getCorrectionInfo(): ?CorrectionInfo
+    public function getCorrectionInfo(): ?todoCorrectionInfo
     {
         return $this->correction_info;
     }
@@ -298,10 +298,10 @@ class Document extends Entity
     /**
      * Устанавливает данные коррекции
      *
-     * @param CorrectionInfo|null $correction_info
+     * @param todoCorrectionInfo|null $correction_info
      * @return $this
      */
-    public function setCorrectionInfo(?CorrectionInfo $correction_info): Document
+    public function setCorrectionInfo(?todoCorrectionInfo $correction_info): todoDocument
     {
         $this->correction_info = $correction_info;
         return $this;
@@ -338,7 +338,7 @@ class Document extends Entity
      * Собирает объект документа из сырой json-строки
      *
      * @param string $json
-     * @return Document
+     * @return todoDocument
      * @throws TooLongEmailException
      * @throws InvalidEmailException
      * @throws AtolException
@@ -355,7 +355,7 @@ class Document extends Entity
      * @throws TooLongUserdataException
      * @throws Exception
      */
-    public static function fromRaw(string $json): Document
+    public static function fromRaw(string $json): todoDocument
     {
         $array = json_decode($json, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -379,7 +379,7 @@ class Document extends Entity
             ));
         }
         if (isset($array['correction_info'])) {
-            $doc->setCorrectionInfo(new CorrectionInfo(
+            $doc->setCorrectionInfo(new todoCorrectionInfo(
                 $array['correction_info']['type'] ?? null,
                 $array['correction_info']['base_date'] ?? null,
                 $array['correction_info']['base_number'] ?? null,
@@ -405,7 +405,7 @@ class Document extends Entity
         }
         if (isset($array['payments'])) {
             foreach ($array['payments'] as $ar_payment) {
-                $payment = new Payment();
+                $payment = new todoPayment();
                 if (isset($ar_payment['type'])) {
                     $payment->setType($ar_payment['type']);
                 }
