@@ -12,6 +12,7 @@ namespace AtolOnline\Tests\Entities;
 use AtolOnline\{
     Entities\Vat,
     Enums\VatTypes,
+    Exceptions\InvalidEnumValueException,
     Tests\BasicTestCase
 };
 
@@ -69,6 +70,7 @@ class VatTest extends BasicTestCase
      * @covers       \AtolOnline\Entities\Vat::getSum
      * @covers       \AtolOnline\Entities\Vat::getCalculated
      * @covers       \AtolOnline\Entities\Vat::jsonSerialize
+     * @throws InvalidEnumValueException
      */
     public function testConstructor(string $type, float $sum): void
     {
@@ -90,6 +92,7 @@ class VatTest extends BasicTestCase
      * @param float $after_minus Результат после -20р
      * @covers       \AtolOnline\Entities\Vat::addSum
      * @covers       \AtolOnline\Entities\Vat::getCalculated
+     * @throws InvalidEnumValueException
      */
     public function testVatAdd(string $type, float $after_plus, float $after_minus)
     {

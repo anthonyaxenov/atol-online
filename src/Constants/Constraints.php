@@ -148,6 +148,11 @@ final class Constraints
     const CORRECTION_DATE_FORMAT = 'd.m.Y';
 
     /**
+     * Максимальная сумма одной оплаты
+     */
+    const MAX_COUNT_PAYMENT_SUM = 99999.999;
+
+    /**
      * Регулярное выражение для валидации строки ИНН
      *
      * @see https://online.atol.ru/possystem/v4/schema/sell Схема "#/receipt/client/inn"
