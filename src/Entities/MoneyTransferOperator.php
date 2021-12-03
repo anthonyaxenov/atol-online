@@ -26,7 +26,7 @@ use Illuminate\Support\Collection;
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 28
  */
-class MoneyTransferOperator extends Entity
+final class MoneyTransferOperator extends Entity
 {
     use HasInn, HasPhones;
 

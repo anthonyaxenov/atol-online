@@ -30,7 +30,7 @@ use JetBrains\PhpStorm\Pure;
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 17
  */
-class Client extends Entity
+final class Client extends Entity
 {
     use HasEmail, HasInn;
 

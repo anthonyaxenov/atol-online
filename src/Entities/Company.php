@@ -32,7 +32,7 @@ use JetBrains\PhpStorm\ArrayShape;
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 17
  */
-class Company extends Entity
+final class Company extends Entity
 {
     use HasEmail, HasInn;
 

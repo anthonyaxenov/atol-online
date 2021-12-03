@@ -19,7 +19,7 @@ use AtolOnline\Exceptions\InvalidEnumValueException;
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 26-28
  */
-class AgentInfo extends Entity
+final class AgentInfo extends Entity
 {
     /**
      * @var string|null Признак агента (1057)

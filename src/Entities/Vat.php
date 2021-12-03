@@ -24,7 +24,7 @@ use JetBrains\PhpStorm\{
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 25, 31
  */
-class Vat extends Entity
+final class Vat extends Entity
 {
     /**
      * @var string Тип ставки НДС (1199, 1105, 1104, 1103, 1102, 1107, 1106)

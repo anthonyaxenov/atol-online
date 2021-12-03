@@ -40,7 +40,7 @@ use AtolOnline\Exceptions\{
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 21-30
  */
-class Item extends Entity
+final class Item extends Entity
 {
     /**
      * @var string Наименование (1030)

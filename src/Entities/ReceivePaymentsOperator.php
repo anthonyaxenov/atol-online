@@ -20,7 +20,7 @@ use Illuminate\Support\Collection;
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 19-20
  */
-class ReceivePaymentsOperator extends Entity
+final class ReceivePaymentsOperator extends Entity
 {
     use HasPhones;
 

@@ -26,7 +26,7 @@ use Illuminate\Support\Collection;
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 29
  */
-class Supplier extends Entity
+final class Supplier extends Entity
 {
     use HasPhones, HasInn;
 

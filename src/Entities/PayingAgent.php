@@ -24,7 +24,7 @@ use Illuminate\Support\Collection;
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 19
  */
-class PayingAgent extends Entity
+final class PayingAgent extends Entity
 {
     use HasPhones;
 
