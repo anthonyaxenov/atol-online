@@ -199,7 +199,7 @@ class Item extends Entity
             throw new NegativeItemPriceException($this->getName(), $rubles);
         }
         $this->price = $rubles;
-        //$this->calcSum();
+        $this->getVat()?->setSum($this->getSum());
         return $this;
     }
 
@@ -232,6 +232,7 @@ class Item extends Entity
             throw new NegativeItemQuantityException($this->getName(), $quantity);
         }
         $this->quantity = $quantity;
+        $this->getVat()?->setSum($this->getSum());
         return $this;
     }
 
@@ -497,6 +498,7 @@ class Item extends Entity
             throw new NegativeItemExciseException($this->getName(), $excise);
         }
         $this->excise = $excise;
+        $this->getVat()?->setSum($this->getSum());
         return $this;
     }
 
