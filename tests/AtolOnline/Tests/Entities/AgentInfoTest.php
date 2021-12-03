@@ -63,9 +63,9 @@ class AgentInfoTest extends BasicTestCase
     {
         $this->assertAtolable(new AgentInfo(null), []);
         $this->assertAtolable(new AgentInfo(AgentTypes::ANOTHER), ['type' => AgentTypes::ANOTHER]);
-        $this->assertAtolable(new AgentInfo(paying_agent: new PayingAgent()), []);
-        $this->assertAtolable(new AgentInfo(money_transfer_operator: new MoneyTransferOperator()), []);
-        $this->assertAtolable(new AgentInfo(receive_payments_operator: new ReceivePaymentsOperator()), []);
+        $this->assertAtolable(new AgentInfo(pagent: new PayingAgent()), []);
+        $this->assertAtolable(new AgentInfo(mt_operator: new MoneyTransferOperator()), []);
+        $this->assertAtolable(new AgentInfo(rp_operator: new ReceivePaymentsOperator()), []);
 
         $this->assertAtolable(new AgentInfo(
             AgentTypes::ANOTHER,
