@@ -31,14 +31,13 @@ class TooLongException extends AtolException
      *
      * @param string $value
      * @param string $message
-     * @param int $max
+     * @param float $max
      */
-    public function __construct(string $value, string $message = '', int $max = 0)
+    public function __construct(string $value, string $message = '', float $max = 0)
     {
-        $message = ($message ?: $this->message) . ': '. $value;
-        if ($max > 0 || $this->max > 0) {
-            $message .= ' (макс. = ' . ($max ?? $this->max) . ', фактически = ' . mb_strlen($value) . ')';
-        }
-        parent::__construct($message);
+        parent::__construct(
+            ($message ?: $this->message) . ': ' . $value . (((float)$max > 0 || (float)$this->max > 0) ?
+                ' (макс = ' . ($max ?: $this->max) . ', фактически = ' . mb_strlen($value) . ')' : '')
+        );
     }
 }

@@ -105,7 +105,7 @@ final class Constraints
     /**
      * Минимальная длина кода таможенной декларации (1231)
      *
-     * @see https://online.atol.ru/possystem/v4/schema/sell Схема receipt.items.declaration_number
+     * @see https://online.atol.ru/possystem/v4/schema/sell Схема "#/receipt/items/declaration_number"
      */
     const MIN_LENGTH_DECLARATION_NUMBER = 1;
 
@@ -136,6 +136,13 @@ final class Constraints
     const MAX_LENGTH_CASHIER_NAME = 64;
 
     /**
+     * Максимальная длина кода товара в байтах (1162)
+     *
+     * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 21
+     */
+    const MAX_LENGTH_ITEM_CODE = 32;
+
+    /**
      * Регулярное выражение для валидации строки ИНН
      *
      * @see https://online.atol.ru/possystem/v4/schema/sell Схема "#/receipt/client/inn"
@@ -145,7 +152,6 @@ final class Constraints
 
     /**
      * Регулярное выражение для валидации номера телефона
-     *
      * @see https://online.atol.ru/possystem/v4/schema/sell Схема "#/definitions/phone_number"
      */
     const PATTERN_PHONE = /* @lang PhpRegExp */

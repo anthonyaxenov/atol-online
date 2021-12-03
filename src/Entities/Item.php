@@ -26,6 +26,7 @@ use AtolOnline\{
     Exceptions\TooHighItemQuantityException,
     Exceptions\TooHighPriceException,
     Exceptions\TooHighSumException,
+    Exceptions\TooLongItemCodeException,
     Exceptions\TooLongItemNameException,
     Exceptions\TooLongMeasurementUnitException,
     Exceptions\TooLongUserdataException,
@@ -58,6 +59,16 @@ class Item extends Entity
      * @var string|null Единица измерения (1197)
      */
     protected ?string $measurement_unit = null;
+
+    /**
+     * @var string|null Код товара (1162)
+     */
+    protected ?string $code = null;
+
+    /**
+     * @var string|null Код товара (1162) в форматированной шестнадцатиричной форме
+     */
+    protected ?string $code_hex = null;
 
     /**
      * @var string|null Признак способа расчёта (1214)
@@ -229,7 +240,7 @@ class Item extends Entity
     public function getSum(): float
     {
         $sum = $this->getPrice() * $this->getQuantity() + (float)$this->getExcise();
-        if ($sum > Constraints::MAX_COUNT_ITEM_PRICE) {
+        if ($sum > Constraints::MAX_COUNT_ITEM_SUM) {
             throw new TooHighSumException($this->getName(), $sum);
         }
         return $sum;
@@ -259,6 +270,49 @@ class Item extends Entity
             throw new TooLongMeasurementUnitException($measurement_unit);
         }
         $this->measurement_unit = $measurement_unit ?: null;
+        return $this;
+    }
+
+    /**
+     * Возвращает установленный код товара
+     *
+     * @return string|null
+     */
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    /**
+     * Возвращает шестнадцатиричное представление кода товара
+     *
+     * @return string|null
+     */
+    public function getCodeHex(): ?string
+    {
+        return $this->code_hex;
+    }
+
+    /**
+     * Устанавливает код товара
+     *
+     * @param string|null $code
+     * @return Item
+     * @throws TooLongItemCodeException
+     */
+    public function setCode(?string $code): self
+    {
+        $hex_string = null;
+        $code = trim((string)$code);
+        if (mb_strlen($code) > Constraints::MAX_LENGTH_ITEM_CODE) {
+            throw new TooLongItemCodeException($this->getName(), $code);
+        }
+        if (!empty($code)) {
+            $hex = bin2hex($code);
+            $hex_string = trim(preg_replace('/([\dA-Fa-f]{2})/', '$1 ', $hex));
+        }
+        $this->code = $code ?: null;
+        $this->code_hex = $hex_string ?: null;
         return $this;
     }
 
@@ -536,6 +590,7 @@ class Item extends Entity
             'sum' => $this->getSum(),
         ];
         !is_null($this->getMeasurementUnit()) && $json['measurement_unit'] = $this->getMeasurementUnit();
+        !is_null($this->getCodeHex()) && $json['nomenclature_code'] = $this->getCodeHex();
         !is_null($this->getPaymentMethod()) && $json['payment_method'] = $this->getPaymentMethod();
         !is_null($this->getPaymentObject()) && $json['payment_object'] = $this->getPaymentObject();
         !is_null($this->getDeclarationNumber()) && $json['declaration_number'] = $this->getDeclarationNumber();
@@ -545,7 +600,6 @@ class Item extends Entity
         !is_null($this->getUserData()) && $json['user_data'] = $this->getUserData();
         !is_null($this->getExcise()) && $json['excise'] = $this->getExcise();
         !is_null($this->getCountryCode()) && $json['country_code'] = $this->getCountryCode();
-        //TODO nomenclature_code
         return $json;
     }
 }

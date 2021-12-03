@@ -34,13 +34,15 @@ use AtolOnline\{
     Exceptions\TooHighItemQuantityException,
     Exceptions\TooHighPriceException,
     Exceptions\TooHighSumException,
+    Exceptions\TooLongItemCodeException,
     Exceptions\TooLongItemNameException,
     Exceptions\TooLongMeasurementUnitException,
     Exceptions\TooLongPayingAgentOperationException,
     Exceptions\TooLongUserdataException,
     Exceptions\TooManyException,
     Helpers,
-    Tests\BasicTestCase};
+    Tests\BasicTestCase
+};
 
 /**
  * Набор тестов для проверки работы класс продавца
@@ -207,12 +209,12 @@ class ItemTest extends BasicTestCase
     }
 
     /**
-     * Тестирует установку пустой единицы измерения
+     * Тестирует обнуление единицы измерения
      *
      * @param mixed $param
      * @dataProvider providerNullableStrings
-     * @covers \AtolOnline\Entities\Item::setMeasurementUnit
-     * @covers \AtolOnline\Entities\Item::getMeasurementUnit
+     * @covers       \AtolOnline\Entities\Item::setMeasurementUnit
+     * @covers       \AtolOnline\Entities\Item::getMeasurementUnit
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
      * @throws TooHighPriceException
@@ -504,12 +506,12 @@ class ItemTest extends BasicTestCase
     }
 
     /**
-     * Тестирует установку пустых пользовательских данных
+     * Тестирует обнуление пользовательских данных
      *
      * @param mixed $param
      * @dataProvider providerNullableStrings
-     * @covers \AtolOnline\Entities\Item::setUserData
-     * @covers \AtolOnline\Entities\Item::getUserData
+     * @covers       \AtolOnline\Entities\Item::setUserData
+     * @covers       \AtolOnline\Entities\Item::getUserData
      * @throws EmptyItemNameException
      * @throws NegativeItemPriceException
      * @throws TooHighPriceException
@@ -689,7 +691,7 @@ class ItemTest extends BasicTestCase
     }
 
     /**
-     * Тестирует установку акциза и расчёт суммы с его учётом
+     * Тестирует выброс исключения при установке слишком отрицательного акциза
      *
      * @covers \AtolOnline\Entities\Item::setExcise
      * @covers \AtolOnline\Exceptions\NegativeItemExciseException
@@ -705,5 +707,82 @@ class ItemTest extends BasicTestCase
     {
         $this->expectException(NegativeItemExciseException::class);
         (new Item('test item', 2, 3))->setExcise(-1);
+    }
+
+    /**
+     * Тестирует установку валидного кода товара
+     *
+     * @covers \AtolOnline\Entities\Item::setCode
+     * @covers \AtolOnline\Entities\Item::getCode
+     * @covers \AtolOnline\Entities\Item::getCodeHex
+     * @covers \AtolOnline\Entities\Item::jsonSerialize
+     * @throws EmptyItemNameException
+     * @throws NegativeItemPriceException
+     * @throws NegativeItemQuantityException
+     * @throws TooHighPriceException
+     * @throws TooLongItemNameException
+     * @throws TooManyException
+     * @throws TooLongItemCodeException
+     */
+    public function testValidNomenclatureCode(): void
+    {
+        $code = Helpers::randomStr(Constraints::MAX_LENGTH_ITEM_CODE);
+        $encoded = trim(preg_replace('/([\dA-Fa-f]{2})/', '$1 ', bin2hex($code)));
+
+        $item = (new Item('test item', 2, 3))->setCode($code);
+        $this->assertEquals($code, $item->getCode());
+        $this->assertEquals($encoded, $item->getCodeHex());
+
+        $decoded = hex2bin(str_replace(' ', '', $item->getCodeHex()));
+        $this->assertEquals($decoded, $item->getCode());
+
+        $this->assertAtolable($item, [
+            'name' => 'test item',
+            'price' => 2,
+            'quantity' => 3,
+            'sum' => 6,
+            'nomenclature_code' => $item->getCodeHex(),
+        ]);
+    }
+
+    /**
+     * Тестирует обнуление кода товара
+     *
+     * @param mixed $param
+     * @dataProvider providerNullableStrings
+     * @covers       \AtolOnline\Entities\Item::setCode
+     * @covers       \AtolOnline\Entities\Item::getCode
+     * @covers       \AtolOnline\Entities\Item::getCodeHex
+     * @throws EmptyItemNameException
+     * @throws NegativeItemPriceException
+     * @throws NegativeItemQuantityException
+     * @throws TooHighPriceException
+     * @throws TooLongItemCodeException
+     * @throws TooLongItemNameException
+     * @throws TooManyException
+     */
+    public function testNullableCode(mixed $param): void
+    {
+        $item = (new Item('test item', 2, 3))->setCode($param);
+        $this->assertNull($item->getCode());
+        $this->assertNull($item->getCodeHex());
+    }
+
+    /**
+     * Тестирует выброс исключения при установке слишком отрицательного акциза
+     *
+     * @covers \AtolOnline\Entities\Item::setCode
+     * @covers \AtolOnline\Exceptions\TooLongItemCodeException
+     * @throws TooLongItemNameException
+     * @throws TooHighPriceException
+     * @throws TooManyException
+     * @throws NegativeItemPriceException
+     * @throws EmptyItemNameException
+     * @throws NegativeItemQuantityException
+     */
+    public function testTooLongItemCodeException(): void
+    {
+        $this->expectException(TooLongItemCodeException::class);
+        (new Item('test item', 2, 3))->setCode(Helpers::randomStr(Constraints::MAX_LENGTH_ITEM_CODE + 1));
     }
 }
