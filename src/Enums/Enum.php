@@ -24,8 +24,7 @@ abstract class Enum extends \MyCLabs\Enum\Enum
      */
     public static function isValid($value)
     {
-        return parent::isValid($value)
-            ?: throw new InvalidEnumValueException(static::class, $value);
+        return parent::isValid($value) ?: throw new InvalidEnumValueException(static::class, $value);
     }
 
     /**

@@ -163,6 +163,11 @@ final class Ffd105Tags
     const CORRECTION_TYPE = 1173;
 
     /**
+     * Дата документа основания для коррекции
+     */
+    const CORRECTION_DATE = 1178;
+
+    /**
      * Сумма по чеку (БСО) наличными
      */
     const PAYMENT_TYPE_CASH = 1031;

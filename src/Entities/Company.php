@@ -66,10 +66,7 @@ final class Company extends Entity
         string $inn,
         string $payment_address,
     ) {
-        $this->setEmail($email);
-        $this->setSno($sno);
-        $this->setInn($inn);
-        $this->setPaymentAddress($payment_address);
+        $this->setEmail($email)->setSno($sno)->setInn($inn)->setPaymentAddress($payment_address);
     }
 
     /**
@@ -92,8 +89,7 @@ final class Company extends Entity
     public function setSno(string $sno): self
     {
         $sno = trim($sno);
-        SnoTypes::isValid($sno);
-        $this->sno = $sno;
+        SnoTypes::isValid($sno) && $this->sno = $sno;
         return $this;
     }
 

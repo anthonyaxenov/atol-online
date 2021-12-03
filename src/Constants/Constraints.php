@@ -143,6 +143,11 @@ final class Constraints
     const MAX_LENGTH_ITEM_CODE = 32;
 
     /**
+     * Формат даты документа коррекции
+     */
+    const CORRECTION_DATE_FORMAT = 'd.m.Y';
+
+    /**
      * Регулярное выражение для валидации строки ИНН
      *
      * @see https://online.atol.ru/possystem/v4/schema/sell Схема "#/receipt/client/inn"
