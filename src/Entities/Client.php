@@ -11,14 +11,19 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\{
-    Constants\Constraints,
-    Exceptions\InvalidEmailException,
-    Exceptions\InvalidInnLengthException,
-    Exceptions\InvalidPhoneException,
-    Exceptions\TooLongClientContactException,
-    Exceptions\TooLongClientNameException,
-    Exceptions\TooLongEmailException};
+use AtolOnline\Constants\Constraints;
+use AtolOnline\Exceptions\{
+    InvalidEmailException,
+    InvalidInnLengthException,
+    InvalidPhoneException,
+    TooLongClientNameException,
+    TooLongEmailException
+};
+use AtolOnline\Traits\{
+    HasEmail,
+    HasInn
+};
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Класс, описывающий покупателя
@@ -27,15 +32,12 @@ use AtolOnline\{
  */
 class Client extends Entity
 {
+    use HasEmail, HasInn;
+
     /**
      * @var string|null Наименование (1227)
      */
     protected ?string $name = null;
-
-    /**
-     * @var string|null Email (1008)
-     */
-    protected ?string $email = null;
 
     /**
      * @var string|null Телефон (1008)
@@ -43,22 +45,17 @@ class Client extends Entity
     protected ?string $phone = null;
 
     /**
-     * @var string|null ИНН (1228)
-     */
-    protected ?string $inn = null;
-
-    /**
      * Конструктор объекта покупателя
      *
      * @param string|null $name Наименование (1227)
-     * @param string|null $phone Email (1008)
      * @param string|null $email Телефон (1008)
+     * @param string|null $phone Email (1008)
      * @param string|null $inn ИНН (1228)
-     * @throws TooLongClientNameException
-     * @throws TooLongClientContactException
-     * @throws TooLongEmailException
      * @throws InvalidEmailException
      * @throws InvalidInnLengthException
+     * @throws InvalidPhoneException
+     * @throws TooLongClientNameException
+     * @throws TooLongEmailException
      */
     public function __construct(
         ?string $name = null,
@@ -102,38 +99,6 @@ class Client extends Entity
     }
 
     /**
-     * Возвращает установленный email
-     *
-     * @return string|null
-     */
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    /**
-     * Устанавливает email
-     *
-     * @param string|null $email
-     * @return $this
-     * @throws TooLongEmailException Слишком длинный email
-     * @throws InvalidEmailException Невалидный email
-     */
-    public function setEmail(?string $email): self
-    {
-        if (is_string($email)) {
-            $email = preg_replace('/[\n\r\t]/', '', trim($email));
-            if (mb_strlen($email) > Constraints::MAX_LENGTH_EMAIL) {
-                throw new TooLongEmailException($email);
-            } elseif (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-                throw new InvalidEmailException($email);
-            }
-        }
-        $this->email = empty($email) ? null : $email;
-        return $this;
-    }
-
-    /**
      * Возвращает установленный телефон
      *
      * @return string|null
@@ -163,37 +128,9 @@ class Client extends Entity
     }
 
     /**
-     * Возвращает установленный ИНН
-     *
-     * @return string|null
-     */
-    public function getInn(): ?string
-    {
-        return $this->inn;
-    }
-
-    /**
-     * Устанавливает ИНН
-     *
-     * @param string|null $inn
-     * @return $this
-     * @throws InvalidInnLengthException Некорректная длина ИНН
-     */
-    public function setInn(?string $inn): self
-    {
-        if (is_string($inn)) {
-            $inn = preg_replace('/[^\d]/', '', trim($inn));
-            if (preg_match_all(Constraints::PATTERN_INN, $inn) === 0) {
-                throw new InvalidInnLengthException($inn);
-            }
-        }
-        $this->inn = empty($inn) ? null : $inn;
-        return $this;
-    }
-
-    /**
      * @inheritDoc
      */
+    #[Pure]
     public function jsonSerialize(): array
     {
         $json = [];

@@ -14,6 +14,10 @@ namespace AtolOnline\Entities;
 use AtolOnline\Enums\VatTypes;
 use AtolOnline\Exceptions\InvalidEnumValueException;
 use AtolOnline\Helpers;
+use JetBrains\PhpStorm\{
+    ArrayShape,
+    Pure
+};
 
 /**
  * Класс, описывающий ставку НДС
@@ -37,6 +41,7 @@ class Vat extends Entity
      *
      * @param string $type Тип ставки НДС (1199, 1105, 1104, 1103, 1102, 1107, 1106)
      * @param float $rubles Исходная сумма в рублях, от которой нужно расчитать размер НДС
+     * @throws InvalidEnumValueException
      */
     public function __construct(string $type, float $rubles)
     {
@@ -99,16 +104,16 @@ class Vat extends Entity
      * @see  https://glavkniga.ru/situations/k500734
      * @see https://www.b-kontur.ru/nds-kalkuljator-online
      */
+    #[Pure]
     public function getCalculated(): float
     {
-        $kopeks = Helpers::toKop($this->sum);
         return Helpers::toRub(match ($this->getType()) {
-            VatTypes::VAT10 => $kopeks * 10 / 100,
-            VatTypes::VAT18 => $kopeks * 18 / 100,
-            VatTypes::VAT20 => $kopeks * 20 / 100,
-            VatTypes::VAT110 => $kopeks * 10 / 110,
-            VatTypes::VAT118 => $kopeks * 18 / 118,
-            VatTypes::VAT120 => $kopeks * 20 / 120,
+            VatTypes::VAT10 => Helpers::toKop($this->sum) * 10 / 100,
+            VatTypes::VAT18 => Helpers::toKop($this->sum) * 18 / 100,
+            VatTypes::VAT20 => Helpers::toKop($this->sum) * 20 / 100,
+            VatTypes::VAT110 => Helpers::toKop($this->sum) * 10 / 110,
+            VatTypes::VAT118 => Helpers::toKop($this->sum) * 18 / 118,
+            VatTypes::VAT120 => Helpers::toKop($this->sum) * 20 / 120,
             default => 0,
         });
     }
@@ -128,6 +133,8 @@ class Vat extends Entity
     /**
      * @inheritDoc
      */
+    #[Pure]
+    #[ArrayShape(['type' => 'string', 'sum' => 'float'])]
     public function jsonSerialize(): array
     {
         return [

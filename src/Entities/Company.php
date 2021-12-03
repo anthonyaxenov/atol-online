@@ -14,12 +14,18 @@ namespace AtolOnline\Entities;
 use AtolOnline\{
     Constants\Constraints,
     Enums\SnoTypes,
-    Exceptions\InvalidEmailException,
-    Exceptions\InvalidEnumValueException,
-    Exceptions\InvalidInnLengthException,
-    Exceptions\InvalidPaymentAddressException,
-    Exceptions\TooLongEmailException,
-    Exceptions\TooLongPaymentAddressException};
+    Traits\HasEmail,
+    Traits\HasInn
+};
+use AtolOnline\Exceptions\{
+    InvalidEmailException,
+    InvalidEnumValueException,
+    InvalidInnLengthException,
+    InvalidPaymentAddressException,
+    TooLongEmailException,
+    TooLongPaymentAddressException
+};
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Класс, описывающий сущность компании-продавца
@@ -28,20 +34,12 @@ use AtolOnline\{
  */
 class Company extends Entity
 {
-    /**
-     * @var string|null Почта (1117)
-     */
-    protected ?string $email;
+    use HasEmail, HasInn;
 
     /**
      * @var string|null Система налогообложения продавца (1055)
      */
     protected ?string $sno;
-
-    /**
-     * @var string|null ИНН (1018)
-     */
-    protected ?string $inn;
 
     /**
      * @var string|null Место расчётов (адрес интернет-магазина) (1187)
@@ -75,36 +73,6 @@ class Company extends Entity
     }
 
     /**
-     * Возвращает установленный email
-     *
-     * @return string
-     */
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    /**
-     * Устанавливает email
-     *
-     * @param string $email
-     * @return $this
-     * @throws TooLongEmailException Слишком длинный email
-     * @throws InvalidEmailException Невалидный email
-     */
-    public function setEmail(string $email): self
-    {
-        $email = preg_replace('/[\n\r\t]/', '', trim($email));
-        if (mb_strlen($email) > Constraints::MAX_LENGTH_EMAIL) {
-            throw new TooLongEmailException($email);
-        } elseif (empty($email) || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-            throw new InvalidEmailException($email);
-        }
-        $this->email = $email;
-        return $this;
-    }
-
-    /**
      * Возвращает установленный тип налогообложения
      *
      * @return string
@@ -126,33 +94,6 @@ class Company extends Entity
         $sno = trim($sno);
         SnoTypes::isValid($sno);
         $this->sno = $sno;
-        return $this;
-    }
-
-    /**
-     * Возвращает установленный ИНН
-     *
-     * @return string
-     */
-    public function getInn(): string
-    {
-        return $this->inn;
-    }
-
-    /**
-     * Устанавливает ИНН
-     *
-     * @param string $inn
-     * @return $this
-     * @throws InvalidInnLengthException
-     */
-    public function setInn(string $inn): self
-    {
-        $inn = preg_replace('/[^\d]/', '', trim($inn));
-        if (empty($inn) || preg_match_all(Constraints::PATTERN_INN, $inn) === 0) {
-            throw new InvalidInnLengthException($inn);
-        }
-        $this->inn = $inn;
         return $this;
     }
 
@@ -193,6 +134,12 @@ class Company extends Entity
      * @throws InvalidInnLengthException
      * @throws InvalidPaymentAddressException
      */
+    #[ArrayShape([
+        'email' => "string",
+        'sno' => "string",
+        'inn' => "string",
+        'payment_address' => "string",
+    ])]
     public function jsonSerialize(): array
     {
         return [

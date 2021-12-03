@@ -11,26 +11,28 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\{
-    Constants\Constraints,
-    Enums\PaymentMethods,
-    Enums\PaymentObjects,
-    Enums\VatTypes,
-    Exceptions\EmptyItemNameException,
-    Exceptions\InvalidDeclarationNumberException,
-    Exceptions\InvalidEnumValueException,
-    Exceptions\InvalidOKSMCodeException,
-    Exceptions\NegativeItemExciseException,
-    Exceptions\NegativeItemPriceException,
-    Exceptions\NegativeItemQuantityException,
-    Exceptions\TooHighItemQuantityException,
-    Exceptions\TooHighPriceException,
-    Exceptions\TooHighSumException,
-    Exceptions\TooLongItemCodeException,
-    Exceptions\TooLongItemNameException,
-    Exceptions\TooLongMeasurementUnitException,
-    Exceptions\TooLongUserdataException,
-    Exceptions\TooManyException
+use AtolOnline\Constants\Constraints;
+use AtolOnline\Enums\{
+    PaymentMethods,
+    PaymentObjects,
+    VatTypes
+};
+use AtolOnline\Exceptions\{
+    EmptyItemNameException,
+    InvalidDeclarationNumberException,
+    InvalidEnumValueException,
+    InvalidOKSMCodeException,
+    NegativeItemExciseException,
+    NegativeItemPriceException,
+    NegativeItemQuantityException,
+    TooHighItemQuantityException,
+    TooHighPriceException,
+    TooHighSumException,
+    TooLongItemCodeException,
+    TooLongItemNameException,
+    TooLongMeasurementUnitException,
+    TooLongUserdataException,
+    TooManyException
 };
 
 /**
@@ -153,7 +155,7 @@ class Item extends Entity
      *
      * @param string $name Наименование
      * @return $this
-     * @throws TooLongItemNameException Слишком длинное имя/наименование
+     * @throws TooLongItemNameException
      * @throws EmptyItemNameException
      */
     public function setName(string $name): self
@@ -186,6 +188,7 @@ class Item extends Entity
      * @return $this
      * @throws NegativeItemPriceException
      * @throws TooHighPriceException
+     * @throws TooHighSumException
      */
     public function setPrice(float $rubles): self
     {
@@ -217,6 +220,7 @@ class Item extends Entity
      * @return $this
      * @throws TooHighItemQuantityException
      * @throws NegativeItemQuantityException
+     * @throws TooHighSumException
      */
     public function setQuantity(float $quantity): self
     {
@@ -457,7 +461,7 @@ class Item extends Entity
      *
      * @param string|null $user_data Дополнительный реквизит
      * @return $this
-     * @throws TooLongUserdataException Слишком длинный дополнительный реквизит
+     * @throws TooLongUserdataException
      */
     public function setUserData(?string $user_data): self
     {
@@ -485,8 +489,9 @@ class Item extends Entity
      * @param float|null $excise
      * @return Item
      * @throws NegativeItemExciseException
+     * @throws TooHighSumException
      */
-    public function setExcise(?float $excise): Item
+    public function setExcise(?float $excise): self
     {
         if ($excise < 0) {
             throw new NegativeItemExciseException($this->getName(), $excise);
@@ -557,25 +562,6 @@ class Item extends Entity
         $this->declaration_number = $declaration_number;
         return $this;
     }
-
-    /**
-     * Расчитывает стоимость и размер НДС на неё
-     *
-     * @return float
-     * @throws TooHighPriceException Слишком большая сумма
-     */
-    //public function calcSum(): float
-    //{
-    //    $sum = $this->quantity * $this->price;
-    //    if (rubles($sum) > 42949672.95) {
-    //        throw new TooHighPriceException($sum, 42949672.95);
-    //    }
-    //    $this->sum = $sum;
-    //    if ($this->vat) {
-    //        $this->vat->setSum(rubles($sum));
-    //    }
-    //    return $this->getSum();
-    //}
 
     /**
      * @inheritDoc

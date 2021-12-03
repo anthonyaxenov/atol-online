@@ -12,8 +12,11 @@ declare(strict_types = 1);
 namespace AtolOnline\Entities;
 
 use AtolOnline\Constants\Constraints;
-use AtolOnline\Exceptions\InvalidPhoneException;
-use AtolOnline\Exceptions\TooLongPayingAgentOperationException;
+use AtolOnline\Exceptions\{
+    InvalidPhoneException,
+    TooLongPayingAgentOperationException
+};
+use AtolOnline\Traits\HasPhones;
 use Illuminate\Support\Collection;
 
 /**
@@ -23,15 +26,12 @@ use Illuminate\Support\Collection;
  */
 class PayingAgent extends Entity
 {
+    use HasPhones;
+
     /**
      * @var string|null Наименование операции (1044)
      */
     protected ?string $operation = null;
-
-    /**
-     * @var Collection Телефоны платёжного агента (1073)
-     */
-    protected Collection $phones;
 
     /**
      * Конструктор
@@ -76,40 +76,6 @@ class PayingAgent extends Entity
     public function getOperation(): ?string
     {
         return $this->operation;
-    }
-
-    /**
-     * Устанавливает массив номеров телефонов
-     *
-     * @todo вытащить в трейт
-     * @param array|Collection|null $phones
-     * @return $this
-     * @throws InvalidPhoneException
-     */
-    public function setPhones(array|Collection|null $phones): self
-    {
-        if (!is_null($phones)) {
-            $phones = is_array($phones) ? collect($phones) : $phones;
-            $phones->each(function ($phone) {
-                $phone = preg_replace('/[^\d]/', '', trim($phone));
-                if (preg_match(Constraints::PATTERN_PHONE, $phone) != 1) {
-                    throw new InvalidPhoneException($phone);
-                }
-            });
-        }
-        $this->phones = empty($phones) ? collect() : $phones;
-        return $this;
-    }
-
-    /**
-     * Возвращает установленные номера телефонов
-     *
-     * @todo вытащить в трейт
-     * @return Collection
-     */
-    public function getPhones(): Collection
-    {
-        return $this->phones;
     }
 
     /**

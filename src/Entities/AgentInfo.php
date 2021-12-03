@@ -45,21 +45,21 @@ class AgentInfo extends Entity
      * Конструктор
      *
      * @param string|null $type Признак агента (1057)
-     * @param PayingAgent|null $paying_agent Платёжный агент
-     * @param ReceivePaymentsOperator|null $receive_payments_operator Оператор по приёму платежей
-     * @param MoneyTransferOperator|null $money_transfer_operator Оператор перевода
+     * @param PayingAgent|null $pagent Платёжный агент
+     * @param ReceivePaymentsOperator|null $rp_operator Оператор по приёму платежей
+     * @param MoneyTransferOperator|null $mt_operator Оператор перевода
      * @throws InvalidEnumValueException
      */
     public function __construct(
         ?string $type = null,
-        ?PayingAgent $paying_agent = null,
-        ?ReceivePaymentsOperator $receive_payments_operator = null,
-        ?MoneyTransferOperator $money_transfer_operator = null,
+        ?PayingAgent $pagent = null,
+        ?ReceivePaymentsOperator $rp_operator = null,
+        ?MoneyTransferOperator $mt_operator = null,
     ) {
         !is_null($type) && $this->setType($type);
-        !is_null($paying_agent) && $this->setPayingAgent($paying_agent);
-        !is_null($receive_payments_operator) && $this->setReceivePaymentsOperator($receive_payments_operator);
-        !is_null($money_transfer_operator) && $this->setMoneyTransferOperator($money_transfer_operator);
+        !is_null($pagent) && $this->setPayingAgent($pagent);
+        !is_null($rp_operator) && $this->setReceivePaymentsOperator($rp_operator);
+        !is_null($mt_operator) && $this->setMoneyTransferOperator($mt_operator);
     }
 
     /**
@@ -79,7 +79,7 @@ class AgentInfo extends Entity
      * @return AgentInfo
      * @throws InvalidEnumValueException
      */
-    public function setType(?string $type): AgentInfo
+    public function setType(?string $type): self
     {
         AgentTypes::isValid($type) && $this->type = $type;
         return $this;
@@ -98,12 +98,12 @@ class AgentInfo extends Entity
     /**
      * Устанавливает платёжного агента
      *
-     * @param PayingAgent|null $paying_agent
+     * @param PayingAgent|null $agent
      * @return AgentInfo
      */
-    public function setPayingAgent(?PayingAgent $paying_agent): AgentInfo
+    public function setPayingAgent(?PayingAgent $agent): self
     {
-        $this->paying_agent = $paying_agent;
+        $this->paying_agent = $agent;
         return $this;
     }
 
@@ -120,12 +120,12 @@ class AgentInfo extends Entity
     /**
      * Устанавливает оператора по приёму платежей
      *
-     * @param ReceivePaymentsOperator|null $receive_payments_operator
+     * @param ReceivePaymentsOperator|null $operator
      * @return AgentInfo
      */
-    public function setReceivePaymentsOperator(?ReceivePaymentsOperator $receive_payments_operator): AgentInfo
+    public function setReceivePaymentsOperator(?ReceivePaymentsOperator $operator): self
     {
-        $this->receive_payments_operator = $receive_payments_operator;
+        $this->receive_payments_operator = $operator;
         return $this;
     }
 
@@ -142,12 +142,12 @@ class AgentInfo extends Entity
     /**
      * Устанавливает оператора перевода
      *
-     * @param MoneyTransferOperator|null $money_transfer_operator
+     * @param MoneyTransferOperator|null $operator
      * @return AgentInfo
      */
-    public function setMoneyTransferOperator(?MoneyTransferOperator $money_transfer_operator): AgentInfo
+    public function setMoneyTransferOperator(?MoneyTransferOperator $operator): self
     {
-        $this->money_transfer_operator = $money_transfer_operator;
+        $this->money_transfer_operator = $operator;
         return $this;
     }
 

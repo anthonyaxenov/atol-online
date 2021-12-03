@@ -11,14 +11,17 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Exceptions\EmptyMonitorDataException;
-use AtolOnline\Exceptions\NotEnoughMonitorDataException;
+use AtolOnline\Exceptions\{
+    EmptyMonitorDataException,
+    NotEnoughMonitorDataException
+};
 use DateTime;
 use Exception;
 
 /**
  * Класс сущности ККТ, получаемой от монитора
  *
+ * @see https://online.atol.ru/files/API_service_information.pdf Документация, стр 11
  * @property string|null serialNumber Заводской номер ККТ
  * @property string|null registrationNumber Регистрационный номер машины (РНМ)
  * @property string|null deviceNumber Номер автоматического устройства (внутренний идентификатор устройства)
@@ -38,14 +41,13 @@ use Exception;
  * @property DateTime|string|null firstUnsetDocTimestamp Дата первого неотправленного документа. Указывается, если
  * есть неотправленные документы.
  * @property int|null networkErrorCode Код ошибки сети
- * @see https://online.atol.ru/files/API_service_information.pdf Документация, стр 11
  */
 final class Kkt extends Entity
 {
     /**
      * Сопоставление кодов сетевых ошибок ККТ с их описаниями
      */
-     public const ERROR_CODES = [
+    public const ERROR_CODES = [
         0 => 'Нет ошибок',
         1 => 'Отсутствует физический канал связи',
         2 => 'Ошибка сетевых настроек или нет соединения с сервером ОФД',
@@ -97,7 +99,7 @@ final class Kkt extends Entity
      * @throws EmptyMonitorDataException
      * @throws NotEnoughMonitorDataException
      */
-    public function __construct(protected \stdClass $data)
+    public function __construct(protected object $data)
     {
         if (empty((array)$data)) {
             throw new EmptyMonitorDataException();
