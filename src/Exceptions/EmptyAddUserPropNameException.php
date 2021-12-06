@@ -14,12 +14,12 @@ namespace AtolOnline\Exceptions;
 use AtolOnline\Constants\Ffd105Tags;
 
 /**
- * Исключение, возникающее при пустом наименовании дополнительного реквизита
+ * Исключение, возникающее при пустом наименовании дополнительного реквизита пользователя
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 32
  */
 class EmptyAddUserPropNameException extends AtolException
 {
-    protected $message = 'Наименование дополнительного реквизита не может быть пустым';
+    protected $message = 'Наименование дополнительного реквизита пользователя не может быть пустым';
     protected array $ffd_tags = [Ffd105Tags::DOC_ADD_USER_PROP_NAME];
 }

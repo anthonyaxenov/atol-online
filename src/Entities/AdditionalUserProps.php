@@ -20,7 +20,7 @@ use AtolOnline\Exceptions\{
 use JetBrains\PhpStorm\Pure;
 
 /**
- * Класс, описывающий дополнительный реквизит
+ * Класс, описывающий дополнительный реквизит пользователя
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 32
  */

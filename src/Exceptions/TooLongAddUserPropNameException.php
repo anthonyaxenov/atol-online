@@ -16,13 +16,13 @@ use AtolOnline\Constants\{
     Ffd105Tags};
 
 /**
- * Исключение, возникающее при попытке указать слишком длинное наименование дополнительного реквизита
+ * Исключение, возникающее при попытке указать слишком длинное наименование дополнительного реквизита пользователя
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 32
  */
 class TooLongAddUserPropNameException extends TooLongException
 {
-    protected $message = 'Слишком длинное наименование дополнительного реквизита';
+    protected $message = 'Слишком длинное наименование дополнительного реквизита пользователя';
     protected float $max = Constraints::MAX_LENGTH_ADD_USER_PROP_NAME;
     protected array $ffd_tags = [Ffd105Tags::DOC_ADD_USER_PROP_NAME];
 }

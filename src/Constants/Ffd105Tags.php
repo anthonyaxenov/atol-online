@@ -228,6 +228,11 @@ final class Ffd105Tags
     const DOC_VAT_TYPE_VAT120 = 1106;
 
     /**
+     * Значение дополнительного реквизита чека
+     */
+    const DOC_ADD_CHECK_PROP_VALUE = 1192;
+
+    /**
      * Дополнительный реквизит пользователя
      */
     const DOC_ADD_USER_PROP = 1084;

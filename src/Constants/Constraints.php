@@ -148,14 +148,21 @@ final class Constraints
     const MAX_LENGTH_ITEM_CODE = 32;
 
     /**
-     * Максимальная длина наименования дополнительного реквизита (1085)
+     * Максимальная длина значения дополнительного реквизита чека (1192)
+     *
+     * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 32
+     */
+    const MAX_LENGTH_ADD_CHECK_PROP = 16;
+
+    /**
+     * Максимальная длина наименования дополнительного реквизита пользователя (1085)
      *
      * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 32
      */
     const MAX_LENGTH_ADD_USER_PROP_NAME = 64;
 
     /**
-     * Максимальная длина значения дополнительного реквизита (1086)
+     * Максимальная длина значения дополнительного реквизита пользователя (1086)
      *
      * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 32
      */

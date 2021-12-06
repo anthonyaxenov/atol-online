@@ -1,0 +1,394 @@
+<?php
+/*
+ * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
+ *
+ * This code is licensed under MIT.
+ * Этот код распространяется по лицензии MIT.
+ * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
+ */
+
+declare(strict_types = 1);
+
+namespace AtolOnline\Entities;
+
+use AtolOnline\Collections\Items;
+use AtolOnline\Collections\Payments;
+use AtolOnline\Collections\Vats;
+use AtolOnline\Constants\Constraints;
+use AtolOnline\Exceptions\TooHighPriceException;
+use AtolOnline\Exceptions\TooLongAddCheckPropException;
+use AtolOnline\Exceptions\TooLongCashierException;
+use Exception;
+
+/**
+ * Класс, описывающий документ прихода, расхода, возврата прихода, возврата расхода
+ *
+ * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 17
+ */
+class Receipt extends Entity
+{
+    /**
+     * @var Client Покупатель
+     */
+    protected Client $client;
+
+    /**
+     * @var Company Продавец
+     */
+    protected Company $company;
+
+    /**
+     * @var AgentInfo|null Агент
+     */
+    protected ?AgentInfo $agent_info = null;
+
+    /**
+     * @var Supplier|null Поставщик
+     */
+    protected ?Supplier $supplier = null;
+
+    /**
+     * @var Items Коллекция предметов расчёта
+     */
+    protected Items $items;
+
+    /**
+     * @var Payments Коллекция оплат
+     */
+    protected Payments $payments;
+
+    /**
+     * @var Vats|null Коллекция ставок НДС
+     */
+    protected ?Vats $vats = null;
+
+    /**
+     * @var float Итоговая сумма чека
+     */
+    protected float $total = 0;
+
+    /**
+     * @var string|null ФИО кассира
+     */
+    protected ?string $cashier = null;
+
+    /**
+     * @var string|null Дополнительный реквизит
+     */
+    protected ?string $add_check_props;
+
+    /**
+     * @var AdditionalUserProps|null Дополнительный реквизит пользователя
+     */
+    protected ?AdditionalUserProps $add_user_props;
+
+    /**
+     * Конструктор
+     */
+    public function __construct(
+        Client $client,
+        Company $company,
+        Items $items,
+        Payments $payments,
+    ) {
+        $this->setClient($client)->setCompany($company)->setItems($items)->setPayments($payments);
+    }
+
+    /**
+     * Возвращает установленного покупателя
+     *
+     * @return Client
+     */
+    public function getClient(): Client
+    {
+        return $this->client;
+    }
+
+    /**
+     * Устанаваливает покупателя
+     *
+     * @param Client $client
+     * @return Receipt
+     */
+    public function setClient(Client $client): self
+    {
+        $this->client = $client;
+        return $this;
+    }
+
+    /**
+     * Возвращает установленного продавца
+     *
+     * @return Company
+     */
+    public function getCompany(): Company
+    {
+        return $this->company;
+    }
+
+    /**
+     * Устанаваливает продавца
+     *
+     * @param Company $company
+     * @return Receipt
+     */
+    public function setCompany(Company $company): self
+    {
+        $this->company = $company;
+        return $this;
+    }
+
+    /**
+     * Возвращает установленного агента
+     *
+     * @return AgentInfo
+     */
+    public function getAgentInfo(): ?AgentInfo
+    {
+        return $this->agent_info;
+    }
+
+    /**
+     * Устанаваливает агента
+     *
+     * @param AgentInfo|null $agent_info
+     * @return Receipt
+     */
+    public function setAgentInfo(?AgentInfo $agent_info): self
+    {
+        $this->agent_info = $agent_info;
+        return $this;
+    }
+
+    /**
+     * Поставщика
+     *
+     * @return Supplier|null
+     */
+    public function getSupplier(): ?Supplier
+    {
+        return $this->supplier;
+    }
+
+    /**
+     * Поставщика
+     *
+     * @param Supplier|null $supplier
+     * @return Receipt
+     */
+    public function setSupplier(?Supplier $supplier): self
+    {
+        $this->supplier = $supplier;
+        return $this;
+    }
+
+    /**
+     * Возвращает установленную коллекцию предметов расчёта
+     *
+     * @return Items
+     */
+    public function getItems(): Items
+    {
+        return $this->items;
+    }
+
+    /**
+     * Устанаваливает коллекцию предметов расчёта
+     *
+     * @todo исключение при пустой коллекции
+     * @param Items $items
+     * @return Receipt
+     */
+    public function setItems(Items $items): self
+    {
+        $this->items = $items;
+        return $this;
+    }
+
+    /**
+     * Возвращает установленную коллекцию оплат
+     *
+     * @return Payments
+     */
+    public function getPayments(): Payments
+    {
+        return $this->payments;
+    }
+
+    /**
+     * Устанаваливает коллекцию оплат
+     *
+     * @todo исключение при пустой коллекции
+     * @param Payments $payments
+     * @return Receipt
+     */
+    public function setPayments(Payments $payments): self
+    {
+        $this->payments = $payments;
+        return $this;
+    }
+
+    /**
+     * Возвращает установленную коллекцию ставок НДС
+     *
+     * @return Vats|null
+     */
+    public function getVats(): ?Vats
+    {
+        return $this->vats;
+    }
+
+    /**
+     * Устанаваливает коллекцию ставок НДС
+     *
+     * @param Vats|null $vats
+     * @return Receipt
+     */
+    public function setVats(?Vats $vats): self
+    {
+        $this->vats = $vats;
+        return $this;
+    }
+
+    /**
+     * Возвращает полную сумму чека
+     *
+     * @return float
+     */
+    public function getTotal(): float
+    {
+        return $this->total;
+    }
+
+    /**
+     * Устанавливает полную сумму чека
+     *
+     * @param float $total
+     * @return Receipt
+     */
+    public function setTotal(float $total): self
+    {
+        $this->total = $total;
+        return $this;
+    }
+
+    /**
+     * Возвращает установленного кассира
+     *
+     * @return string|null
+     */
+    public function getCashier(): ?string
+    {
+        return $this->cashier;
+    }
+
+    /**
+     * Устанаваливает кассира
+     *
+     * @param string|null $cashier
+     * @return Receipt
+     * @throws TooLongCashierException
+     */
+    public function setCashier(?string $cashier): self
+    {
+        if (is_string($cashier)) {
+            $cashier = trim($cashier);
+            if (mb_strlen($cashier) > Constraints::MAX_LENGTH_CASHIER_NAME) {
+                throw new TooLongCashierException($cashier);
+            }
+        }
+        $this->cashier = empty($cashier) ? null : $cashier;
+        return $this;
+    }
+
+    /**
+     * Возвращает установленный дополнительный реквизит чека
+     *
+     * @return string|null
+     */
+    public function getAddCheckProps(): ?string
+    {
+        return $this->add_check_props;
+    }
+
+    /**
+     * Устанаваливает дополнительный реквизит чека
+     *
+     * @param string|null $add_check_props
+     * @return Receipt
+     * @throws TooLongAddCheckPropException
+     */
+    public function setAddCheckProps(?string $add_check_props): self
+    {
+        if (is_string($add_check_props)) {
+            $add_check_props = trim($add_check_props);
+            if (mb_strlen($add_check_props) > Constraints::MAX_LENGTH_ADD_CHECK_PROP) {
+                throw new TooLongAddCheckPropException($add_check_props);
+            }
+        }
+        $this->add_check_props = empty($add_check_props) ? null : $add_check_props;
+        return $this;
+    }
+
+    /**
+     * Возвращает установленный дополнительный реквизит пользователя
+     *
+     * @return AdditionalUserProps|null
+     */
+    public function getAddUserProps(): ?AdditionalUserProps
+    {
+        return $this->add_user_props;
+    }
+
+    /**
+     * Устанаваливает дополнительный реквизит пользователя
+     *
+     * @param AdditionalUserProps|null $add_user_props
+     * @return Receipt
+     */
+    public function setAddUserProps(?AdditionalUserProps $add_user_props): self
+    {
+        $this->add_user_props = $add_user_props;
+        return $this;
+    }
+
+    /**
+     * Возвращает массив для кодирования в json
+     *
+     * @throws Exception
+     */
+    public function jsonSerialize(): array
+    {
+        $json = [
+            'client' => $this->getClient(),
+            'company' => $this->getCompany(),
+            'items' => $this->getItems(),
+            'total' => $this->getTotal(),
+            'payment' => $this->getPayments(),
+        ];
+        $this->getAgentInfo()?->jsonSerialize() && $json['agent_info'] = $this->getAgentInfo();
+        $this->getSupplier()?->jsonSerialize() && $json['vats'] = $this->getVats();
+        $this->getVats()?->jsonSerialize() && $json['vats'] = $this->getVats();
+        !is_null($this->getAddCheckProps()) && $json['additional_check_props'] = $this->getAddCheckProps();
+        !is_null($this->getCashier()) && $json['cashier'] = $this->getCashier();
+        $this->getAddUserProps()?->jsonSerialize() && $json['additional_user_props'] = $this->getAddUserProps();
+        return $json;
+    }
+
+    ///**
+    // * Пересчитывает, сохраняет и возвращает итоговую сумму чека по всем позициям (включая НДС). Тег ФФД - 1020.
+    // *
+    // * @return float
+    // * @throws Exception
+    // */
+    //public function calcTotal(): float
+    //{
+    //    $sum = 0;
+    //    $this->clearVats();
+    //    foreach ($this->items->get() as $item) {
+    //        $sum += $item->calcSum();
+    //        $this->addVat(new Vat($item->getVat()->getType(), $item->getSum()));
+    //    }
+    //    return $this->total = round($sum, 2);
+    //}
+}
