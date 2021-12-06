@@ -14,6 +14,7 @@ use AtolOnline\{
     Exceptions\InvalidInnLengthException,
     Exceptions\InvalidPhoneException,
     Tests\BasicTestCase};
+use Exception;
 
 /**
  * Набор тестов для проверки работы класса поставщика
@@ -44,6 +45,7 @@ class SupplierTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Supplier::getInn
      * @throws InvalidPhoneException
      * @throws InvalidInnLengthException
+     * @throws Exception
      */
     public function testConstructorWithArgs(): void
     {

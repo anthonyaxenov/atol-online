@@ -19,8 +19,8 @@ use AtolOnline\{
     Exceptions\InvalidInnLengthException,
     Exceptions\InvalidPhoneException,
     Exceptions\TooLongPayingAgentOperationException,
-    Tests\BasicTestCase
-};
+    Tests\BasicTestCase};
+use Exception;
 
 /**
  * Набор тестов для проверки работы класса агента
@@ -32,6 +32,7 @@ class AgentInfoTest extends BasicTestCase
      *
      * @covers \AtolOnline\Entities\AgentInfo
      * @covers \AtolOnline\Entities\AgentInfo::jsonSerialize
+     * @throws Exception
      */
     public function testConstructorWithoutArgs(): void
     {
@@ -58,6 +59,7 @@ class AgentInfoTest extends BasicTestCase
      * @throws TooLongPayingAgentOperationException
      * @throws InvalidInnLengthException
      * @throws InvalidEnumValueException
+     * @throws Exception
      */
     public function testConstructorWithArgs(): void
     {

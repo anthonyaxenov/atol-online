@@ -7,12 +7,12 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-namespace AtolOnline\Tests\Entities;
+namespace AtolOnline\Tests\Collections;
 
 use AtolOnline\{
+    Collections\Payments,
     Constants\Constraints,
     Entities\Payment,
-    Entities\Payments,
     Enums\PaymentTypes,
     Exceptions\InvalidEnumValueException,
     Exceptions\NegativePaymentSumException,
@@ -29,8 +29,8 @@ class PaymentsTest extends BasicTestCase
     /**
      * Тестирует выброс исключения при установке слишком большого количества оплат через конструктор
      *
-     * @covers \AtolOnline\Entities\EntityCollection
-     * @covers \AtolOnline\Entities\EntityCollection::checkCount
+     * @covers \AtolOnline\Collections\EntityCollection
+     * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @covers \AtolOnline\Exceptions\TooManyPaymentsException
      * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
@@ -45,8 +45,8 @@ class PaymentsTest extends BasicTestCase
     /**
      * Тестирует выброс исключения при добавлении лишней ставки в начало коллекции
      *
-     * @covers \AtolOnline\Entities\EntityCollection::prepend
-     * @covers \AtolOnline\Entities\EntityCollection::checkCount
+     * @covers \AtolOnline\Collections\EntityCollection::prepend
+     * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @covers \AtolOnline\Exceptions\TooManyPaymentsException
      * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
@@ -55,16 +55,16 @@ class PaymentsTest extends BasicTestCase
     public function testTooManyPaymentsExceptionByPrepend()
     {
         $this->expectException(TooManyPaymentsException::class);
-        (new Payments($this->generateObjects(10)))
+        (new Payments($this->generateObjects(Constraints::MAX_COUNT_DOC_PAYMENTS)))
             ->prepend($this->generateObjects());
     }
 
     /**
      * Тестирует выброс исключения при добавлении лишней ставки в конец коллекции
      *
-     * @covers \AtolOnline\Entities\Payments
-     * @covers \AtolOnline\Entities\Payments::add
-     * @covers \AtolOnline\Entities\EntityCollection::checkCount
+     * @covers \AtolOnline\Collections\EntityCollection
+     * @covers \AtolOnline\Collections\EntityCollection::add
+     * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @covers \AtolOnline\Exceptions\TooManyPaymentsException
      * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
@@ -73,16 +73,16 @@ class PaymentsTest extends BasicTestCase
     public function testTooManyPaymentsExceptionByAdd()
     {
         $this->expectException(TooManyPaymentsException::class);
-        (new Payments($this->generateObjects(10)))
+        (new Payments($this->generateObjects(Constraints::MAX_COUNT_DOC_PAYMENTS)))
             ->add($this->generateObjects());
     }
 
     /**
      * Тестирует выброс исключения при добавлении лишних оплат в конец коллекции
      *
-     * @covers \AtolOnline\Entities\EntityCollection
-     * @covers \AtolOnline\Entities\EntityCollection::push
-     * @covers \AtolOnline\Entities\EntityCollection::checkCount
+     * @covers \AtolOnline\Collections\EntityCollection
+     * @covers \AtolOnline\Collections\EntityCollection::push
+     * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @covers \AtolOnline\Exceptions\TooManyPaymentsException
      * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
@@ -91,16 +91,16 @@ class PaymentsTest extends BasicTestCase
     public function testTooManyPaymentsExceptionByPush()
     {
         $this->expectException(TooManyPaymentsException::class);
-        (new Payments($this->generateObjects(10)))
+        (new Payments($this->generateObjects(Constraints::MAX_COUNT_DOC_PAYMENTS + 1)))
             ->push(...$this->generateObjects());
     }
 
     /**
      * Тестирует выброс исключения при добавлении лишней ставки в начало коллекции
      *
-     * @covers \AtolOnline\Entities\EntityCollection
-     * @covers \AtolOnline\Entities\EntityCollection::merge
-     * @covers \AtolOnline\Entities\EntityCollection::checkCount
+     * @covers \AtolOnline\Collections\EntityCollection
+     * @covers \AtolOnline\Collections\EntityCollection::merge
+     * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @covers \AtolOnline\Exceptions\TooManyPaymentsException
      * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
@@ -109,13 +109,15 @@ class PaymentsTest extends BasicTestCase
     public function testTooManyPaymentsExceptionByMerge()
     {
         $this->expectException(TooManyPaymentsException::class);
-        (new Payments($this->generateObjects(9)))
+        (new Payments($this->generateObjects(Constraints::MAX_COUNT_DOC_PAYMENTS - 1)))
             ->merge($this->generateObjects(2));
     }
 
     /**
      * Генерирует массив тестовых объектов оплаты
      *
+     * @param int $count
+     * @return Payment[]
      * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
      * @throws TooHighPaymentSumException

@@ -15,6 +15,7 @@ use AtolOnline\{
     Exceptions\TooLongPayingAgentOperationException,
     Helpers,
     Tests\BasicTestCase};
+use Exception;
 
 /**
  * Набор тестов для проверки работы класса платёжного агента
@@ -43,6 +44,7 @@ class PayingAgentTest extends BasicTestCase
      * @covers \AtolOnline\Entities\PayingAgent::getPhones
      * @throws InvalidPhoneException
      * @throws TooLongPayingAgentOperationException
+     * @throws Exception
      */
     public function testConstructorWithArgs(): void
     {

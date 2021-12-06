@@ -41,8 +41,8 @@ use AtolOnline\{
     Exceptions\TooLongUserdataException,
     Exceptions\TooManyException,
     Helpers,
-    Tests\BasicTestCase
-};
+    Tests\BasicTestCase};
+use Exception;
 
 /**
  * Набор тестов для проверки работы класс продавца
@@ -67,6 +67,7 @@ class ItemTest extends BasicTestCase
      * @throws NegativeItemPriceException
      * @throws EmptyItemNameException
      * @throws NegativeItemQuantityException
+     * @throws Exception
      */
     public function testConstructor(): void
     {
@@ -263,6 +264,7 @@ class ItemTest extends BasicTestCase
      * @throws TooHighItemPriceException
      * @throws NegativeItemQuantityException
      * @throws TooLongItemNameException
+     * @throws Exception
      */
     public function testValidEnums(): void
     {
@@ -332,11 +334,14 @@ class ItemTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Item::getVat
      * @covers \AtolOnline\Entities\Item::jsonSerialize
      * @throws EmptyItemNameException
+     * @throws InvalidEnumValueException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
      * @throws TooHighItemPriceException
+     * @throws TooHighItemSumException
      * @throws TooLongItemNameException
      * @throws TooManyException
+     * @throws Exception
      */
     public function testValidVatByString(): void
     {
@@ -363,11 +368,14 @@ class ItemTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Item::getVat
      * @covers \AtolOnline\Entities\Item::jsonSerialize
      * @throws EmptyItemNameException
+     * @throws InvalidEnumValueException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
      * @throws TooHighItemPriceException
+     * @throws TooHighItemSumException
      * @throws TooLongItemNameException
      * @throws TooManyException
+     * @throws Exception
      */
     public function testValidVatByObject(): void
     {
@@ -453,6 +461,7 @@ class ItemTest extends BasicTestCase
      * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
+     * @throws Exception
      */
     public function testSupplier(): void
     {
@@ -489,6 +498,7 @@ class ItemTest extends BasicTestCase
      * @throws TooLongItemNameException
      * @throws TooLongUserdataException
      * @throws TooManyException
+     * @throws Exception
      */
     public function testValidUserdata(): void
     {
@@ -558,6 +568,7 @@ class ItemTest extends BasicTestCase
      * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
+     * @throws Exception
      */
     public function testCountryCode(): void
     {
@@ -605,6 +616,7 @@ class ItemTest extends BasicTestCase
      * @throws TooLongItemNameException
      * @throws TooManyException
      * @throws InvalidDeclarationNumberException
+     * @throws Exception
      */
     public function testValidDeclarationNumber(): void
     {
@@ -675,6 +687,7 @@ class ItemTest extends BasicTestCase
      * @throws EmptyItemNameException
      * @throws NegativeItemQuantityException
      * @throws NegativeItemExciseException
+     * @throws Exception
      */
     public function testExcise(): void
     {
@@ -723,6 +736,7 @@ class ItemTest extends BasicTestCase
      * @throws TooLongItemNameException
      * @throws TooManyException
      * @throws TooLongItemCodeException
+     * @throws Exception
      */
     public function testValidNomenclatureCode(): void
     {

@@ -14,6 +14,7 @@ use AtolOnline\{
     Exceptions\InvalidInnLengthException,
     Exceptions\InvalidPhoneException,
     Tests\BasicTestCase};
+use Exception;
 
 /**
  * Набор тестов для проверки работы класса оператора перевода
@@ -46,6 +47,7 @@ class MoneyTransferOperatorTest extends BasicTestCase
      * @covers \AtolOnline\Entities\MoneyTransferOperator::getAddress
      * @throws InvalidPhoneException
      * @throws InvalidInnLengthException
+     * @throws Exception
      */
     public function testConstructorWithArgs(): void
     {

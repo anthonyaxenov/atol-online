@@ -18,6 +18,7 @@ use AtolOnline\{
     Exceptions\TooLongEmailException,
     Helpers,
     Tests\BasicTestCase};
+use Exception;
 
 /**
  * Набор тестов для проверки работы класса покупателя
@@ -29,6 +30,7 @@ class ClientTest extends BasicTestCase
      *
      * @covers \AtolOnline\Entities\Client
      * @covers \AtolOnline\Entities\Client::jsonSerialize
+     * @throws Exception
      */
     public function testConstructorWithoutArgs(): void
     {
@@ -48,6 +50,7 @@ class ClientTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Client::getPhone
      * @covers \AtolOnline\Entities\Client::getEmail
      * @covers \AtolOnline\Entities\Client::getInn
+     * @throws Exception
      */
     public function testConstructorWithArgs(): void
     {

@@ -7,9 +7,10 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-namespace AtolOnline\Entities;
+namespace AtolOnline\Collections;
 
 use AtolOnline\Constants\Constraints;
+use AtolOnline\Entities\Vat;
 use AtolOnline\Exceptions\TooManyVatsException;
 
 /**
@@ -18,7 +19,12 @@ use AtolOnline\Exceptions\TooManyVatsException;
 final class Vats extends EntityCollection
 {
     /**
-     * Максмальное количество ставок НДС
+     * Класс объектов, находящихся в коллекции
+     */
+    protected const ENTITY_CLASS = Vat::class;
+
+    /**
+     * Максмальное количество объектов в коллекции
      */
     protected const MAX_COUNT = Constraints::MAX_COUNT_DOC_VATS;
 

@@ -16,8 +16,8 @@ use AtolOnline\{
     Exceptions\InvalidCorrectionDateException,
     Exceptions\InvalidEnumValueException,
     Helpers,
-    Tests\BasicTestCase
-};
+    Tests\BasicTestCase};
+use Exception;
 
 /**
  * Набор тестов для проверки работы класса данных коррекции
@@ -39,6 +39,7 @@ class CorrectionInfoTest extends BasicTestCase
      * @throws InvalidEnumValueException
      * @throws InvalidCorrectionDateException
      * @throws EmptyCorrectionNumberException
+     * @throws Exception
      */
     public function testConstructor(): void
     {

@@ -7,9 +7,10 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-namespace AtolOnline\Entities;
+namespace AtolOnline\Collections;
 
 use AtolOnline\Constants\Constraints;
+use AtolOnline\Entities\Payment;
 use AtolOnline\Exceptions\TooManyPaymentsException;
 
 /**

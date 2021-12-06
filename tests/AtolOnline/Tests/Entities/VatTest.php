@@ -14,6 +14,7 @@ use AtolOnline\{
     Enums\VatTypes,
     Exceptions\InvalidEnumValueException,
     Tests\BasicTestCase};
+use Exception;
 
 /**
  * Набор тестов для проверки работы класса ставки НДС
@@ -70,6 +71,7 @@ class VatTest extends BasicTestCase
      * @covers       \AtolOnline\Entities\Vat::getCalculated
      * @covers       \AtolOnline\Entities\Vat::jsonSerialize
      * @throws InvalidEnumValueException
+     * @throws Exception
      */
     public function testConstructor(string $type, float $sum): void
     {

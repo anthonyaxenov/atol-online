@@ -13,13 +13,12 @@ use AtolOnline\{
     Constants\Constraints,
     Entities\Payment,
     Enums\PaymentTypes,
-    Tests\BasicTestCase
-};
+    Tests\BasicTestCase};
 use AtolOnline\Exceptions\{
     InvalidEnumValueException,
     NegativePaymentSumException,
-    TooHighPaymentSumException,
-};
+    TooHighPaymentSumException,};
+use Exception;
 
 /**
  * Набор тестов для проверки работы класса оплаты
@@ -39,6 +38,7 @@ class PaymentTest extends BasicTestCase
      * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
      * @throws TooHighPaymentSumException
+     * @throws Exception
      */
     public function testConstructor(): void
     {

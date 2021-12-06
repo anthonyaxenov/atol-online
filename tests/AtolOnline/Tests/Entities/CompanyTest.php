@@ -20,6 +20,7 @@ use AtolOnline\{
     Exceptions\TooLongPaymentAddressException,
     Helpers,
     Tests\BasicTestCase};
+use Exception;
 
 /**
  * Набор тестов для проверки работы класса продавца
@@ -39,6 +40,7 @@ class CompanyTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Company::getSno
      * @covers \AtolOnline\Entities\Company::getInn
      * @covers \AtolOnline\Entities\Company::getPaymentAddress
+     * @throws Exception
      */
     public function testConstructor()
     {
@@ -61,6 +63,12 @@ class CompanyTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Company
      * @covers \AtolOnline\Entities\Company::setEmail
      * @covers \AtolOnline\Exceptions\TooLongEmailException
+     * @throws InvalidEmailException
+     * @throws InvalidEnumValueException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongEmailException
+     * @throws TooLongPaymentAddressException
      */
     public function testEmailTooLongException()
     {
@@ -100,6 +108,12 @@ class CompanyTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Company
      * @covers \AtolOnline\Entities\Company::setInn
      * @covers \AtolOnline\Exceptions\InvalidInnLengthException
+     * @throws InvalidEmailException
+     * @throws InvalidEnumValueException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongEmailException
+     * @throws TooLongPaymentAddressException
      */
     public function testInvalidInnLengthException()
     {
@@ -113,6 +127,12 @@ class CompanyTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Company
      * @covers \AtolOnline\Entities\Company::setPaymentAddress
      * @covers \AtolOnline\Exceptions\TooLongPaymentAddressException
+     * @throws InvalidEmailException
+     * @throws InvalidEnumValueException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongEmailException
+     * @throws TooLongPaymentAddressException
      */
     public function testTooLongPaymentAddressException()
     {

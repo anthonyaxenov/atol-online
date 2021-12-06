@@ -16,21 +16,19 @@ use AtolOnline\Enums\CorrectionTypes;
 use AtolOnline\Exceptions\{
     EmptyCorrectionNumberException,
     InvalidCorrectionDateException,
-    InvalidEnumValueException
-};
+    InvalidEnumValueException};
 use DateTime;
 use Exception;
 use JetBrains\PhpStorm\{
     ArrayShape,
-    Pure
-};
+    Pure};
 
 /**
  * Класс, описывающий данные коррекции
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 35
  */
-class CorrectionInfo extends Entity
+final class CorrectionInfo extends Entity
 {
     /**
      * @var string|null Тип коррекции (1173)

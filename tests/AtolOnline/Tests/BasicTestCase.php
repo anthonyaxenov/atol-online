@@ -11,8 +11,10 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Tests;
 
+use AtolOnline\Collections\EntityCollection;
 use AtolOnline\Entities\Entity;
 use AtolOnline\Helpers;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
@@ -66,12 +68,14 @@ class BasicTestCase extends TestCase
     /**
      * Тестирует является ли объект приводимым к json-строке согласно схеме АТОЛ Онлайн
      *
-     * @param Entity $entity
+     * @param Entity|EntityCollection $entity
      * @param array|null $json_structure
-     * @covers \AtolOnline\Entities\Entity::jsonSerialize
      * @covers \AtolOnline\Entities\Entity::__toString
+     * @covers \AtolOnline\Entities\Entity::jsonSerialize
+     * @covers \AtolOnline\Collections\EntityCollection::jsonSerialize
+     * @throws Exception
      */
-    public function assertAtolable(Entity $entity, ?array $json_structure = null): void
+    public function assertAtolable(Entity|EntityCollection $entity, ?array $json_structure = null): void
     {
         $this->assertIsArray($entity->jsonSerialize());
         $this->assertIsString((string)$entity);
@@ -204,7 +208,7 @@ class BasicTestCase extends TestCase
     /**
      * Провайдер строк, которые приводятся к null
      *
-     * @return array<array<string|null>>
+     * @return array
      */
     public function providerNullableStrings(): array
     {

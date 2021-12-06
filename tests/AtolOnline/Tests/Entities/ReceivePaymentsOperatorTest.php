@@ -13,6 +13,7 @@ use AtolOnline\{
     Entities\ReceivePaymentsOperator,
     Exceptions\InvalidPhoneException,
     Tests\BasicTestCase};
+use Exception;
 
 /**
  * Набор тестов для проверки работы класса оператора по приёму платежей
@@ -38,6 +39,7 @@ class ReceivePaymentsOperatorTest extends BasicTestCase
      * @covers \AtolOnline\Entities\ReceivePaymentsOperator::setPhones
      * @covers \AtolOnline\Entities\ReceivePaymentsOperator::getPhones
      * @throws InvalidPhoneException
+     * @throws Exception
      */
     public function testConstructorWithArgs(): void
     {

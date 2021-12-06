@@ -23,6 +23,7 @@ use AtolOnline\Exceptions\TooLongPasswordException;
 use AtolOnline\Helpers;
 use AtolOnline\TestEnvParams;
 use AtolOnline\Tests\BasicTestCase;
+use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 
 /**
@@ -327,6 +328,7 @@ class KktMonitorTest extends BasicTestCase
      * @throws TooLongPasswordException
      * @throws EmptyMonitorDataException
      * @throws NotEnoughMonitorDataException
+     * @throws Exception
      */
     public function testMonitorGetOne(): void
     {

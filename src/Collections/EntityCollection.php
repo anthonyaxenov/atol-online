@@ -9,16 +9,14 @@
 
 declare(strict_types = 1);
 
-namespace AtolOnline\Entities;
+namespace AtolOnline\Collections;
 
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
+use AtolOnline\Exceptions\InvalidEntityInCollectionException;
+use Exception;
 use Illuminate\Support\Collection;
 
 /**
  * Абстрактное описание коллекции любых сущностей
- *
- * @todo вот бы ещё проверять классы добавляемых объектов через static.... ммм мякотка
  */
 abstract class EntityCollection extends Collection
 {
@@ -69,21 +67,14 @@ abstract class EntityCollection extends Collection
 
     /**
      * @inheritDoc
-     * @throws \Exception
+     * @throws Exception
      */
     public function jsonSerialize(): array
     {
-        return array_map(function ($value) {
-            $this->checkEntityClass($value);
-            if ($value instanceof \JsonSerializable) {
-                return $value->jsonSerialize();
-            } elseif ($value instanceof Jsonable) {
-                return json_decode($value->toJson(), true);
-            } elseif ($value instanceof Arrayable) {
-                return $value->toArray();
-            }
-            return $value;
-        }, $this->all());
+        $this->each(function ($item) {
+            $this->checkClass($item);
+        });
+        return parent::jsonSerialize();
     }
 
     /**
@@ -94,26 +85,20 @@ abstract class EntityCollection extends Collection
      */
     private function checkCount(array $items = []): void
     {
-        if (
-            count($items) > static::MAX_COUNT ||
-            $this->count() === static::MAX_COUNT
-        ) {
-            $exception = static::EXCEPTION_CLASS;
-            throw new $exception(static::MAX_COUNT);
+        if (count($items) > static::MAX_COUNT || $this->count() === static::MAX_COUNT) {
+            throw new (static::EXCEPTION_CLASS)(static::MAX_COUNT);
         }
     }
 
     /**
-     * @throws \Exception
+     * Проверяет корректность класса объекта
+     *
+     * @throws InvalidEntityInCollectionException
      */
-    private function checkEntityClass(mixed $item): void
+    private function checkClass(mixed $item): void
     {
         if (!is_object($item) || $item::class !== static::ENTITY_CLASS) {
-            //TODO proper exception
-            throw new \Exception(
-                'Коллекция должна содержать только объекты класса ' .
-                static::ENTITY_CLASS . ', найден ' . $item::class
-            );
+            throw new InvalidEntityInCollectionException(static::class, static::ENTITY_CLASS, $item);
         }
     }
 }

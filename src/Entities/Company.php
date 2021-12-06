@@ -15,16 +15,14 @@ use AtolOnline\{
     Constants\Constraints,
     Enums\SnoTypes,
     Traits\HasEmail,
-    Traits\HasInn
-};
+    Traits\HasInn};
 use AtolOnline\Exceptions\{
     InvalidEmailException,
     InvalidEnumValueException,
     InvalidInnLengthException,
     InvalidPaymentAddressException,
     TooLongEmailException,
-    TooLongPaymentAddressException
-};
+    TooLongPaymentAddressException};
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
@@ -131,10 +129,10 @@ final class Company extends Entity
      * @throws InvalidPaymentAddressException
      */
     #[ArrayShape([
-        'email' => "string",
-        'sno' => "string",
-        'inn' => "string",
-        'payment_address' => "string",
+        'email' => 'string',
+        'sno' => 'string',
+        'inn' => 'string',
+        'payment_address' => 'string',
     ])]
     public function jsonSerialize(): array
     {
