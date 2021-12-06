@@ -13,8 +13,7 @@ use AtolOnline\{
     Entities\Vat,
     Enums\VatTypes,
     Exceptions\InvalidEnumValueException,
-    Tests\BasicTestCase
-};
+    Tests\BasicTestCase};
 
 /**
  * Набор тестов для проверки работы класса ставки НДС
@@ -84,7 +83,7 @@ class VatTest extends BasicTestCase
     }
 
     /**
-     * Тестирует расчёт суммы НДС от исходной суммы 100+20р и 100-20р
+     * Тестирует расчёт суммы НДС от суммы 100+20р и 100-20р
      *
      * @dataProvider providerVatsAdd
      * @param string $type Тип НДС

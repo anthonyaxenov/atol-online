@@ -13,8 +13,7 @@ namespace AtolOnline\Entities;
 
 use AtolOnline\Exceptions\{
     EmptyMonitorDataException,
-    NotEnoughMonitorDataException
-};
+    NotEnoughMonitorDataException};
 use DateTime;
 use Exception;
 
@@ -22,25 +21,26 @@ use Exception;
  * Класс сущности ККТ, получаемой от монитора
  *
  * @see https://online.atol.ru/files/API_service_information.pdf Документация, стр 11
- * @property string|null serialNumber Заводской номер ККТ
- * @property string|null registrationNumber Регистрационный номер машины (РНМ)
- * @property string|null deviceNumber Номер автоматического устройства (внутренний идентификатор устройства)
- * @property DateTime|string|null fiscalizationDate Дата активации (фискализации) ФН с указанием таймзоны
- * @property DateTime|string|null fiscalStorageExpiration Дата замены ФН (Срок действия ФН), с указанием таймзоны
- * @property int|null signedDocuments Количество подписанных документов в ФН
- * @property float|null fiscalStoragePercentageUse Наполненость ФН в %
- * @property string|null fiscalStorageINN ИНН компании (указанный в ФН)
- * @property string|null fiscalStorageSerialNumber Заводской (серийный) номер ФН
- * @property string|null fiscalStoragePaymentAddress Адрес расчёта, указанный в ФН
- * @property string|null groupCode Код группы кассы
- * @property DateTime|string|null timestamp Время и дата формирования данных, UTC
- * @property bool|null isShiftOpened Признак открыта смена (true) или закрыта (false)
- * @property int|null shiftNumber Номер смены (или "Номер закрытой смены", когда смена закрыта)
- * @property int|null shiftReceipt Номер документа за смену (или "Кол-во чеков закрытой смены", когда смена закрыта)
- * @property int|null unsentDocs Количество неотправленных документов. Указывается, если значение отлично от 0.
- * @property DateTime|string|null firstUnsetDocTimestamp Дата первого неотправленного документа. Указывается, если
+ * @property-read string|null serialNumber Заводской номер ККТ
+ * @property-read string|null registrationNumber Регистрационный номер машины (РНМ)
+ * @property-read string|null deviceNumber Номер автоматического устройства (внутренний идентификатор устройства)
+ * @property-read DateTime|string|null fiscalizationDate Дата активации (фискализации) ФН с указанием таймзоны
+ * @property-read DateTime|string|null fiscalStorageExpiration Дата замены ФН (Срок действия ФН), с указанием таймзоны
+ * @property-read int|null signedDocuments Количество подписанных документов в ФН
+ * @property-read float|null fiscalStoragePercentageUse Наполненость ФН в %
+ * @property-read string|null fiscalStorageINN ИНН компании (указанный в ФН)
+ * @property-read string|null fiscalStorageSerialNumber Заводской (серийный) номер ФН
+ * @property-read string|null fiscalStoragePaymentAddress Адрес расчёта, указанный в ФН
+ * @property-read string|null groupCode Код группы кассы
+ * @property-read DateTime|string|null timestamp Время и дата формирования данных, UTC
+ * @property-read bool|null isShiftOpened Признак открыта смена (true) или закрыта (false)
+ * @property-read int|null shiftNumber Номер смены (или "Номер закрытой смены", когда смена закрыта)
+ * @property-read int|null shiftReceipt Номер документа за смену (или "Кол-во чеков закрытой смены", когда смена
+ * закрыта)
+ * @property-read int|null unsentDocs Количество неотправленных документов. Указывается, если значение отлично от 0.
+ * @property-read DateTime|string|null firstUnsetDocTimestamp Дата первого неотправленного документа. Указывается, если
  * есть неотправленные документы.
- * @property int|null networkErrorCode Код ошибки сети
+ * @property-read int|null networkErrorCode Код ошибки сети
  */
 final class Kkt extends Entity
 {

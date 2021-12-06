@@ -14,7 +14,7 @@ namespace AtolOnline\Exceptions;
 use AtolOnline\Constants\Constraints;
 
 /**
- * Исключение, возникающее при попытке добавить слишком много ставок НДС в массив
+ * Исключение, возникающее при попытке добавить слишком много ставок НДС в документ
  */
 class TooManyVatsException extends TooManyException
 {
