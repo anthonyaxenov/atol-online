@@ -129,6 +129,11 @@ final class Constraints
     const MAX_COUNT_DOC_VATS = 6;
 
     /**
+     * Максимальная сумма одной оплаты
+     */
+    const MAX_COUNT_PAYMENT_SUM = 99999.999;
+
+    /**
      * Максимальная длина имени кассира (1021)
      *
      * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 32
@@ -143,14 +148,23 @@ final class Constraints
     const MAX_LENGTH_ITEM_CODE = 32;
 
     /**
+     * Максимальная длина наименования дополнительного реквизита (1085)
+     *
+     * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 32
+     */
+    const MAX_LENGTH_ADD_USER_PROP_NAME = 64;
+
+    /**
+     * Максимальная длина значения дополнительного реквизита (1086)
+     *
+     * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 32
+     */
+    const MAX_LENGTH_ADD_USER_PROP_VALUE = 256;
+
+    /**
      * Формат даты документа коррекции
      */
     const CORRECTION_DATE_FORMAT = 'd.m.Y';
-
-    /**
-     * Максимальная сумма одной оплаты
-     */
-    const MAX_COUNT_PAYMENT_SUM = 99999.999;
 
     /**
      * Регулярное выражение для валидации строки ИНН

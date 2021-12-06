@@ -41,6 +41,7 @@ final class TestEnvParams
      * Возвращает данные для работы с тестовой средой АТОЛ Онлайн ФФД 1.2
      *
      * @return string[]
+     * @noinspection PhpUnused
      */
     public static function FFD12(): array
     {
