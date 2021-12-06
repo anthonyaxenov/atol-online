@@ -81,60 +81,122 @@ class BasicTestCase extends TestCase
         }
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     /**
      * Тестирует идентичность двух классов
      *
-     * @param object|string $expected
-     * @param object|string $actual
+     * @param object|string $expected Ожидаемый класс
+     * @param object|string $actual Фактический класс
      */
     public function assertIsSameClass(object|string $expected, object|string $actual): void
     {
-        $this->assertTrue(Helpers::isSameClass($expected, $actual));
+        $this->assertTrue($this->checkisSameClass($expected, $actual));
+    }
+
+    /**
+     * Проверяет идентичность двух классов
+     *
+     * @param object|string $class1
+     * @param object|string $class2
+     * @return bool
+     */
+    private function checkisSameClass(object|string $class1, object|string $class2): bool
+    {
+        return (is_object($class1) ? $class1::class : $class1)
+            === (is_object($class2) ? $class2::class : $class2);
     }
 
     /**
      * Тестирует наследование класса (объекта) от указанных классов
      *
-     * @param object|string $class
-     * @param string[] $parents
+     * @param array $expected Массив ожидаемых имён классов-родителей
+     * @param object|string $actual Объект или имя класса для проверки
      */
-    public function assertExtendsClasses(object|string $class, array $parents): void
+    public function assertExtendsClasses(array $expected, object|string $actual): void
     {
-        $this->assertTrue(Helpers::checkExtendsClasses($class, $parents));
+        $this->assertTrue($this->checkExtendsClasses($expected, $actual));
+    }
+
+    /**
+     * Проверяет наследование класса (объекта) от указанных классов
+     *
+     * @param string[] $parents Имена классов-родителей
+     * @param object|string $class Объект или имя класса для проверки
+     */
+    private function checkExtendsClasses(array $parents, object|string $class): bool
+    {
+        return !empty(array_intersect($parents, is_object($class) ? class_parents($class) : [$class]));
     }
 
     /**
      * Тестирует имплементацию классом (объектом) указанных интерфейсов
      *
-     * @param object|string $class
-     * @param string[] $interfaces
+     * @param string[] $expected Массив ожидаемых имён интерфейсов
+     * @param object|string $actual Объект или имя класса для проверки
      */
-    public function assertImplementsInterfaces(object|string $class, array $interfaces): void
+    public function assertImplementsInterfaces(array $expected, object|string $actual): void
     {
-        $this->assertTrue(Helpers::checkImplementsInterfaces($class, $interfaces));
+        $this->assertTrue($this->checkImplementsInterfaces($expected, $actual));
+    }
+
+    /**
+     * Проверяет имплементацию классом (объектом) указанных интерфейсов
+     *
+     * @param string[] $interfaces Имена классов-интерфейсов
+     * @param object|string $class Объект или имя класса для проверки
+     * @see https://www.php.net/manual/ru/function.class-implements.php
+     */
+    private function checkImplementsInterfaces(array $interfaces, object|string $class): bool
+    {
+        return !empty(array_intersect($interfaces, is_object($class) ? class_implements($class) : [$class]));
     }
 
     /**
      * Тестирует использование классом (объектом) указанных трейтов
      *
-     * @param object|string $class
-     * @param string[] $traits
+     * @param string[] $expected Массив ожидаемых имён трейтов
+     * @param object|string $actual Объект или имя класса для проверки
      */
-    public function assertUsesTraits(object|string $class, array $traits): void
+    public function assertUsesTraits(array $expected, object|string $actual): void
     {
-        $this->assertTrue(Helpers::checkUsesTraits($traits, $class));
+        $this->assertTrue($this->checkUsesTraits($expected, $actual));
+    }
+
+    /**
+     * Проверяет использование классом (объектом) указанных трейтов (исключает родителей)
+     *
+     * @param string[] $traits Массив ожидаемых имён трейтов
+     * @param object|string $class Объект или имя класса для проверки
+     * @return bool
+     * @see https://www.php.net/manual/ru/function.class-uses.php#110752
+     */
+    private function checkUsesTraits(array $traits, object|string $class): bool
+    {
+        $found_traits = [];
+        $check_class = is_object($class) ? $class::class : $class;
+        do {
+            $found_traits = array_merge(class_uses($check_class, true), $found_traits);
+        } while ($check_class = get_parent_class($check_class));
+        foreach ($found_traits as $trait => $same) {
+            $found_traits = array_merge(class_uses($trait, true), $found_traits);
+        }
+        return !empty(array_intersect(array_unique($found_traits), $traits));
     }
 
     /**
      * Тестирует, является ли объект коллекцией
      *
-     * @param mixed $expected
+     * @param mixed $value
      */
-    public function assertIsCollection(mixed $expected): void
+    public function assertIsCollection(mixed $value): void
     {
-        $this->assertIsObject($expected);
-        $this->assertIsIterable($expected);
-        $this->assertIsSameClass($expected, Collection::class);
+        $this->assertIsObject($value);
+        $this->assertIsIterable($value);
+        $this->assertTrue(
+            $this->checkisSameClass(Collection::class, $value) ||
+            $this->checkExtendsClasses([Collection::class], $value)
+        );
     }
 
     //------------------------------------------------------------------------------------------------------------------
