@@ -339,7 +339,7 @@ class KktMonitorTest extends BasicTestCase
         $kkt = $client->getOne($serial_number);
         $this->assertNotEmpty($client->getResponse());
         $this->assertIsSameClass(Kkt::class, $kkt);
-        $this->assertAtolable($kkt);
+        $this->assertIsAtolable($kkt);
         $this->assertNotNull($kkt->serialNumber);
         $this->assertEquals($serial_number, $kkt->serialNumber);
     }

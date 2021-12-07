@@ -43,7 +43,7 @@ class CorrectionInfoTest extends BasicTestCase
      */
     public function testConstructor(): void
     {
-        $this->assertAtolable(
+        $this->assertIsAtolable(
             new CorrectionInfo(CorrectionTypes::SELF, '01.01.2021', $number = Helpers::randomStr()),
             [
                 'type' => CorrectionTypes::SELF,

@@ -49,10 +49,10 @@ class SupplierTest extends BasicTestCase
      */
     public function testConstructorWithArgs(): void
     {
-        $this->assertAtolable(new Supplier('some name'), ['name' => 'some name']);
-        $this->assertAtolable(new Supplier(inn: '+fasd3\qe3fs_=nac99013928czc'), ['inn' => '3399013928']);
-        $this->assertAtolable(new Supplier(phones: ['+122997365456']), ['phones' => ['+122997365456']]);
-        $this->assertAtolable(new Supplier(
+        $this->assertIsAtolable(new Supplier('some name'), ['name' => 'some name']);
+        $this->assertIsAtolable(new Supplier(inn: '+fasd3\qe3fs_=nac99013928czc'), ['inn' => '3399013928']);
+        $this->assertIsAtolable(new Supplier(phones: ['+122997365456']), ['phones' => ['+122997365456']]);
+        $this->assertIsAtolable(new Supplier(
             'some name',
             '+fasd3\qe3fs_=nac99013928czc',
             ['+122997365456'],

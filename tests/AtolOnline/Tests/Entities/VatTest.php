@@ -76,7 +76,7 @@ class VatTest extends BasicTestCase
     public function testConstructor(string $type, float $sum): void
     {
         $vat = new Vat($type, $sum);
-        $this->assertAtolable($vat, [
+        $this->assertIsAtolable($vat, [
             'type' => $vat->getType(),
             'sum' => $vat->getCalculated(),
         ]);

@@ -38,7 +38,7 @@ class AdditionalUserPropsTest extends BasicTestCase
      */
     public function testConstructor(): void
     {
-        $this->assertAtolable(
+        $this->assertIsAtolable(
             new AdditionalUserProps('name', 'value'),
             [
                 'name' => 'name',

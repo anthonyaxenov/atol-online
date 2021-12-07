@@ -22,10 +22,12 @@ abstract class EntityCollection extends Collection
 {
     /**
      * @inheritDoc
+     * @throws InvalidEntityInCollectionException
      */
     public function __construct($items = [])
     {
         $this->checkCount($items);
+        $this->checkItemsClasses($items);
         parent::__construct($items);
     }
 
@@ -71,19 +73,17 @@ abstract class EntityCollection extends Collection
      */
     public function jsonSerialize(): array
     {
-        $this->each(function ($item) {
-            $this->checkClass($item);
-        });
+        $this->checkItemsClasses();
         return parent::jsonSerialize();
     }
 
     /**
-     * Проверяет количество ставок
+     * Проверяет количество элементов коллекции
      *
      * @param array $items Массив элементов, если пустой - проверит содержимое коллекции
      * @return void
      */
-    private function checkCount(array $items = []): void
+    public function checkCount(array $items = []): void
     {
         if (count($items) > static::MAX_COUNT || $this->count() === static::MAX_COUNT) {
             throw new (static::EXCEPTION_CLASS)(static::MAX_COUNT);
@@ -91,14 +91,24 @@ abstract class EntityCollection extends Collection
     }
 
     /**
-     * Проверяет корректность класса объекта
+     * Проверяет корректность класса элемента коллекции
      *
      * @throws InvalidEntityInCollectionException
      */
-    private function checkClass(mixed $item): void
+    public function checkItemClass(mixed $item): void
     {
         if (!is_object($item) || $item::class !== static::ENTITY_CLASS) {
             throw new InvalidEntityInCollectionException(static::class, static::ENTITY_CLASS, $item);
         }
+    }
+
+    /**
+     * Проверяет корректность классов элементов коллекции
+     *
+     * @throws InvalidEntityInCollectionException
+     */
+    public function checkItemsClasses(array $items = []): void
+    {
+        (empty($items) ? $this : collect($items))->each(fn ($item) => $this->checkItemClass($item));
     }
 }

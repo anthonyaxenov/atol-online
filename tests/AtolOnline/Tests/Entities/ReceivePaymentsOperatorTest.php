@@ -43,7 +43,7 @@ class ReceivePaymentsOperatorTest extends BasicTestCase
      */
     public function testConstructorWithArgs(): void
     {
-        $this->assertAtolable(new ReceivePaymentsOperator(['+122997365456']), ['phones' => ['+122997365456']]);
+        $this->assertIsAtolable(new ReceivePaymentsOperator(['+122997365456']), ['phones' => ['+122997365456']]);
     }
 
     /**

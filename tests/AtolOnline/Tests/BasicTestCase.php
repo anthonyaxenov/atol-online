@@ -13,6 +13,20 @@ namespace AtolOnline\Tests;
 
 use AtolOnline\Collections\EntityCollection;
 use AtolOnline\Entities\Entity;
+use AtolOnline\Entities\Item;
+use AtolOnline\Entities\Payment;
+use AtolOnline\Entities\Vat;
+use AtolOnline\Enums\PaymentTypes;
+use AtolOnline\Enums\VatTypes;
+use AtolOnline\Exceptions\EmptyItemNameException;
+use AtolOnline\Exceptions\InvalidEnumValueException;
+use AtolOnline\Exceptions\NegativeItemPriceException;
+use AtolOnline\Exceptions\NegativeItemQuantityException;
+use AtolOnline\Exceptions\NegativePaymentSumException;
+use AtolOnline\Exceptions\TooHighItemPriceException;
+use AtolOnline\Exceptions\TooHighPaymentSumException;
+use AtolOnline\Exceptions\TooLongItemNameException;
+use AtolOnline\Exceptions\TooManyException;
 use AtolOnline\Helpers;
 use Exception;
 use GuzzleHttp\Client;
@@ -25,6 +39,10 @@ use PHPUnit\Framework\TestCase;
  */
 class BasicTestCase extends TestCase
 {
+    //------------------------------------------------------------------------------------------------------------------
+    // Методы для управления тестами, использующими тестовый АТОЛ API
+    //------------------------------------------------------------------------------------------------------------------
+
     /**
      * Проверяет наличие подключения к ресурсу по URL
      *
@@ -65,6 +83,10 @@ class BasicTestCase extends TestCase
         }
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+    // Дополнительные ассерты
+    //------------------------------------------------------------------------------------------------------------------
+
     /**
      * Тестирует является ли объект приводимым к json-строке согласно схеме АТОЛ Онлайн
      *
@@ -75,7 +97,7 @@ class BasicTestCase extends TestCase
      * @covers \AtolOnline\Collections\EntityCollection::jsonSerialize
      * @throws Exception
      */
-    public function assertAtolable(Entity|EntityCollection $entity, ?array $json_structure = null): void
+    public function assertIsAtolable(Entity|EntityCollection $entity, ?array $json_structure = null): void
     {
         $this->assertIsArray($entity->jsonSerialize());
         $this->assertIsString((string)$entity);
@@ -85,6 +107,8 @@ class BasicTestCase extends TestCase
         }
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+    // Ассерты проверки наследования
     //------------------------------------------------------------------------------------------------------------------
 
     /**
@@ -204,6 +228,8 @@ class BasicTestCase extends TestCase
     }
 
     //------------------------------------------------------------------------------------------------------------------
+    // Провайдеры данных для прогона тестов
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * Провайдер строк, которые приводятся к null
@@ -287,5 +313,75 @@ class BasicTestCase extends TestCase
             ['abc.def@mail..com'],
             ['abc.def@mail#archive.com'],
         ];
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    // Генераторы тестовых объектов
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Генерирует массив тестовых объектов предметов расчёта
+     *
+     * @param int $count
+     * @return Item[]
+     * @throws EmptyItemNameException
+     * @throws NegativeItemPriceException
+     * @throws NegativeItemQuantityException
+     * @throws TooHighItemPriceException
+     * @throws TooLongItemNameException
+     * @throws TooManyException
+     * @throws Exception
+     */
+    protected function generateItemObjects(int $count = 1): array
+    {
+        $result = [];
+        for ($i = 0; $i < abs($count); ++$i) {
+            $result[] = new Item(Helpers::randomStr(), random_int(1, 100), random_int(1, 10));
+        }
+        return $result;
+    }
+
+    /**
+     * Генерирует массив тестовых объектов оплаты
+     *
+     * @param int $count
+     * @return Payment[]
+     * @throws InvalidEnumValueException
+     * @throws NegativePaymentSumException
+     * @throws TooHighPaymentSumException
+     * @throws Exception
+     */
+    protected function generatePaymentObjects(int $count = 1): array
+    {
+        $types = PaymentTypes::toArray();
+        $result = [];
+        for ($i = 0; $i < abs($count); ++$i) {
+            $result[] = new Payment(
+                array_values($types)[random_int(min($types), max($types))],
+                random_int(1, 100) * 2 / 3
+            );
+        }
+        return $result;
+    }
+
+    /**
+     * Генерирует массив тестовых объектов ставок НДС
+     *
+     * @param int $count
+     * @return Vat[]
+     * @throws InvalidEnumValueException
+     * @throws Exception
+     */
+    protected function generateVatObjects(int $count = 1): array
+    {
+        $types = VatTypes::toArray();
+        $result = [];
+        for ($i = 0; $i < abs($count); ++$i) {
+            $result[] = new Vat(
+                array_values($types)[random_int(0, count($types) - 1)],
+                random_int(1, 100) * 2 / 3
+            );
+        }
+        return $result;
     }
 }

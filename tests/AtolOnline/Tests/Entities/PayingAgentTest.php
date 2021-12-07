@@ -49,18 +49,18 @@ class PayingAgentTest extends BasicTestCase
     public function testConstructorWithArgs(): void
     {
         $operation = Helpers::randomStr();
-        $this->assertAtolable(new PayingAgent(
+        $this->assertIsAtolable(new PayingAgent(
             $operation,
             ['+122997365456'],
         ), [
             'operation' => $operation,
             'phones' => ['+122997365456'],
         ]);
-        $this->assertAtolable(
+        $this->assertIsAtolable(
             new PayingAgent($operation),
             ['operation' => $operation]
         );
-        $this->assertAtolable(
+        $this->assertIsAtolable(
             new PayingAgent(phones: ['+122997365456']),
             ['phones' => ['+122997365456']]
         );

@@ -36,7 +36,7 @@ class AgentInfoTest extends BasicTestCase
      */
     public function testConstructorWithoutArgs(): void
     {
-        $this->assertAtolable(new AgentInfo(), []);
+        $this->assertIsAtolable(new AgentInfo(), []);
     }
 
     /**
@@ -63,20 +63,20 @@ class AgentInfoTest extends BasicTestCase
      */
     public function testConstructorWithArgs(): void
     {
-        $this->assertAtolable(new AgentInfo(null), []);
-        $this->assertAtolable(new AgentInfo(AgentTypes::ANOTHER), ['type' => AgentTypes::ANOTHER]);
-        $this->assertAtolable(new AgentInfo(pagent: new PayingAgent()), []);
-        $this->assertAtolable(new AgentInfo(mt_operator: new MoneyTransferOperator()), []);
-        $this->assertAtolable(new AgentInfo(rp_operator: new ReceivePaymentsOperator()), []);
+        $this->assertIsAtolable(new AgentInfo(null), []);
+        $this->assertIsAtolable(new AgentInfo(AgentTypes::ANOTHER), ['type' => AgentTypes::ANOTHER]);
+        $this->assertIsAtolable(new AgentInfo(pagent: new PayingAgent()), []);
+        $this->assertIsAtolable(new AgentInfo(mt_operator: new MoneyTransferOperator()), []);
+        $this->assertIsAtolable(new AgentInfo(rp_operator: new ReceivePaymentsOperator()), []);
 
-        $this->assertAtolable(new AgentInfo(
+        $this->assertIsAtolable(new AgentInfo(
             AgentTypes::ANOTHER,
             new PayingAgent(),
             new ReceivePaymentsOperator(),
             new MoneyTransferOperator(),
         ), ['type' => AgentTypes::ANOTHER]);
 
-        $this->assertAtolable(new AgentInfo(
+        $this->assertIsAtolable(new AgentInfo(
             AgentTypes::ANOTHER,
             new PayingAgent('test', ['+79518888888']),
             new ReceivePaymentsOperator(['+79519999999']),

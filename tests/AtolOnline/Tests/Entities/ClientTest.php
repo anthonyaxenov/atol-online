@@ -34,7 +34,7 @@ class ClientTest extends BasicTestCase
      */
     public function testConstructorWithoutArgs(): void
     {
-        $this->assertAtolable(new Client(), []);
+        $this->assertIsAtolable(new Client(), []);
     }
 
     /**
@@ -54,11 +54,11 @@ class ClientTest extends BasicTestCase
      */
     public function testConstructorWithArgs(): void
     {
-        $this->assertAtolable(new Client('John Doe'), ['name' => 'John Doe']);
-        $this->assertAtolable(new Client(email: 'john@example.com'), ['email' => 'john@example.com']);
-        $this->assertAtolable(new Client(phone: '+1/22/99*73s dsdas654 5s6'), ['phone' => '+122997365456']);
-        $this->assertAtolable(new Client(inn: '+fasd3\qe3fs_=nac99013928czc'), ['inn' => '3399013928']);
-        $this->assertAtolable(new Client(
+        $this->assertIsAtolable(new Client('John Doe'), ['name' => 'John Doe']);
+        $this->assertIsAtolable(new Client(email: 'john@example.com'), ['email' => 'john@example.com']);
+        $this->assertIsAtolable(new Client(phone: '+1/22/99*73s dsdas654 5s6'), ['phone' => '+122997365456']);
+        $this->assertIsAtolable(new Client(inn: '+fasd3\qe3fs_=nac99013928czc'), ['inn' => '3399013928']);
+        $this->assertIsAtolable(new Client(
             'John Doe',
             'john@example.com',
             '+1/22/99*73s dsdas654 5s6', // +122997365456

@@ -44,7 +44,7 @@ class CompanyTest extends BasicTestCase
      */
     public function testConstructor()
     {
-        $this->assertAtolable(new Company(
+        $this->assertIsAtolable(new Company(
             $email = 'company@example.com',
             $sno = SnoTypes::OSN,
             $inn = '1234567890',

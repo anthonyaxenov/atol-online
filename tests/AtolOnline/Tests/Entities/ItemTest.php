@@ -71,7 +71,7 @@ class ItemTest extends BasicTestCase
      */
     public function testConstructor(): void
     {
-        $this->assertAtolable(
+        $this->assertIsAtolable(
             new Item('test item', 2, 3),
             [
                 'name' => 'test item',
@@ -277,7 +277,7 @@ class ItemTest extends BasicTestCase
             PaymentObjects::COMMODITY,
             $item->setPaymentObject(PaymentObjects::COMMODITY)->getPaymentObject()
         );
-        $this->assertAtolable($item, [
+        $this->assertIsAtolable($item, [
             'name' => 'test item',
             'price' => 2,
             'quantity' => 3,
@@ -349,7 +349,7 @@ class ItemTest extends BasicTestCase
         $this->assertIsSameClass(Vat::class, $item->getVat());
         $this->assertEquals(VatTypes::VAT20, $item->getVat()->getType());
         $this->assertEquals($item->getSum(), $item->getVat()->getSum());
-        $this->assertAtolable($item, [
+        $this->assertIsAtolable($item, [
             'name' => 'test item',
             'price' => 2,
             'quantity' => 3,
@@ -384,7 +384,7 @@ class ItemTest extends BasicTestCase
         $this->assertIsSameClass(Vat::class, $item->getVat());
         $this->assertEquals(VatTypes::VAT20, $item->getVat()->getType());
         $this->assertEquals($item->getSum(), $item->getVat()->getSum());
-        $this->assertAtolable($item, [
+        $this->assertIsAtolable($item, [
             'name' => 'test item',
             'price' => 2,
             'quantity' => 3,
@@ -472,7 +472,7 @@ class ItemTest extends BasicTestCase
         );
         $item = (new Item('test item', 2, 3))->setSupplier($supplier);
         $this->assertEquals($supplier, $item->getSupplier());
-        $this->assertAtolable($item, [
+        $this->assertIsAtolable($item, [
             'name' => 'test item',
             'price' => 2,
             'quantity' => 3,
@@ -502,7 +502,7 @@ class ItemTest extends BasicTestCase
      */
     public function testValidUserdata(): void
     {
-        $this->assertAtolable(
+        $this->assertIsAtolable(
             (new Item('test item', 2, 3))
                 ->setUserData($user_data = Helpers::randomStr(Constraints::MAX_LENGTH_USER_DATA)),
             [
@@ -572,7 +572,7 @@ class ItemTest extends BasicTestCase
      */
     public function testCountryCode(): void
     {
-        $this->assertAtolable(
+        $this->assertIsAtolable(
             (new Item('test item', 2, 3))->setCountryCode('800'),
             [
                 'name' => 'test item',
@@ -620,7 +620,7 @@ class ItemTest extends BasicTestCase
      */
     public function testValidDeclarationNumber(): void
     {
-        $this->assertAtolable(
+        $this->assertIsAtolable(
             (new Item('test item', 2, 3))
                 ->setDeclarationNumber($code = Helpers::randomStr()),
             [
@@ -691,7 +691,7 @@ class ItemTest extends BasicTestCase
      */
     public function testExcise(): void
     {
-        $this->assertAtolable(
+        $this->assertIsAtolable(
             (new Item('test item', 2, 3))->setExcise(1),
             [
                 'name' => 'test item',
@@ -750,7 +750,7 @@ class ItemTest extends BasicTestCase
         $decoded = hex2bin(str_replace(' ', '', $item->getCodeHex()));
         $this->assertEquals($decoded, $item->getCode());
 
-        $this->assertAtolable($item, [
+        $this->assertIsAtolable($item, [
             'name' => 'test item',
             'price' => 2,
             'quantity' => 3,

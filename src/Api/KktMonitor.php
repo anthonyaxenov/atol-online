@@ -100,7 +100,6 @@ class KktMonitor extends AtolClient
     /**
      * Возвращает информацию о конкретной ККТ по её серийному номеру
      *
-     * @todo кастовать к отдельному классу со своими геттерами
      * @param string $serial_number
      * @return Kkt
      * @throws GuzzleException

@@ -12,18 +12,16 @@ namespace AtolOnline\Tests\Collections;
 use AtolOnline\{
     Collections\Items,
     Constants\Constraints,
-    Entities\Item,
-    Helpers,
     Tests\BasicTestCase};
 use AtolOnline\Exceptions\{
     EmptyItemNameException,
+    InvalidEntityInCollectionException,
     NegativeItemPriceException,
     NegativeItemQuantityException,
     TooHighItemPriceException,
     TooLongItemNameException,
     TooManyException,
-    TooManyItemsException,};
-use Exception;
+    TooManyItemsException};
 
 /**
  * Набор тестов для проверки работы класса коллекции предметов расчёта
@@ -42,11 +40,12 @@ class ItemsTest extends BasicTestCase
      * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyItemsExceptionByConstructor()
     {
         $this->expectException(TooManyItemsException::class);
-        new Items($this->generateObjects(Constraints::MAX_COUNT_DOC_ITEMS + 1));
+        new Items($this->generateItemObjects(Constraints::MAX_COUNT_DOC_ITEMS + 1));
     }
 
     /**
@@ -61,12 +60,13 @@ class ItemsTest extends BasicTestCase
      * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyItemsExceptionByPrepend()
     {
         $this->expectException(TooManyItemsException::class);
-        (new Items($this->generateObjects(Constraints::MAX_COUNT_DOC_ITEMS)))
-            ->prepend($this->generateObjects());
+        (new Items($this->generateItemObjects(Constraints::MAX_COUNT_DOC_ITEMS)))
+            ->prepend($this->generateItemObjects());
     }
 
     /**
@@ -82,12 +82,13 @@ class ItemsTest extends BasicTestCase
      * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyItemsExceptionByAdd()
     {
         $this->expectException(TooManyItemsException::class);
-        (new Items($this->generateObjects(Constraints::MAX_COUNT_DOC_ITEMS)))
-            ->add($this->generateObjects());
+        (new Items($this->generateItemObjects(Constraints::MAX_COUNT_DOC_ITEMS)))
+            ->add($this->generateItemObjects());
     }
 
     /**
@@ -103,12 +104,13 @@ class ItemsTest extends BasicTestCase
      * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyItemsExceptionByPush()
     {
         $this->expectException(TooManyItemsException::class);
-        (new Items($this->generateObjects(Constraints::MAX_COUNT_DOC_ITEMS)))
-            ->push(...$this->generateObjects());
+        (new Items($this->generateItemObjects(Constraints::MAX_COUNT_DOC_ITEMS)))
+            ->push(...$this->generateItemObjects());
     }
 
     /**
@@ -124,33 +126,12 @@ class ItemsTest extends BasicTestCase
      * @throws TooHighItemPriceException
      * @throws TooLongItemNameException
      * @throws TooManyException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyItemsExceptionByMerge()
     {
         $this->expectException(TooManyItemsException::class);
-        (new Items($this->generateObjects(Constraints::MAX_COUNT_DOC_ITEMS)))
-            ->merge($this->generateObjects(2));
-    }
-
-    /**
-     * Генерирует массив тестовых объектов предметов расчёта
-     *
-     * @param int $count
-     * @return Item[]
-     * @throws EmptyItemNameException
-     * @throws NegativeItemPriceException
-     * @throws NegativeItemQuantityException
-     * @throws TooHighItemPriceException
-     * @throws TooLongItemNameException
-     * @throws TooManyException
-     * @throws Exception
-     */
-    protected function generateObjects(int $count = 1): array
-    {
-        $result = [];
-        for ($i = 0; $i < abs($count); ++$i) {
-            $result[] = new Item(Helpers::randomStr(), random_int(1, 100), random_int(1, 10));
-        }
-        return $result;
+        (new Items($this->generateItemObjects(Constraints::MAX_COUNT_DOC_ITEMS)))
+            ->merge($this->generateItemObjects(2));
     }
 }

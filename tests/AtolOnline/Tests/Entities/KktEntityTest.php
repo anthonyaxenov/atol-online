@@ -57,7 +57,7 @@ class KktEntityTest extends BasicTestCase
     {
         $kkt = new Kkt((object)$this->sample_data);
         $this->assertIsSameClass(Kkt::class, $kkt);
-        $this->assertAtolable($kkt);
+        $this->assertIsAtolable($kkt);
     }
 
     /**

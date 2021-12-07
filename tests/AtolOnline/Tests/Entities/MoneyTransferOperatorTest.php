@@ -51,11 +51,11 @@ class MoneyTransferOperatorTest extends BasicTestCase
      */
     public function testConstructorWithArgs(): void
     {
-        $this->assertAtolable(new MoneyTransferOperator('some name'), ['name' => 'some name']);
-        $this->assertAtolable(new MoneyTransferOperator(inn: '+fasd3\qe3fs_=nac99013928czc'), ['inn' => '3399013928']);
-        $this->assertAtolable(new MoneyTransferOperator(address: 'London'), ['address' => 'London']);
-        $this->assertAtolable(new MoneyTransferOperator(phones: ['+122997365456']), ['phones' => ['+122997365456']]);
-        $this->assertAtolable(new MoneyTransferOperator(
+        $this->assertIsAtolable(new MoneyTransferOperator('some name'), ['name' => 'some name']);
+        $this->assertIsAtolable(new MoneyTransferOperator(inn: '+fasd3\qe3fs_=nac99013928czc'), ['inn' => '3399013928']);
+        $this->assertIsAtolable(new MoneyTransferOperator(address: 'London'), ['address' => 'London']);
+        $this->assertIsAtolable(new MoneyTransferOperator(phones: ['+122997365456']), ['phones' => ['+122997365456']]);
+        $this->assertIsAtolable(new MoneyTransferOperator(
             'some name',
             '+fasd3\qe3fs_=nac99013928czc',
             'London',

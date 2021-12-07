@@ -12,14 +12,12 @@ namespace AtolOnline\Tests\Collections;
 use AtolOnline\{
     Collections\Payments,
     Constants\Constraints,
-    Entities\Payment,
-    Enums\PaymentTypes,
+    Exceptions\InvalidEntityInCollectionException,
     Exceptions\InvalidEnumValueException,
     Exceptions\NegativePaymentSumException,
     Exceptions\TooHighPaymentSumException,
     Exceptions\TooManyPaymentsException,
     Tests\BasicTestCase};
-use Exception;
 
 /**
  * Набор тестов для проверки работы класса коллекции оплат
@@ -35,11 +33,12 @@ class PaymentsTest extends BasicTestCase
      * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
      * @throws TooHighPaymentSumException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyPaymentsExceptionByConstructor()
     {
         $this->expectException(TooManyPaymentsException::class);
-        new Payments($this->generateObjects(Constraints::MAX_COUNT_DOC_PAYMENTS + 1));
+        new Payments($this->generatePaymentObjects(Constraints::MAX_COUNT_DOC_PAYMENTS + 1));
     }
 
     /**
@@ -51,12 +50,13 @@ class PaymentsTest extends BasicTestCase
      * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
      * @throws TooHighPaymentSumException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyPaymentsExceptionByPrepend()
     {
         $this->expectException(TooManyPaymentsException::class);
-        (new Payments($this->generateObjects(Constraints::MAX_COUNT_DOC_PAYMENTS)))
-            ->prepend($this->generateObjects());
+        (new Payments($this->generatePaymentObjects(Constraints::MAX_COUNT_DOC_PAYMENTS)))
+            ->prepend($this->generatePaymentObjects());
     }
 
     /**
@@ -69,12 +69,13 @@ class PaymentsTest extends BasicTestCase
      * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
      * @throws TooHighPaymentSumException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyPaymentsExceptionByAdd()
     {
         $this->expectException(TooManyPaymentsException::class);
-        (new Payments($this->generateObjects(Constraints::MAX_COUNT_DOC_PAYMENTS)))
-            ->add($this->generateObjects());
+        (new Payments($this->generatePaymentObjects(Constraints::MAX_COUNT_DOC_PAYMENTS)))
+            ->add($this->generatePaymentObjects());
     }
 
     /**
@@ -87,12 +88,13 @@ class PaymentsTest extends BasicTestCase
      * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
      * @throws TooHighPaymentSumException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyPaymentsExceptionByPush()
     {
         $this->expectException(TooManyPaymentsException::class);
-        (new Payments($this->generateObjects(Constraints::MAX_COUNT_DOC_PAYMENTS + 1)))
-            ->push(...$this->generateObjects());
+        (new Payments($this->generatePaymentObjects(Constraints::MAX_COUNT_DOC_PAYMENTS + 1)))
+            ->push(...$this->generatePaymentObjects());
     }
 
     /**
@@ -105,34 +107,12 @@ class PaymentsTest extends BasicTestCase
      * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
      * @throws TooHighPaymentSumException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyPaymentsExceptionByMerge()
     {
         $this->expectException(TooManyPaymentsException::class);
-        (new Payments($this->generateObjects(Constraints::MAX_COUNT_DOC_PAYMENTS - 1)))
-            ->merge($this->generateObjects(2));
-    }
-
-    /**
-     * Генерирует массив тестовых объектов оплаты
-     *
-     * @param int $count
-     * @return Payment[]
-     * @throws InvalidEnumValueException
-     * @throws NegativePaymentSumException
-     * @throws TooHighPaymentSumException
-     * @throws Exception
-     */
-    protected function generateObjects(int $count = 1): array
-    {
-        $types = PaymentTypes::toArray();
-        $result = [];
-        for ($i = 0; $i < abs($count); ++$i) {
-            $result[] = new Payment(
-                array_values($types)[random_int(min($types), max($types))],
-                random_int(1, 100) * 2 / 3
-            );
-        }
-        return $result;
+        (new Payments($this->generatePaymentObjects(Constraints::MAX_COUNT_DOC_PAYMENTS - 1)))
+            ->merge($this->generatePaymentObjects(2));
     }
 }

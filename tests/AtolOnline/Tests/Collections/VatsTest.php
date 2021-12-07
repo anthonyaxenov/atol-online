@@ -13,9 +13,7 @@ use AtolOnline\{
     Collections\Vats,
     Constants\Constraints,
     Entities\Payment,
-    Entities\Vat,
     Enums\PaymentTypes,
-    Enums\VatTypes,
     Exceptions\InvalidEntityInCollectionException,
     Exceptions\InvalidEnumValueException,
     Exceptions\NegativePaymentSumException,
@@ -39,10 +37,10 @@ class VatsTest extends BasicTestCase
      */
     public function testConstructor()
     {
-        $vats = new Vats($this->generateObjects(3));
+        $vats = new Vats($this->generateVatObjects(3));
         $this->assertIsCollection($vats);
         $this->assertEquals(3, $vats->count());
-        $this->assertAtolable($vats);
+        $this->assertIsAtolable($vats);
     }
 
     /**
@@ -52,11 +50,12 @@ class VatsTest extends BasicTestCase
      * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @covers \AtolOnline\Exceptions\TooManyVatsException
      * @throws InvalidEnumValueException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyVatsExceptionByConstructor()
     {
         $this->expectException(TooManyVatsException::class);
-        new Vats($this->generateObjects(Constraints::MAX_COUNT_DOC_VATS + 1));
+        new Vats($this->generateVatObjects(Constraints::MAX_COUNT_DOC_VATS + 1));
     }
 
     /**
@@ -66,11 +65,12 @@ class VatsTest extends BasicTestCase
      * @covers \AtolOnline\Collections\EntityCollection::prepend
      * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @throws InvalidEnumValueException
+     * @throws InvalidEntityInCollectionException
      */
     public function testPrepend()
     {
-        $vats = (new Vats($this->generateObjects(3)))
-            ->prepend($this->generateObjects());
+        $vats = (new Vats($this->generateVatObjects(3)))
+            ->prepend($this->generateVatObjects());
         $this->assertEquals(4, $vats->count());
     }
 
@@ -82,12 +82,13 @@ class VatsTest extends BasicTestCase
      * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @covers \AtolOnline\Exceptions\TooManyVatsException
      * @throws InvalidEnumValueException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyVatsExceptionByPrepend()
     {
         $this->expectException(TooManyVatsException::class);
-        (new Vats($this->generateObjects(Constraints::MAX_COUNT_DOC_VATS)))
-            ->prepend($this->generateObjects());
+        (new Vats($this->generateVatObjects(Constraints::MAX_COUNT_DOC_VATS)))
+            ->prepend($this->generateVatObjects());
     }
 
     /**
@@ -97,11 +98,12 @@ class VatsTest extends BasicTestCase
      * @covers \AtolOnline\Collections\EntityCollection::add
      * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @throws InvalidEnumValueException
+     * @throws InvalidEntityInCollectionException
      */
     public function testAdd()
     {
-        $vats = (new Vats($this->generateObjects(3)))
-            ->add($this->generateObjects());
+        $vats = (new Vats($this->generateVatObjects(3)))
+            ->add($this->generateVatObjects());
         $this->assertEquals(4, $vats->count());
     }
 
@@ -113,12 +115,13 @@ class VatsTest extends BasicTestCase
      * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @covers \AtolOnline\Exceptions\TooManyVatsException
      * @throws InvalidEnumValueException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyVatsExceptionByAdd()
     {
         $this->expectException(TooManyVatsException::class);
-        (new Vats($this->generateObjects(Constraints::MAX_COUNT_DOC_VATS)))
-            ->add($this->generateObjects());
+        (new Vats($this->generateVatObjects(Constraints::MAX_COUNT_DOC_VATS)))
+            ->add($this->generateVatObjects());
     }
 
     /**
@@ -128,11 +131,12 @@ class VatsTest extends BasicTestCase
      * @covers \AtolOnline\Collections\EntityCollection::push
      * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @throws InvalidEnumValueException
+     * @throws InvalidEntityInCollectionException
      */
     public function testPush()
     {
-        $vats = (new Vats($this->generateObjects(3)))
-            ->push(...$this->generateObjects(3));
+        $vats = (new Vats($this->generateVatObjects(3)))
+            ->push(...$this->generateVatObjects(3));
         $this->assertEquals(6, $vats->count());
     }
 
@@ -144,12 +148,13 @@ class VatsTest extends BasicTestCase
      * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @covers \AtolOnline\Exceptions\TooManyVatsException
      * @throws InvalidEnumValueException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyVatsExceptionByPush()
     {
         $this->expectException(TooManyVatsException::class);
-        (new Vats($this->generateObjects(Constraints::MAX_COUNT_DOC_VATS)))
-            ->push(...$this->generateObjects());
+        (new Vats($this->generateVatObjects(Constraints::MAX_COUNT_DOC_VATS)))
+            ->push(...$this->generateVatObjects());
     }
 
     /**
@@ -159,11 +164,12 @@ class VatsTest extends BasicTestCase
      * @covers \AtolOnline\Collections\EntityCollection::merge
      * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @throws InvalidEnumValueException
+     * @throws InvalidEntityInCollectionException
      */
     public function testMerge()
     {
-        $vats = (new Vats($this->generateObjects(3)))
-            ->merge($this->generateObjects(3));
+        $vats = (new Vats($this->generateVatObjects(3)))
+            ->merge($this->generateVatObjects(3));
         $this->assertEquals(6, $vats->count());
     }
 
@@ -175,19 +181,20 @@ class VatsTest extends BasicTestCase
      * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @covers \AtolOnline\Exceptions\TooManyVatsException
      * @throws InvalidEnumValueException
+     * @throws InvalidEntityInCollectionException
      */
     public function testTooManyVatsExceptionByMerge()
     {
         $this->expectException(TooManyVatsException::class);
-        (new Vats($this->generateObjects(Constraints::MAX_COUNT_DOC_VATS - 1)))
-            ->merge($this->generateObjects(2));
+        (new Vats($this->generateVatObjects(Constraints::MAX_COUNT_DOC_VATS - 1)))
+            ->merge($this->generateVatObjects(2));
     }
 
     /**
      * Тестирует выброс исключения при наличии скаляров в коллекции
      *
      * @covers \AtolOnline\Collections\EntityCollection
-     * @covers \AtolOnline\Collections\EntityCollection::checkClass
+     * @covers \AtolOnline\Collections\EntityCollection::checkItemClass
      * @covers \AtolOnline\Collections\EntityCollection::jsonSerialize
      * @covers \AtolOnline\Exceptions\InvalidEntityInCollectionException
      * @throws InvalidEnumValueException
@@ -197,7 +204,7 @@ class VatsTest extends BasicTestCase
     {
         $this->expectException(InvalidEntityInCollectionException::class);
         $this->expectExceptionMessage("(string)'bad element'");
-        (new Vats($this->generateObjects(2)))
+        (new Vats($this->generateVatObjects(2)))
             ->merge('bad element')
             ->jsonSerialize();
     }
@@ -214,29 +221,8 @@ class VatsTest extends BasicTestCase
     {
         $this->expectException(InvalidEntityInCollectionException::class);
         $this->expectExceptionMessage(Payment::class);
-        (new Vats($this->generateObjects()))
+        (new Vats($this->generateVatObjects()))
             ->merge([new Payment(PaymentTypes::PREPAID, 1)])
             ->jsonSerialize();
-    }
-
-    /**
-     * Генерирует массив тестовых объектов ставок НДС
-     *
-     * @param int $count
-     * @return Vat[]
-     * @throws InvalidEnumValueException
-     * @throws Exception
-     */
-    protected function generateObjects(int $count = 1): array
-    {
-        $types = VatTypes::toArray();
-        $result = [];
-        for ($i = 0; $i < abs($count); ++$i) {
-            $result[] = new Vat(
-                array_values($types)[random_int(0, count($types) - 1)],
-                random_int(1, 100) * 2 / 3
-            );
-        }
-        return $result;
     }
 }

@@ -42,7 +42,7 @@ class PaymentTest extends BasicTestCase
      */
     public function testConstructor(): void
     {
-        $this->assertAtolable(
+        $this->assertIsAtolable(
             new Payment(PaymentTypes::ELECTRON, 123.456789),
             [
                 'type' => PaymentTypes::ELECTRON,
