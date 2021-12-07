@@ -15,7 +15,10 @@ use AtolOnline\Collections\Items;
 use AtolOnline\Collections\Payments;
 use AtolOnline\Collections\Vats;
 use AtolOnline\Constants\Constraints;
-use AtolOnline\Exceptions\TooHighPriceException;
+use AtolOnline\Exceptions\EmptyItemsException;
+use AtolOnline\Exceptions\EmptyPaymentsException;
+use AtolOnline\Exceptions\EmptyVatsException;
+use AtolOnline\Exceptions\InvalidEntityInCollectionException;
 use AtolOnline\Exceptions\TooLongAddCheckPropException;
 use AtolOnline\Exceptions\TooLongCashierException;
 use Exception;
@@ -75,22 +78,26 @@ class Receipt extends Entity
     /**
      * @var string|null Дополнительный реквизит
      */
-    protected ?string $add_check_props;
+    protected ?string $add_check_props = null;
 
     /**
      * @var AdditionalUserProps|null Дополнительный реквизит пользователя
      */
-    protected ?AdditionalUserProps $add_user_props;
+    protected ?AdditionalUserProps $add_user_props = null;
 
     /**
      * Конструктор
+     *
+     * @param Client $client
+     * @param Company $company
+     * @param Items $items
+     * @param Payments $payments
+     * @throws EmptyItemsException
+     * @throws EmptyPaymentsException
+     * @throws InvalidEntityInCollectionException
      */
-    public function __construct(
-        Client $client,
-        Company $company,
-        Items $items,
-        Payments $payments,
-    ) {
+    public function __construct(Client $client, Company $company, Items $items, Payments $payments)
+    {
         $this->setClient($client)->setCompany($company)->setItems($items)->setPayments($payments);
     }
 
@@ -141,7 +148,7 @@ class Receipt extends Entity
     /**
      * Возвращает установленного агента
      *
-     * @return AgentInfo
+     * @return AgentInfo|null
      */
     public function getAgentInfo(): ?AgentInfo
     {
@@ -198,9 +205,15 @@ class Receipt extends Entity
      * @todo исключение при пустой коллекции
      * @param Items $items
      * @return Receipt
+     * @throws EmptyItemsException
+     * @throws InvalidEntityInCollectionException
      */
     public function setItems(Items $items): self
     {
+        if ($items->isEmpty()) {
+            throw new EmptyItemsException();
+        }
+        $items->checkItemsClasses();
         $this->items = $items;
         return $this;
     }
@@ -218,12 +231,15 @@ class Receipt extends Entity
     /**
      * Устанаваливает коллекцию оплат
      *
-     * @todo исключение при пустой коллекции
      * @param Payments $payments
      * @return Receipt
+     * @throws EmptyPaymentsException
      */
     public function setPayments(Payments $payments): self
     {
+        if ($payments->isEmpty()) {
+            throw new EmptyPaymentsException();
+        }
         $this->payments = $payments;
         return $this;
     }
@@ -243,9 +259,13 @@ class Receipt extends Entity
      *
      * @param Vats|null $vats
      * @return Receipt
+     * @throws EmptyVatsException
      */
     public function setVats(?Vats $vats): self
     {
+        if ($vats->isEmpty()) {
+            throw new EmptyVatsException();
+        }
         $this->vats = $vats;
         return $this;
     }
@@ -297,7 +317,7 @@ class Receipt extends Entity
                 throw new TooLongCashierException($cashier);
             }
         }
-        $this->cashier = empty($cashier) ? null : $cashier;
+        $this->cashier = $cashier ?: null;
         return $this;
     }
 
@@ -364,7 +384,7 @@ class Receipt extends Entity
             'company' => $this->getCompany(),
             'items' => $this->getItems(),
             'total' => $this->getTotal(),
-            'payment' => $this->getPayments(),
+            'payments' => $this->getPayments(),
         ];
         $this->getAgentInfo()?->jsonSerialize() && $json['agent_info'] = $this->getAgentInfo();
         $this->getSupplier()?->jsonSerialize() && $json['vats'] = $this->getVats();
