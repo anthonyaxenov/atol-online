@@ -27,6 +27,8 @@ abstract class EntityCollection extends Collection
     public function __construct($items = [])
     {
         $this->checkCount($items);
+        //TODO следует переделать EntityCollection в обёртку над Collection,
+        // ибо ломает методы Collection, которые return new static
         $this->checkItemsClasses($items);
         parent::__construct($items);
     }
