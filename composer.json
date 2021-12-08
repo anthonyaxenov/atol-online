@@ -32,8 +32,8 @@
         }
     ],
     "support": {
-        "rss": "https://t.me/atolonline_php",
-        "chat": "https://t.me/+Rky7ia68fctjZmUy",
+        "rss": "https://github.com/anthonyaxenov/atol-online/discussions/categories/announcements",
+        "chat": "https://github.com/anthonyaxenov/atol-online/discussions",
         "source": "https://github.com/anthonyaxenov/atol-online",
         "issues": "https://github.com/anthonyaxenov/atol-online/issues",
         "docs": "https://github.com/anthonyaxenov/atol-online/blob/master/docs/readme.md"
