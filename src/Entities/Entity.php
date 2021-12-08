@@ -11,14 +11,29 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Entities;
 
+use ArrayAccess;
+use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
 use Stringable;
 
 /**
  * Абстрактное описание любой сущности, представляемой как json
  */
-abstract class Entity implements JsonSerializable, Stringable
+abstract class Entity implements JsonSerializable, Stringable, Arrayable, ArrayAccess
 {
+    /**
+     * @inheritDoc
+     */
+    abstract public function jsonSerialize(): array;
+
+    /**
+     * @inheritDoc
+     */
+    public function toArray()
+    {
+        return $this->jsonSerialize();
+    }
+
     /**
      * Возвращает строковое представление json-структуры объекта
      *
@@ -26,6 +41,42 @@ abstract class Entity implements JsonSerializable, Stringable
      */
     public function __toString()
     {
-        return json_encode($this->jsonSerialize(), JSON_UNESCAPED_UNICODE);
+        return json_encode($this->toArray(), JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetExists(mixed $offset): bool
+    {
+        return isset($this->toArray()[$offset]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->toArray()[$offset];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetSet(mixed $offset, mixed $value)
+    {
+        throw new \BadMethodCallException(
+            'Объект ' . static::class . ' нельзя изменять как массив. Следует использовать сеттеры.'
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetUnset(mixed $offset): void
+    {
+        throw new \BadMethodCallException(
+            'Объект ' . static::class . ' нельзя изменять как массив. Следует использовать сеттеры.'
+        );
     }
 }

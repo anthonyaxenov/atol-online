@@ -87,6 +87,7 @@ abstract class EntityCollection extends Collection
      */
     public function checkCount(array $items = []): void
     {
+        //TODO проверять пустоту?
         if (count($items) > static::MAX_COUNT || $this->count() === static::MAX_COUNT) {
             throw new (static::EXCEPTION_CLASS)(static::MAX_COUNT);
         }

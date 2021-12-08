@@ -16,8 +16,7 @@ use AtolOnline\Exceptions\InvalidEnumValueException;
 use AtolOnline\Helpers;
 use JetBrains\PhpStorm\{
     ArrayShape,
-    Pure
-};
+    Pure};
 
 /**
  * Класс, описывающий ставку НДС
@@ -97,7 +96,7 @@ final class Vat extends Entity
     }
 
     /**
-     * Возвращает sdрасчитанный итоговый размер ставки НДС в рублях
+     * Возвращает расчитанный итоговый размер ставки НДС в рублях
      *
      * @return float
      * @see https://nalog-nalog.ru/nds/nalogovaya_baza_nds/kak-schitat-nds-pravilno-vychislyaem-20-ot-summy-primer-algoritm/
