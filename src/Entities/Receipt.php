@@ -196,7 +196,7 @@ class Receipt extends Entity
      */
     public function getItems(): Items
     {
-        return $this->items;
+        return $this->items ?? new Items();
     }
 
     /**
@@ -207,6 +207,7 @@ class Receipt extends Entity
      * @return Receipt
      * @throws EmptyItemsException
      * @throws InvalidEntityInCollectionException
+     * @throws Exception
      */
     public function setItems(Items $items): self
     {
@@ -215,6 +216,8 @@ class Receipt extends Entity
         }
         $items->checkItemsClasses();
         $this->items = $items;
+        $this->getItems()->each(fn ($item) => $this->total += $item->getSum());
+        $this->total = round($this->total, 2);
         return $this;
     }
 
@@ -251,7 +254,7 @@ class Receipt extends Entity
      */
     public function getVats(): ?Vats
     {
-        return $this->vats;
+        return $this->vats ?? new Vats();
     }
 
     /**
@@ -260,6 +263,7 @@ class Receipt extends Entity
      * @param Vats|null $vats
      * @return Receipt
      * @throws EmptyVatsException
+     * @throws Exception
      */
     public function setVats(?Vats $vats): self
     {
@@ -267,6 +271,8 @@ class Receipt extends Entity
             throw new EmptyVatsException();
         }
         $this->vats = $vats;
+        /** @var Vat $vat */
+        $this->getVats()->each(fn ($vat) => $vat->setSum($this->getTotal()));
         return $this;
     }
 
@@ -278,18 +284,6 @@ class Receipt extends Entity
     public function getTotal(): float
     {
         return $this->total;
-    }
-
-    /**
-     * Устанавливает полную сумму чека
-     *
-     * @param float $total
-     * @return Receipt
-     */
-    public function setTotal(float $total): self
-    {
-        $this->total = $total;
-        return $this;
     }
 
     /**
@@ -387,28 +381,11 @@ class Receipt extends Entity
             'payments' => $this->getPayments(),
         ];
         $this->getAgentInfo()?->jsonSerialize() && $json['agent_info'] = $this->getAgentInfo();
-        $this->getSupplier()?->jsonSerialize() && $json['vats'] = $this->getVats();
+        $this->getSupplier()?->jsonSerialize() && $json['supplier_info'] = $this->getSupplier();
         $this->getVats()?->jsonSerialize() && $json['vats'] = $this->getVats();
         !is_null($this->getAddCheckProps()) && $json['additional_check_props'] = $this->getAddCheckProps();
         !is_null($this->getCashier()) && $json['cashier'] = $this->getCashier();
         $this->getAddUserProps()?->jsonSerialize() && $json['additional_user_props'] = $this->getAddUserProps();
         return $json;
     }
-
-    ///**
-    // * Пересчитывает, сохраняет и возвращает итоговую сумму чека по всем позициям (включая НДС). Тег ФФД - 1020.
-    // *
-    // * @return float
-    // * @throws Exception
-    // */
-    //public function calcTotal(): float
-    //{
-    //    $sum = 0;
-    //    $this->clearVats();
-    //    foreach ($this->items->get() as $item) {
-    //        $sum += $item->calcSum();
-    //        $this->addVat(new Vat($item->getVat()->getType(), $item->getSum()));
-    //    }
-    //    return $this->total = round($sum, 2);
-    //}
 }
