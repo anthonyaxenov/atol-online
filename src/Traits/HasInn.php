@@ -37,7 +37,7 @@ trait HasInn
                 throw new InvalidInnLengthException($inn);
             }
         }
-        $this->inn = empty($inn) ? null : $inn;
+        $this->inn = $inn ?: null;
         return $this;
     }
 

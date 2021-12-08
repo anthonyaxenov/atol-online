@@ -10,22 +10,28 @@
 namespace AtolOnline\Tests\Entities;
 
 use AtolOnline\{
-    Collections\Items,
-    Collections\Payments,
-    Collections\Vats,
-    Entities\AgentInfo,
-    Entities\Client,
-    Entities\Company,
-    Entities\Item,
-    Entities\MoneyTransferOperator,
-    Entities\PayingAgent,
-    Entities\Receipt,
-    Entities\ReceivePaymentsOperator,
-    Entities\Supplier,
-    Entities\Vat,
-    Enums\AgentTypes,
-    Enums\SnoTypes,
+    Constants\Constraints,
+    Helpers,
     Tests\BasicTestCase};
+use AtolOnline\Collections\{
+    Items,
+    Payments,
+    Vats,};
+use AtolOnline\Entities\{
+    AdditionalUserProps,
+    AgentInfo,
+    Client,
+    Company,
+    Item,
+    MoneyTransferOperator,
+    PayingAgent,
+    Receipt,
+    ReceivePaymentsOperator,
+    Supplier,
+    Vat,};
+use AtolOnline\Enums\{
+    AgentTypes,
+    SnoTypes,};
 use AtolOnline\Exceptions\{
     EmptyItemNameException,
     EmptyItemsException,
@@ -41,6 +47,8 @@ use AtolOnline\Exceptions\{
     TooHighItemPriceException,
     TooHighItemSumException,
     TooHighPaymentSumException,
+    TooLongAddCheckPropException,
+    TooLongCashierException,
     TooLongItemNameException,
     TooLongPayingAgentOperationException,
     TooManyException};
@@ -83,7 +91,6 @@ class ReceiptTest extends BasicTestCase
     {
         $receipt = $this->newReceipt();
         $this->assertIsAtolable($receipt);
-        $receipt->getItems();
     }
 
     /**
@@ -363,7 +370,201 @@ class ReceiptTest extends BasicTestCase
 
         /** @var Vat $vat */
         $receipt->setVats(new Vats($this->generateVatObjects(2)))->getVats()
-            ->each(fn ($vat) => $this->assertEquals($items_total, $vat->getSum()));
+            ->each(fn($vat) => $this->assertEquals($items_total, $vat->getSum()));
+    }
+
+    /**
+     * Тестирует установку валидного кассира
+     *
+     * @return void
+     * @covers \AtolOnline\Entities\Receipt::setCashier
+     * @covers \AtolOnline\Entities\Receipt::getCashier
+     * @covers \AtolOnline\Entities\Receipt::jsonSerialize
+     * @throws EmptyItemNameException
+     * @throws EmptyItemsException
+     * @throws EmptyPaymentsException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidEnumValueException
+     * @throws NegativeItemPriceException
+     * @throws NegativeItemQuantityException
+     * @throws NegativePaymentSumException
+     * @throws TooHighItemPriceException
+     * @throws TooHighPaymentSumException
+     * @throws TooLongItemNameException
+     * @throws TooManyException
+     * @throws TooLongCashierException
+     * @throws Exception
+     */
+    public function testCashier(): void
+    {
+        $receipt = $this->newReceipt()->setCashier(Helpers::randomStr());
+        $this->assertArrayHasKey('cashier', $receipt->jsonSerialize());
+        $this->assertEquals($receipt->getCashier(), $receipt->jsonSerialize()['cashier']);
+    }
+
+    /**
+     * Тестирует обнуление кассира
+     *
+     * @param mixed $param
+     * @return void
+     * @dataProvider providerNullableStrings
+     * @covers       \AtolOnline\Entities\Receipt::setCashier
+     * @covers       \AtolOnline\Entities\Receipt::getCashier
+     * @throws EmptyItemNameException
+     * @throws EmptyItemsException
+     * @throws EmptyPaymentsException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidEnumValueException
+     * @throws NegativeItemPriceException
+     * @throws NegativeItemQuantityException
+     * @throws NegativePaymentSumException
+     * @throws TooHighItemPriceException
+     * @throws TooHighPaymentSumException
+     * @throws TooLongCashierException
+     * @throws TooLongItemNameException
+     * @throws TooManyException
+     */
+    public function testNullableCashier(mixed $param): void
+    {
+        $this->assertNull($this->newReceipt()->setCashier($param)->getCashier());
+    }
+
+    /**
+     * Тестирует выброс исключения при установке слишком длинного кассира (лол)
+     *
+     * @return void
+     * @covers \AtolOnline\Entities\Receipt::setCashier
+     * @covers \AtolOnline\Exceptions\TooLongCashierException
+     * @throws EmptyItemNameException
+     * @throws EmptyItemsException
+     * @throws EmptyPaymentsException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidEnumValueException
+     * @throws NegativeItemPriceException
+     * @throws NegativeItemQuantityException
+     * @throws NegativePaymentSumException
+     * @throws TooHighItemPriceException
+     * @throws TooHighPaymentSumException
+     * @throws TooLongCashierException
+     * @throws TooLongItemNameException
+     * @throws TooManyException
+     */
+    public function testTooLongCashierException(): void
+    {
+        $this->expectException(TooLongCashierException::class);
+        $this->newReceipt()->setCashier(Helpers::randomStr(Constraints::MAX_LENGTH_CASHIER_NAME + 1));
+    }
+
+    /**
+     * Тестирует установку дополнительного реквизита чека
+     *
+     * @return void
+     * @covers \AtolOnline\Entities\Receipt::setAddCheckProps
+     * @covers \AtolOnline\Entities\Receipt::getAddCheckProps
+     * @covers \AtolOnline\Entities\Receipt::jsonSerialize
+     * @throws EmptyItemNameException
+     * @throws EmptyItemsException
+     * @throws EmptyPaymentsException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidEnumValueException
+     * @throws NegativeItemPriceException
+     * @throws NegativeItemQuantityException
+     * @throws NegativePaymentSumException
+     * @throws TooHighItemPriceException
+     * @throws TooHighPaymentSumException
+     * @throws TooLongItemNameException
+     * @throws TooManyException
+     * @throws TooLongAddCheckPropException
+     * @throws Exception
+     */
+    public function testAddCheckProps(): void
+    {
+        $receipt = $this->newReceipt()->setAddCheckProps(Helpers::randomStr());
+        $this->assertArrayHasKey('additional_check_props', $receipt->jsonSerialize());
+        $this->assertEquals($receipt->getAddCheckProps(), $receipt->jsonSerialize()['additional_check_props']);
+    }
+
+    /**
+     * Тестирует обнуление дополнительного реквизита чека
+     *
+     * @param mixed $param
+     * @return void
+     * @dataProvider providerNullableStrings
+     * @covers       \AtolOnline\Entities\Receipt::setAddCheckProps
+     * @covers       \AtolOnline\Entities\Receipt::getAddCheckProps
+     * @throws EmptyItemNameException
+     * @throws EmptyItemsException
+     * @throws EmptyPaymentsException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidEnumValueException
+     * @throws NegativeItemPriceException
+     * @throws NegativeItemQuantityException
+     * @throws NegativePaymentSumException
+     * @throws TooHighItemPriceException
+     * @throws TooHighPaymentSumException
+     * @throws TooLongAddCheckPropException
+     * @throws TooLongItemNameException
+     * @throws TooManyException
+     */
+    public function testNullableAddCheckProps(mixed $param): void
+    {
+        $this->assertNull($this->newReceipt()->setAddCheckProps($param)->getAddCheckProps());
+    }
+
+    /**
+     * Тестирует выброс исключения при установке слишком длинного дополнительного реквизита чека
+     *
+     * @return void
+     * @covers \AtolOnline\Entities\Receipt::setAddCheckProps
+     * @covers \AtolOnline\Exceptions\TooLongAddCheckPropException
+     * @throws EmptyItemNameException
+     * @throws EmptyItemsException
+     * @throws EmptyPaymentsException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidEnumValueException
+     * @throws NegativeItemPriceException
+     * @throws NegativeItemQuantityException
+     * @throws NegativePaymentSumException
+     * @throws TooHighItemPriceException
+     * @throws TooHighPaymentSumException
+     * @throws TooLongAddCheckPropException
+     * @throws TooLongItemNameException
+     * @throws TooManyException
+     */
+    public function testTooLongAddCheckPropException(): void
+    {
+        $this->expectException(TooLongAddCheckPropException::class);
+        $this->newReceipt()->setAddCheckProps(Helpers::randomStr(Constraints::MAX_LENGTH_ADD_CHECK_PROP + 1));
+    }
+
+    /**
+     * Тестирует установку дополнительного реквизита пользователя
+     *
+     * @return void
+     * @covers \AtolOnline\Entities\Receipt::setAddUserProps
+     * @covers \AtolOnline\Entities\Receipt::getAddUserProps
+     * @covers \AtolOnline\Entities\Receipt::jsonSerialize
+     * @throws EmptyItemNameException
+     * @throws EmptyItemsException
+     * @throws EmptyPaymentsException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidEnumValueException
+     * @throws NegativeItemPriceException
+     * @throws NegativeItemQuantityException
+     * @throws NegativePaymentSumException
+     * @throws TooHighItemPriceException
+     * @throws TooHighPaymentSumException
+     * @throws TooLongItemNameException
+     * @throws TooManyException
+     * @throws Exception
+     */
+    public function testAdditionalUserProps(): void
+    {
+        $aup = new AdditionalUserProps('name', 'value');
+        $receipt = $this->newReceipt()->setAddUserProps($aup);
+        $this->assertArrayHasKey('additional_user_props', $receipt->jsonSerialize());
+        $this->assertEquals($receipt->getAddUserProps(), $receipt->jsonSerialize()['additional_user_props']);
+        $this->assertArrayNotHasKey('additional_user_props', $receipt->setAddUserProps(null)->jsonSerialize());
     }
 
     /**

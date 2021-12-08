@@ -41,7 +41,7 @@ trait HasEmail
                 throw new InvalidEmailException($email);
             }
         }
-        $this->email = empty($email) ? null : $email;
+        $this->email = $email ?: null;
         return $this;
     }
 

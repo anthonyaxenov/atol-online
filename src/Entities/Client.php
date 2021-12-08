@@ -17,12 +17,10 @@ use AtolOnline\Exceptions\{
     InvalidInnLengthException,
     InvalidPhoneException,
     TooLongClientNameException,
-    TooLongEmailException
-};
+    TooLongEmailException};
 use AtolOnline\Traits\{
     HasEmail,
-    HasInn
-};
+    HasInn};
 use JetBrains\PhpStorm\Pure;
 
 /**
@@ -94,7 +92,7 @@ final class Client extends Entity
                 throw new TooLongClientNameException($name);
             }
         }
-        $this->name = empty($name) ? null : $name;
+        $this->name = $name ?: null;
         return $this;
     }
 

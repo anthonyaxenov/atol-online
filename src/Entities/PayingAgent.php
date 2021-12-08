@@ -14,8 +14,7 @@ namespace AtolOnline\Entities;
 use AtolOnline\Constants\Constraints;
 use AtolOnline\Exceptions\{
     InvalidPhoneException,
-    TooLongPayingAgentOperationException
-};
+    TooLongPayingAgentOperationException};
 use AtolOnline\Traits\HasPhones;
 use Illuminate\Support\Collection;
 
@@ -64,7 +63,7 @@ final class PayingAgent extends Entity
                 throw new TooLongPayingAgentOperationException($operation);
             }
         }
-        $this->operation = empty($operation) ? null : $operation;
+        $this->operation = $operation ?: null;
         return $this;
     }
 

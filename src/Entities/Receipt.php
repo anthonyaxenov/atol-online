@@ -340,7 +340,7 @@ class Receipt extends Entity
                 throw new TooLongAddCheckPropException($add_check_props);
             }
         }
-        $this->add_check_props = empty($add_check_props) ? null : $add_check_props;
+        $this->add_check_props = $add_check_props ?: null;
         return $this;
     }
 
