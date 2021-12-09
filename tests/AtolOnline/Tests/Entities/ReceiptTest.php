@@ -268,7 +268,7 @@ class ReceiptTest extends BasicTestCase
     {
         $this->expectException(InvalidEntityInCollectionException::class);
         $this->expectErrorMessage('Коллекция AtolOnline\Collections\Payments должна содержать объекты AtolOnline\Entities\Payment');
-        new Receipt(
+        (string)new Receipt(
             new Client('John Doe', 'john@example.com', '+1/22/99*73s dsdas654 5s6', '+fasd3\qe3fs_=nac99013928czc'),
             new Company('company@example.com', SnoTypes::OSN, '1234567890', 'https://example.com'),
             new Items([new Item('test item', 2, 3)]),
@@ -287,7 +287,6 @@ class ReceiptTest extends BasicTestCase
      * @throws EmptyItemNameException
      * @throws EmptyItemsException
      * @throws EmptyPaymentsException
-     * @throws EmptyVatsException
      * @throws InvalidEntityInCollectionException
      * @throws InvalidEnumValueException
      * @throws NegativeItemPriceException
@@ -297,6 +296,7 @@ class ReceiptTest extends BasicTestCase
      * @throws TooHighPaymentSumException
      * @throws TooLongItemNameException
      * @throws TooManyException
+     * @throws Exception
      */
     public function testEmptyVatsException(): void
     {
@@ -316,7 +316,6 @@ class ReceiptTest extends BasicTestCase
      * @throws EmptyItemNameException
      * @throws EmptyItemsException
      * @throws EmptyPaymentsException
-     * @throws EmptyVatsException
      * @throws InvalidEntityInCollectionException
      * @throws InvalidEnumValueException
      * @throws NegativeItemPriceException
@@ -326,12 +325,13 @@ class ReceiptTest extends BasicTestCase
      * @throws TooHighPaymentSumException
      * @throws TooLongItemNameException
      * @throws TooManyException
+     * @throws Exception
      */
     public function testInvalidVatInCollectionException(): void
     {
         $this->expectException(InvalidEntityInCollectionException::class);
         $this->expectErrorMessage('Коллекция AtolOnline\Collections\Vats должна содержать объекты AtolOnline\Entities\Vat');
-        $this->newReceipt()->setVats(new Vats(['qwerty']));
+        (string)$this->newReceipt()->setVats(new Vats(['qwerty']));
     }
 
     /**

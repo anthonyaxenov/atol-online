@@ -11,6 +11,7 @@ namespace AtolOnline\Collections;
 
 use AtolOnline\Constants\Constraints;
 use AtolOnline\Entities\Payment;
+use AtolOnline\Exceptions\EmptyPaymentsException;
 use AtolOnline\Exceptions\TooManyPaymentsException;
 
 /**
@@ -29,7 +30,12 @@ final class Payments extends EntityCollection
     protected const MAX_COUNT = Constraints::MAX_COUNT_DOC_PAYMENTS;
 
     /**
+     * Класс исключения для выброса при пустой коллекции
+     */
+    protected const EMPTY_EXCEPTION_CLASS = EmptyPaymentsException::class;
+
+    /**
      * Класс-наследник TooManyException для выброса при превышении количества
      */
-    protected const EXCEPTION_CLASS = TooManyPaymentsException::class;
+    protected const TOO_MANY_EXCEPTION_CLASS = TooManyPaymentsException::class;
 }

@@ -16,8 +16,6 @@ use AtolOnline\Collections\Payments;
 use AtolOnline\Collections\Vats;
 use AtolOnline\Constants\Constraints;
 use AtolOnline\Exceptions\EmptyItemsException;
-use AtolOnline\Exceptions\EmptyPaymentsException;
-use AtolOnline\Exceptions\EmptyVatsException;
 use AtolOnline\Exceptions\InvalidEntityInCollectionException;
 use AtolOnline\Exceptions\TooLongAddCheckPropException;
 use AtolOnline\Exceptions\TooLongCashierException;
@@ -93,7 +91,6 @@ class Receipt extends Entity
      * @param Items $items
      * @param Payments $payments
      * @throws EmptyItemsException
-     * @throws EmptyPaymentsException
      * @throws InvalidEntityInCollectionException
      */
     public function __construct(Client $client, Company $company, Items $items, Payments $payments)
@@ -211,12 +208,10 @@ class Receipt extends Entity
      */
     public function setItems(Items $items): self
     {
-        if ($items->isEmpty()) {
-            throw new EmptyItemsException();
-        }
+        $items->checkCount();
         $items->checkItemsClasses();
         $this->items = $items;
-        $this->getItems()->each(fn ($item) => $this->total += $item->getSum());
+        $this->getItems()->each(fn($item) => $this->total += $item->getSum());
         $this->total = round($this->total, 2);
         return $this;
     }
@@ -236,13 +231,12 @@ class Receipt extends Entity
      *
      * @param Payments $payments
      * @return Receipt
-     * @throws EmptyPaymentsException
+     * @throws InvalidEntityInCollectionException
      */
     public function setPayments(Payments $payments): self
     {
-        if ($payments->isEmpty()) {
-            throw new EmptyPaymentsException();
-        }
+        $payments->checkCount();
+        $payments->checkItemsClasses();
         $this->payments = $payments;
         return $this;
     }
@@ -262,17 +256,15 @@ class Receipt extends Entity
      *
      * @param Vats|null $vats
      * @return Receipt
-     * @throws EmptyVatsException
      * @throws Exception
      */
     public function setVats(?Vats $vats): self
     {
-        if ($vats->isEmpty()) {
-            throw new EmptyVatsException();
-        }
+        $vats->checkCount();
+        $vats->checkItemsClasses();
         $this->vats = $vats;
         /** @var Vat $vat */
-        $this->getVats()->each(fn ($vat) => $vat->setSum($this->getTotal()));
+        $this->getVats()->each(fn($vat) => $vat->setSum($this->getTotal()));
         return $this;
     }
 
@@ -376,13 +368,13 @@ class Receipt extends Entity
         $json = [
             'client' => $this->getClient(),
             'company' => $this->getCompany(),
-            'items' => $this->getItems(),
+            'items' => $this->getItems()->jsonSerialize(),
             'total' => $this->getTotal(),
-            'payments' => $this->getPayments(),
+            'payments' => $this->getPayments()->jsonSerialize(),
         ];
         $this->getAgentInfo()?->jsonSerialize() && $json['agent_info'] = $this->getAgentInfo();
         $this->getSupplier()?->jsonSerialize() && $json['supplier_info'] = $this->getSupplier();
-        $this->getVats()?->jsonSerialize() && $json['vats'] = $this->getVats();
+        $this->getVats()?->isNotEmpty() && $json['vats'] = $this->getVats();
         !is_null($this->getAddCheckProps()) && $json['additional_check_props'] = $this->getAddCheckProps();
         !is_null($this->getCashier()) && $json['cashier'] = $this->getCashier();
         $this->getAddUserProps()?->jsonSerialize() && $json['additional_user_props'] = $this->getAddUserProps();

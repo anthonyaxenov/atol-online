@@ -12,7 +12,6 @@ declare(strict_types = 1);
 namespace AtolOnline\Collections;
 
 use AtolOnline\Exceptions\InvalidEntityInCollectionException;
-use Exception;
 use Illuminate\Support\Collection;
 
 /**
@@ -21,60 +20,12 @@ use Illuminate\Support\Collection;
 abstract class EntityCollection extends Collection
 {
     /**
-     * @inheritDoc
+     * @return array
      * @throws InvalidEntityInCollectionException
-     */
-    public function __construct($items = [])
-    {
-        $this->checkCount($items);
-        //TODO следует переделать EntityCollection в обёртку над Collection,
-        // ибо ломает методы Collection, которые return new static
-        $this->checkItemsClasses($items);
-        parent::__construct($items);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function prepend($value, $key = null): self
-    {
-        $this->checkCount();
-        return parent::prepend($value, $key);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function add($item): self
-    {
-        $this->checkCount();
-        return parent::add($item);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function push(...$values): self
-    {
-        $this->checkCount();
-        return parent::push(...$values);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function merge($items): self
-    {
-        $this->checkCount();
-        return parent::merge($items);
-    }
-
-    /**
-     * @inheritDoc
-     * @throws Exception
      */
     public function jsonSerialize(): array
     {
+        $this->checkCount();
         $this->checkItemsClasses();
         return parent::jsonSerialize();
     }
@@ -82,20 +33,19 @@ abstract class EntityCollection extends Collection
     /**
      * Проверяет количество элементов коллекции
      *
-     * @param array $items Массив элементов, если пустой - проверит содержимое коллекции
      * @return void
      */
-    public function checkCount(array $items = []): void
+    public function checkCount(): void
     {
-        //TODO проверять пустоту?
-        if (count($items) > static::MAX_COUNT || $this->count() === static::MAX_COUNT) {
-            throw new (static::EXCEPTION_CLASS)(static::MAX_COUNT);
-        }
+        $this->isEmpty() && throw new (static::EMPTY_EXCEPTION_CLASS)();
+        $this->count() > static::MAX_COUNT && throw new (static::TOO_MANY_EXCEPTION_CLASS)(static::MAX_COUNT);
     }
 
     /**
      * Проверяет корректность класса элемента коллекции
      *
+     * @param mixed $item
+     * @return void
      * @throws InvalidEntityInCollectionException
      */
     public function checkItemClass(mixed $item): void
@@ -108,10 +58,11 @@ abstract class EntityCollection extends Collection
     /**
      * Проверяет корректность классов элементов коллекции
      *
+     * @return $this
      * @throws InvalidEntityInCollectionException
      */
-    public function checkItemsClasses(array $items = []): void
+    public function checkItemsClasses(): self
     {
-        (empty($items) ? $this : collect($items))->each(fn ($item) => $this->checkItemClass($item));
+        return $this->each(fn($item) => $this->checkItemClass($item));
     }
 }

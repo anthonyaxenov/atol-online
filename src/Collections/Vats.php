@@ -11,6 +11,7 @@ namespace AtolOnline\Collections;
 
 use AtolOnline\Constants\Constraints;
 use AtolOnline\Entities\Vat;
+use AtolOnline\Exceptions\EmptyVatsException;
 use AtolOnline\Exceptions\TooManyVatsException;
 
 /**
@@ -29,7 +30,12 @@ final class Vats extends EntityCollection
     protected const MAX_COUNT = Constraints::MAX_COUNT_DOC_VATS;
 
     /**
+     * Класс исключения для выброса при пустой коллекции
+     */
+    protected const EMPTY_EXCEPTION_CLASS = EmptyVatsException::class;
+
+    /**
      * Класс-наследник TooManyException для выброса при превышении количества
      */
-    protected const EXCEPTION_CLASS = TooManyVatsException::class;
+    protected const TOO_MANY_EXCEPTION_CLASS = TooManyVatsException::class;
 }

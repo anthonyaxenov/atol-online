@@ -14,6 +14,7 @@ use AtolOnline\{
     Constants\Constraints,
     Entities\Payment,
     Enums\PaymentTypes,
+    Exceptions\EmptyVatsException,
     Exceptions\InvalidEntityInCollectionException,
     Exceptions\InvalidEnumValueException,
     Exceptions\NegativePaymentSumException,
@@ -32,6 +33,8 @@ class VatsTest extends BasicTestCase
      *
      * @covers \AtolOnline\Collections\EntityCollection
      * @covers \AtolOnline\Collections\EntityCollection::checkCount
+     * @covers \AtolOnline\Collections\EntityCollection::checkItemsClasses
+     * @covers \AtolOnline\Collections\EntityCollection::jsonSerialize
      * @throws InvalidEnumValueException
      * @throws Exception
      */
@@ -44,150 +47,36 @@ class VatsTest extends BasicTestCase
     }
 
     /**
-     * Тестирует выброс исключения при установке слишком большого количества ставок через конструктор
+     * Тестирует выброс исключения при установке нулевого количества ставок
      *
      * @covers \AtolOnline\Collections\EntityCollection
      * @covers \AtolOnline\Collections\EntityCollection::checkCount
+     * @covers \AtolOnline\Collections\EntityCollection::checkItemsClasses
+     * @covers \AtolOnline\Collections\EntityCollection::jsonSerialize
+     * @covers \AtolOnline\Exceptions\EmptyVatsException
+     * @throws InvalidEntityInCollectionException
+     */
+    public function testEmptyVatsException()
+    {
+        $this->expectException(EmptyVatsException::class);
+        (new Vats([]))->jsonSerialize();
+    }
+
+    /**
+     * Тестирует выброс исключения при установке слишком большого количества ставок
+     *
+     * @covers \AtolOnline\Collections\EntityCollection
+     * @covers \AtolOnline\Collections\EntityCollection::checkCount
+     * @covers \AtolOnline\Collections\EntityCollection::checkItemsClasses
+     * @covers \AtolOnline\Collections\EntityCollection::jsonSerialize
      * @covers \AtolOnline\Exceptions\TooManyVatsException
      * @throws InvalidEnumValueException
      * @throws InvalidEntityInCollectionException
      */
-    public function testTooManyVatsExceptionByConstructor()
+    public function testTooManyVatsException()
     {
         $this->expectException(TooManyVatsException::class);
-        new Vats($this->generateVatObjects(Constraints::MAX_COUNT_DOC_VATS + 1));
-    }
-
-    /**
-     * Тестирует добавление ставки в начало коллекции
-     *
-     * @covers \AtolOnline\Collections\EntityCollection
-     * @covers \AtolOnline\Collections\EntityCollection::prepend
-     * @covers \AtolOnline\Collections\EntityCollection::checkCount
-     * @throws InvalidEnumValueException
-     * @throws InvalidEntityInCollectionException
-     */
-    public function testPrepend()
-    {
-        $vats = (new Vats($this->generateVatObjects(3)))
-            ->prepend($this->generateVatObjects());
-        $this->assertEquals(4, $vats->count());
-    }
-
-    /**
-     * Тестирует выброс исключения при добавлении лишней ставки в начало коллекции
-     *
-     * @covers \AtolOnline\Collections\EntityCollection
-     * @covers \AtolOnline\Collections\EntityCollection::prepend
-     * @covers \AtolOnline\Collections\EntityCollection::checkCount
-     * @covers \AtolOnline\Exceptions\TooManyVatsException
-     * @throws InvalidEnumValueException
-     * @throws InvalidEntityInCollectionException
-     */
-    public function testTooManyVatsExceptionByPrepend()
-    {
-        $this->expectException(TooManyVatsException::class);
-        (new Vats($this->generateVatObjects(Constraints::MAX_COUNT_DOC_VATS)))
-            ->prepend($this->generateVatObjects());
-    }
-
-    /**
-     * Тестирует добавление ставки в конец коллекции
-     *
-     * @covers \AtolOnline\Collections\EntityCollection
-     * @covers \AtolOnline\Collections\EntityCollection::add
-     * @covers \AtolOnline\Collections\EntityCollection::checkCount
-     * @throws InvalidEnumValueException
-     * @throws InvalidEntityInCollectionException
-     */
-    public function testAdd()
-    {
-        $vats = (new Vats($this->generateVatObjects(3)))
-            ->add($this->generateVatObjects());
-        $this->assertEquals(4, $vats->count());
-    }
-
-    /**
-     * Тестирует выброс исключения при добавлении лишней ставки в конец коллекции
-     *
-     * @covers \AtolOnline\Collections\EntityCollection
-     * @covers \AtolOnline\Collections\EntityCollection::add
-     * @covers \AtolOnline\Collections\EntityCollection::checkCount
-     * @covers \AtolOnline\Exceptions\TooManyVatsException
-     * @throws InvalidEnumValueException
-     * @throws InvalidEntityInCollectionException
-     */
-    public function testTooManyVatsExceptionByAdd()
-    {
-        $this->expectException(TooManyVatsException::class);
-        (new Vats($this->generateVatObjects(Constraints::MAX_COUNT_DOC_VATS)))
-            ->add($this->generateVatObjects());
-    }
-
-    /**
-     * Тестирует добавление лишних ставок в конец коллекции
-     *
-     * @covers \AtolOnline\Collections\EntityCollection
-     * @covers \AtolOnline\Collections\EntityCollection::push
-     * @covers \AtolOnline\Collections\EntityCollection::checkCount
-     * @throws InvalidEnumValueException
-     * @throws InvalidEntityInCollectionException
-     */
-    public function testPush()
-    {
-        $vats = (new Vats($this->generateVatObjects(3)))
-            ->push(...$this->generateVatObjects(3));
-        $this->assertEquals(6, $vats->count());
-    }
-
-    /**
-     * Тестирует выброс исключения при добавлении лишних ставок в конец коллекции
-     *
-     * @covers \AtolOnline\Collections\EntityCollection
-     * @covers \AtolOnline\Collections\EntityCollection::push
-     * @covers \AtolOnline\Collections\EntityCollection::checkCount
-     * @covers \AtolOnline\Exceptions\TooManyVatsException
-     * @throws InvalidEnumValueException
-     * @throws InvalidEntityInCollectionException
-     */
-    public function testTooManyVatsExceptionByPush()
-    {
-        $this->expectException(TooManyVatsException::class);
-        (new Vats($this->generateVatObjects(Constraints::MAX_COUNT_DOC_VATS)))
-            ->push(...$this->generateVatObjects());
-    }
-
-    /**
-     * Тестирует добавление ставки в начало коллекции
-     *
-     * @covers \AtolOnline\Collections\EntityCollection
-     * @covers \AtolOnline\Collections\EntityCollection::merge
-     * @covers \AtolOnline\Collections\EntityCollection::checkCount
-     * @throws InvalidEnumValueException
-     * @throws InvalidEntityInCollectionException
-     */
-    public function testMerge()
-    {
-        $vats = (new Vats($this->generateVatObjects(3)))
-            ->merge($this->generateVatObjects(3));
-        $this->assertEquals(6, $vats->count());
-    }
-
-    /**
-     * Тестирует выброс исключения при добавлении лишней ставки в начало коллекции
-     *
-     * @covers \AtolOnline\Collections\EntityCollection
-     * @covers \AtolOnline\Collections\EntityCollection::merge
-     * @covers \AtolOnline\Collections\EntityCollection::checkCount
-     * @covers \AtolOnline\Exceptions\TooManyVatsException
-     * @throws InvalidEnumValueException
-     * @throws InvalidEntityInCollectionException
-     */
-    public function testTooManyVatsExceptionByMerge()
-    {
-        $this->expectException(TooManyVatsException::class);
-        (new Vats($this->generateVatObjects(Constraints::MAX_COUNT_DOC_VATS - 1)))
-            ->merge($this->generateVatObjects(2));
+        (new Vats($this->generateVatObjects(Constraints::MAX_COUNT_DOC_VATS + 1)))->jsonSerialize();
     }
 
     /**
@@ -195,6 +84,7 @@ class VatsTest extends BasicTestCase
      *
      * @covers \AtolOnline\Collections\EntityCollection
      * @covers \AtolOnline\Collections\EntityCollection::checkItemClass
+     * @covers \AtolOnline\Collections\EntityCollection::checkItemsClasses
      * @covers \AtolOnline\Collections\EntityCollection::jsonSerialize
      * @covers \AtolOnline\Exceptions\InvalidEntityInCollectionException
      * @throws InvalidEnumValueException
@@ -212,6 +102,9 @@ class VatsTest extends BasicTestCase
     /**
      * Тестирует выброс исключения при наличии объектов не тех классов в коллекции
      *
+     * @covers \AtolOnline\Collections\EntityCollection::checkItemClass
+     * @covers \AtolOnline\Collections\EntityCollection::checkItemsClasses
+     * @covers \AtolOnline\Collections\EntityCollection::jsonSerialize
      * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
      * @throws TooHighPaymentSumException

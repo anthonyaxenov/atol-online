@@ -91,7 +91,7 @@ final class Vat extends Entity
      */
     public function setSum(float $rubles): self
     {
-        $this->sum = $rubles;
+        $this->sum = round($rubles, 2);
         return $this;
     }
 
