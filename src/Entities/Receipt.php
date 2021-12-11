@@ -26,7 +26,7 @@ use Exception;
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 17
  */
-class Receipt extends Entity
+final class Receipt extends Entity
 {
     /**
      * @var Client Покупатель
@@ -35,6 +35,7 @@ class Receipt extends Entity
 
     /**
      * @var Company Продавец
+     * @todo вынести в трейт
      */
     protected Company $company;
 
@@ -55,6 +56,7 @@ class Receipt extends Entity
 
     /**
      * @var Payments Коллекция оплат
+     * @todo вынести в трейт
      */
     protected Payments $payments;
 
@@ -70,6 +72,7 @@ class Receipt extends Entity
 
     /**
      * @var string|null ФИО кассира
+     * @todo вынести в трейт
      */
     protected ?string $cashier = null;
 
@@ -112,7 +115,7 @@ class Receipt extends Entity
      * Устанаваливает покупателя
      *
      * @param Client $client
-     * @return Receipt
+     * @return $this
      */
     public function setClient(Client $client): self
     {
@@ -134,7 +137,7 @@ class Receipt extends Entity
      * Устанаваливает продавца
      *
      * @param Company $company
-     * @return Receipt
+     * @return $this
      */
     public function setCompany(Company $company): self
     {
@@ -156,7 +159,7 @@ class Receipt extends Entity
      * Устанаваливает агента
      *
      * @param AgentInfo|null $agent_info
-     * @return Receipt
+     * @return $this
      */
     public function setAgentInfo(?AgentInfo $agent_info): self
     {
@@ -178,7 +181,7 @@ class Receipt extends Entity
      * Поставщика
      *
      * @param Supplier|null $supplier
-     * @return Receipt
+     * @return $this
      */
     public function setSupplier(?Supplier $supplier): self
     {
@@ -199,12 +202,12 @@ class Receipt extends Entity
     /**
      * Устанаваливает коллекцию предметов расчёта
      *
-     * @todo исключение при пустой коллекции
      * @param Items $items
-     * @return Receipt
+     * @return $this
      * @throws EmptyItemsException
      * @throws InvalidEntityInCollectionException
      * @throws Exception
+     * @todo исключение при пустой коллекции
      */
     public function setItems(Items $items): self
     {
@@ -230,7 +233,7 @@ class Receipt extends Entity
      * Устанаваливает коллекцию оплат
      *
      * @param Payments $payments
-     * @return Receipt
+     * @return $this
      * @throws InvalidEntityInCollectionException
      */
     public function setPayments(Payments $payments): self
@@ -255,7 +258,7 @@ class Receipt extends Entity
      * Устанаваливает коллекцию ставок НДС
      *
      * @param Vats|null $vats
-     * @return Receipt
+     * @return $this
      * @throws Exception
      */
     public function setVats(?Vats $vats): self
@@ -292,7 +295,7 @@ class Receipt extends Entity
      * Устанаваливает кассира
      *
      * @param string|null $cashier
-     * @return Receipt
+     * @return $this
      * @throws TooLongCashierException
      */
     public function setCashier(?string $cashier): self
@@ -321,7 +324,7 @@ class Receipt extends Entity
      * Устанаваливает дополнительный реквизит чека
      *
      * @param string|null $add_check_props
-     * @return Receipt
+     * @return $this
      * @throws TooLongAddCheckPropException
      */
     public function setAddCheckProps(?string $add_check_props): self
@@ -350,7 +353,7 @@ class Receipt extends Entity
      * Устанаваливает дополнительный реквизит пользователя
      *
      * @param AdditionalUserProps|null $add_user_props
-     * @return Receipt
+     * @return $this
      */
     public function setAddUserProps(?AdditionalUserProps $add_user_props): self
     {

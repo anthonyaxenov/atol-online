@@ -11,18 +11,14 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\{
-    Constants\Constraints,
-    Enums\SnoTypes,
-    Traits\HasEmail,
-    Traits\HasInn};
-use AtolOnline\Exceptions\{
-    InvalidEmailException,
+use AtolOnline\{Constants\Constraints, Enums\SnoTypes, Traits\HasEmail, Traits\HasInn};
+use AtolOnline\Exceptions\{InvalidEmailException,
     InvalidEnumValueException,
     InvalidInnLengthException,
     InvalidPaymentAddressException,
     TooLongEmailException,
-    TooLongPaymentAddressException};
+    TooLongPaymentAddressException
+};
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
@@ -59,8 +55,8 @@ final class Company extends Entity
      * @throws TooLongPaymentAddressException
      */
     public function __construct(
-        string $email,
-        string $sno,
+        string $email, //TODO сделать необязательным здесь
+        string $sno, //TODO сделать необязательным здесь
         string $inn,
         string $payment_address,
     ) {

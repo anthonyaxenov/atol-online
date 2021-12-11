@@ -17,12 +17,12 @@ namespace AtolOnline\Enums;
 final class DocumentTypes extends Enum
 {
     /**
-     * Чек прихода, возврата прихода, расхода, возврата расхода
+     * Документ прихода, возврата прихода, расхода, возврата расхода
      */
     const RECEIPT = 'receipt';
 
     /**
-     * Чек коррекции
+     * Документ коррекции
      */
     const CORRECTION = 'correction';
 

@@ -20,7 +20,7 @@ use Illuminate\Support\Collection;
 abstract class EntityCollection extends Collection
 {
     /**
-     * @return array
+     * @inheritDoc
      * @throws InvalidEntityInCollectionException
      */
     public function jsonSerialize(): array

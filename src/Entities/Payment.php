@@ -13,20 +13,15 @@ namespace AtolOnline\Entities;
 
 use AtolOnline\Constants\Constraints;
 use AtolOnline\Enums\PaymentTypes;
-use AtolOnline\Exceptions\{
-    InvalidEnumValueException,
-    NegativePaymentSumException,
-    TooHighPaymentSumException,};
-use JetBrains\PhpStorm\{
-    ArrayShape,
-    Pure};
+use AtolOnline\Exceptions\{InvalidEnumValueException, NegativePaymentSumException, TooHighPaymentSumException,};
+use JetBrains\PhpStorm\{ArrayShape, Pure};
 
 /**
  * Класс, описывающий оплату
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 30
  */
-class Payment extends Entity
+final class Payment extends Entity
 {
     /**
      * @var int Тип оплаты
