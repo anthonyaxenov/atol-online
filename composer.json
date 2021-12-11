@@ -74,6 +74,6 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit --colors=always",
-        "test-cov": "php -dxdebug.mode=coverage vendor/bin/phpunit --coverage-html .coverage-report"
+        "coverage": "php -dxdebug.mode=coverage vendor/bin/phpunit --coverage-html .coverage"
     }
 }
