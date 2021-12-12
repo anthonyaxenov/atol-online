@@ -12,8 +12,17 @@
          bootstrap="vendor/autoload.php"
          colors="true">
 	<testsuites>
-		<testsuite name="All">
-			<directory suffix="Test.php">./tests</directory>
+		<testsuite name="Helpers">
+			<file>tests/AtolOnline/Tests/HelpersTest.php</file>
+		</testsuite>
+		<testsuite name="Entities">
+			<directory>tests/AtolOnline/Tests/Entities</directory>
+		</testsuite>
+		<testsuite name="Collections">
+			<directory>tests/AtolOnline/Tests/Collections</directory>
+		</testsuite>
+		<testsuite name="Api">
+			<directory>tests/AtolOnline/Tests/Api</directory>
 		</testsuite>
 	</testsuites>
 
