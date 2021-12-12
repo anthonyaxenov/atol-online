@@ -93,6 +93,7 @@ class BasicTestCase extends TestCase
      * @param Entity|EntityCollection $entity
      * @param array|null $json_structure
      * @covers \AtolOnline\Entities\Entity::__toString
+     * @covers \AtolOnline\Entities\Entity::toArray
      * @covers \AtolOnline\Entities\Entity::jsonSerialize
      * @covers \AtolOnline\Collections\EntityCollection::jsonSerialize
      * @throws Exception
@@ -100,6 +101,8 @@ class BasicTestCase extends TestCase
     public function assertIsAtolable(Entity|EntityCollection $entity, ?array $json_structure = null): void
     {
         $this->assertIsArray($entity->jsonSerialize());
+        $this->assertIsArray($entity->toArray());
+        $this->assertEquals($entity->jsonSerialize(), $entity->toArray());
         $this->assertIsString((string)$entity);
         $this->assertJson((string)$entity);
         if (!is_null($json_structure)) {

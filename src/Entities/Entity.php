@@ -7,11 +7,12 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Entities;
 
 use ArrayAccess;
+use BadMethodCallException;
 use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
 use Stringable;
@@ -65,7 +66,7 @@ abstract class Entity implements JsonSerializable, Stringable, Arrayable, ArrayA
      */
     public function offsetSet(mixed $offset, mixed $value)
     {
-        throw new \BadMethodCallException(
+        throw new BadMethodCallException(
             'Объект ' . static::class . ' нельзя изменять как массив. Следует использовать сеттеры.'
         );
     }
@@ -75,7 +76,7 @@ abstract class Entity implements JsonSerializable, Stringable, Arrayable, ArrayA
      */
     public function offsetUnset(mixed $offset): void
     {
-        throw new \BadMethodCallException(
+        throw new BadMethodCallException(
             'Объект ' . static::class . ' нельзя изменять как массив. Следует использовать сеттеры.'
         );
     }

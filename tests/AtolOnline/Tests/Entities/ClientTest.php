@@ -9,15 +9,16 @@
 
 namespace AtolOnline\Tests\Entities;
 
-use AtolOnline\{
-    Entities\Client,
+use AtolOnline\{Entities\Client,
     Exceptions\InvalidEmailException,
     Exceptions\InvalidInnLengthException,
     Exceptions\InvalidPhoneException,
     Exceptions\TooLongClientNameException,
     Exceptions\TooLongEmailException,
     Helpers,
-    Tests\BasicTestCase};
+    Tests\BasicTestCase
+};
+use BadMethodCallException;
 use Exception;
 
 /**
@@ -58,17 +59,19 @@ class ClientTest extends BasicTestCase
         $this->assertIsAtolable(new Client(email: 'john@example.com'), ['email' => 'john@example.com']);
         $this->assertIsAtolable(new Client(phone: '+1/22/99*73s dsdas654 5s6'), ['phone' => '+122997365456']);
         $this->assertIsAtolable(new Client(inn: '+fasd3\qe3fs_=nac99013928czc'), ['inn' => '3399013928']);
-        $this->assertIsAtolable(new Client(
-            'John Doe',
-            'john@example.com',
-            '+1/22/99*73s dsdas654 5s6', // +122997365456
-            '+fasd3\qe3fs_=nac99013928czc' // 3399013928
-        ), [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'phone' => '+122997365456',
-            'inn' => '3399013928',
-        ]);
+        $this->assertIsAtolable(
+            new Client(
+                'John Doe',
+                'john@example.com',
+                '+1/22/99*73s dsdas654 5s6', // +122997365456
+                '+fasd3\qe3fs_=nac99013928czc' // 3399013928
+            ), [
+                'name' => 'John Doe',
+                'email' => 'john@example.com',
+                'phone' => '+122997365456',
+                'inn' => '3399013928',
+            ]
+        );
     }
 
     /**
@@ -131,12 +134,12 @@ class ClientTest extends BasicTestCase
     /**
      * Тестирует установку валидного телефона
      *
+     * @throws InvalidPhoneException
      * @todo актуализировать при доработатанной валидации
      * @dataProvider providerValidPhones
      * @covers       \AtolOnline\Entities\Client
      * @covers       \AtolOnline\Entities\Client::setPhone
      * @covers       \AtolOnline\Entities\Client::getPhone
-     * @throws InvalidPhoneException
      */
     public function testValidPhone(string $input, string $output): void
     {
@@ -146,11 +149,11 @@ class ClientTest extends BasicTestCase
     /**
      * Тестирует установку невалидного телефона
      *
+     * @throws InvalidPhoneException
      * @todo актуализировать при доработатанной валидации
      * @covers \AtolOnline\Entities\Client
      * @covers \AtolOnline\Entities\Client::setPhone
      * @covers \AtolOnline\Exceptions\InvalidPhoneException
-     * @throws InvalidPhoneException
      */
     public function testInvalidPhoneException(): void
     {
@@ -246,5 +249,46 @@ class ClientTest extends BasicTestCase
     {
         $this->expectException(InvalidInnLengthException::class);
         (new Client())->setInn('1234567890123');
+    }
+
+    /**
+     * Тестирует обращение к атрибутам объекта как к элементам массива
+     *
+     * @covers \AtolOnline\Entities\Entity::offsetGet
+     * @covers \AtolOnline\Entities\Entity::offsetExists
+     * @return void
+     */
+    public function testOffsetGetExists(): void
+    {
+        $client = new Client('John Doe');
+        $this->assertEquals('John Doe', $client['name']);
+        $this->assertTrue(isset($client['name']));
+        $this->assertFalse(isset($client['qwerty']));
+    }
+
+    /**
+     * Тестирует выброс исключения при попытке задать значение атрибуту объекта как элементу массива
+     *
+     * @covers \AtolOnline\Entities\Entity::offsetSet
+     * @return void
+     */
+    public function testBadMethodCallExceptionBySet(): void
+    {
+        $this->expectException(BadMethodCallException::class);
+        $client = new Client('John Doe');
+        $client['name'] = 'qwerty';
+    }
+
+    /**
+     * Тестирует выброс исключения при попытке удалить значение атрибута объекта как элемент массива
+     *
+     * @covers \AtolOnline\Entities\Entity::offsetUnset
+     * @return void
+     */
+    public function testBadMethodCallExceptionByUnset(): void
+    {
+        $this->expectException(BadMethodCallException::class);
+        $client = new Client('John Doe');
+        unset($client['name']);
     }
 }
