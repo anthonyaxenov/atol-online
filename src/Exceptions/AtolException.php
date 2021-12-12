@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace AtolOnline\Exceptions;
 
 use Exception;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Исключение, возникающее при работе с АТОЛ Онлайн
@@ -29,6 +30,7 @@ class AtolException extends Exception
      * @param string $message Сообщение
      * @param int[] $ffd_tags Переопредление тегов ФФД
      */
+    #[Pure]
     public function __construct(string $message = '', array $ffd_tags = [])
     {
         $tags = implode(', ', $ffd_tags ?: $this->ffd_tags);

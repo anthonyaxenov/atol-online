@@ -9,9 +9,15 @@
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Collections\{Payments, Vats};
-use AtolOnline\Constants\Constraints;
-use AtolOnline\Exceptions\{InvalidEntityInCollectionException, TooLongCashierException};
+use AtolOnline\{
+    Constants\Constraints,
+    Payments,
+    Vats
+};
+use AtolOnline\Exceptions\{
+    InvalidEntityInCollectionException,
+    TooLongCashierException
+};
 use Exception;
 use JetBrains\PhpStorm\ArrayShape;
 
@@ -28,8 +34,8 @@ class Correction extends Entity
     protected Company $company;
 
     /**
+     * @todo вынести в трейт?
      * @var string|null ФИО кассира
-     * @todo вынести в трейт
      */
     protected ?string $cashier = null;
 
@@ -195,11 +201,11 @@ class Correction extends Entity
      * @throws InvalidEntityInCollectionException
      */
     #[ArrayShape([
-        'company' => "\AtolOnline\Entities\Company",
-        'correction_info' => "\AtolOnline\Entities\CorrectionInfo",
-        'payments' => "array",
-        'vats' => "\AtolOnline\Collections\Vats|null",
-        'cashier' => "null|string"
+        'company' => '\AtolOnline\Entities\Company',
+        'correction_info' => '\AtolOnline\Entities\CorrectionInfo',
+        'payments' => 'array',
+        'vats' => '\AtolOnline\Collections\Vats|null',
+        'cashier' => 'null|string',
     ])]
     public function jsonSerialize(): array
     {

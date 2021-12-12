@@ -77,6 +77,7 @@ final class PaymentObjects extends Enum
 
     /**
      * Составной предмет расчёта
+     *
      * @deprecated Более не используется согласно ФФД 1.05
      * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 25 (payment_object)
      */

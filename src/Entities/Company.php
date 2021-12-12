@@ -11,8 +11,14 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\{Constants\Constraints, Enums\SnoTypes, Traits\HasEmail, Traits\HasInn};
-use AtolOnline\Exceptions\{InvalidEmailException,
+use AtolOnline\{
+    Constants\Constraints,
+    Enums\SnoTypes,
+    Traits\HasEmail,
+    Traits\HasInn
+};
+use AtolOnline\Exceptions\{
+    InvalidEmailException,
     InvalidEnumValueException,
     InvalidInnLengthException,
     InvalidPaymentAddressException,

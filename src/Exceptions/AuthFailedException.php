@@ -13,6 +13,7 @@ namespace AtolOnline\Exceptions;
 
 use AtolOnline\Api\KktResponse;
 use Exception;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Исключение, возникающее при неудачной авторизации
@@ -25,6 +26,7 @@ class AuthFailedException extends Exception
      * @param KktResponse $response
      * @param string $message
      */
+    #[Pure]
     public function __construct(KktResponse $response, string $message = '')
     {
         parent::__construct(($message ?: 'Ошибка авторизации: ') . ': ' . $response);

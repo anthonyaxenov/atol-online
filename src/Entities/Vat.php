@@ -106,15 +106,17 @@ final class Vat extends Entity
     #[Pure]
     public function getCalculated(): float
     {
-        return Helpers::toRub(match ($this->getType()) {
-            VatTypes::VAT10 => Helpers::toKop($this->sum) * 10 / 100,
-            VatTypes::VAT18 => Helpers::toKop($this->sum) * 18 / 100,
-            VatTypes::VAT20 => Helpers::toKop($this->sum) * 20 / 100,
-            VatTypes::VAT110 => Helpers::toKop($this->sum) * 10 / 110,
-            VatTypes::VAT118 => Helpers::toKop($this->sum) * 18 / 118,
-            VatTypes::VAT120 => Helpers::toKop($this->sum) * 20 / 120,
-            default => 0,
-        });
+        return Helpers::toRub(
+            match ($this->getType()) {
+                VatTypes::VAT10 => Helpers::toKop($this->sum) * 10 / 100,
+                VatTypes::VAT18 => Helpers::toKop($this->sum) * 18 / 100,
+                VatTypes::VAT20 => Helpers::toKop($this->sum) * 20 / 100,
+                VatTypes::VAT110 => Helpers::toKop($this->sum) * 10 / 110,
+                VatTypes::VAT118 => Helpers::toKop($this->sum) * 18 / 118,
+                VatTypes::VAT120 => Helpers::toKop($this->sum) * 20 / 120,
+                default => 0,
+            }
+        );
     }
 
     /**

@@ -11,6 +11,8 @@ declare(strict_types = 1);
 
 namespace AtolOnline;
 
+use JetBrains\PhpStorm\ArrayShape;
+
 /**
  * Константы, определяющие параметры тестовых сред
  *
@@ -23,6 +25,16 @@ final class TestEnvParams
      *
      * @return string[]
      */
+    #[ArrayShape([
+        'endpoint' => "string",
+        'company_name' => "string",
+        'inn' => "string",
+        'payment_address' => "string",
+        'group' => "string",
+        'login' => "string",
+        'password' => "string",
+        'endpoint_ofd' => "string",
+    ])]
     public static function FFD105(): array
     {
         return [
@@ -43,6 +55,16 @@ final class TestEnvParams
      * @return string[]
      * @noinspection PhpUnused
      */
+    #[ArrayShape([
+        'endpoint' => "string",
+        'company_name' => "string",
+        'inn' => "string",
+        'payment_address' => "string",
+        'group' => "string",
+        'login' => "string",
+        'password' => "string",
+        'endpoint_ofd' => "string",
+    ])]
     public static function FFD12(): array
     {
         return [

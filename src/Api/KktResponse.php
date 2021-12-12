@@ -7,13 +7,18 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 declare(strict_types = 1);
 
 namespace AtolOnline\Api;
 
+use JetBrains\PhpStorm\{
+    ArrayShape,
+    Pure
+};
 use JsonSerializable;
 use Psr\Http\Message\ResponseInterface;
-use stdClass;
 use Stringable;
 
 /**
@@ -30,10 +35,10 @@ class KktResponse implements JsonSerializable, Stringable
     protected int $code;
 
     /**
-     * @var stdClass|array|null Содержимое ответа сервера
+     * @var object|array|null Содержимое ответа сервера
      */
-    protected stdClass|array|null $content;
-    
+    protected object|array|null $content;
+
     /**
      * @var array Заголовки ответа
      */
@@ -50,7 +55,7 @@ class KktResponse implements JsonSerializable, Stringable
         $this->headers = $response->getHeaders();
         $this->content = json_decode((string)$response->getBody());
     }
-    
+
     /**
      * Возвращает заголовки ответа
      *
@@ -60,18 +65,19 @@ class KktResponse implements JsonSerializable, Stringable
     {
         return $this->headers;
     }
-    
+
     /**
      * Возвращает запрошенный параметр из декодированного объекта результата
      *
      * @param $name
      * @return mixed
      */
+    #[Pure]
     public function __get($name): mixed
     {
         return $this->getContent()?->$name;
     }
-    
+
     /**
      * Возвращает код ответа
      *
@@ -81,7 +87,7 @@ class KktResponse implements JsonSerializable, Stringable
     {
         return $this->code;
     }
-    
+
     /**
      * Возвращает объект результата запроса
      *
@@ -91,12 +97,13 @@ class KktResponse implements JsonSerializable, Stringable
     {
         return $this->content;
     }
-    
+
     /**
      * Проверяет успешность запроса по соержимому результата
      *
      * @return bool
      */
+    #[Pure]
     public function isValid(): bool
     {
         return !empty($this->getCode())
@@ -104,7 +111,7 @@ class KktResponse implements JsonSerializable, Stringable
             && empty($this->getContent()->error)
             && $this->getCode() < 400;
     }
-    
+
     /**
      * Возвращает текстовое представление
      */
@@ -112,10 +119,16 @@ class KktResponse implements JsonSerializable, Stringable
     {
         return json_encode($this->jsonSerialize(), JSON_UNESCAPED_UNICODE);
     }
-    
+
     /**
      * @inheritDoc
      */
+    #[ArrayShape([
+            'code' => 'int',
+            'headers' => 'array|\string[][]',
+            'body' => 'mixed',
+        ]
+    )]
     public function jsonSerialize(): array
     {
         return [

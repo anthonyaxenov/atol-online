@@ -556,8 +556,8 @@ final class Item extends Entity
         if (is_string($declaration_number)) {
             $declaration_number = trim($declaration_number);
             if (
-                mb_strlen($declaration_number) < Constraints::MIN_LENGTH_DECLARATION_NUMBER ||
-                mb_strlen($declaration_number) > Constraints::MAX_LENGTH_DECLARATION_NUMBER
+                mb_strlen($declaration_number) < Constraints::MIN_LENGTH_DECLARATION_NUMBER
+                || mb_strlen($declaration_number) > Constraints::MAX_LENGTH_DECLARATION_NUMBER
             ) {
                 throw new InvalidDeclarationNumberException($declaration_number);
             }

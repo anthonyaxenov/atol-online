@@ -11,15 +11,19 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Api;
 
-use AtolOnline\{
-    Constants\Constraints,
-    Exceptions\AuthFailedException,
-    Exceptions\EmptyLoginException,
-    Exceptions\EmptyPasswordException,
-    Exceptions\TooLongLoginException,
-    Exceptions\TooLongPasswordException};
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
+use AtolOnline\Constants\Constraints;
+use AtolOnline\Exceptions\{
+    AuthFailedException,
+    EmptyLoginException,
+    EmptyPasswordException,
+    TooLongLoginException,
+    TooLongPasswordException
+};
+use GuzzleHttp\{
+    Client,
+    Exception\GuzzleException
+};
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Класс для подключения АТОЛ Онлайн API
@@ -74,10 +78,13 @@ abstract class AtolClient
         ?string $login = null,
         ?string $password = null,
         array $config = []
-    ) {
-        $this->http = new Client(array_merge($config, [
-            'http_errors' => $config['http_errors'] ?? false,
-        ]));
+    )
+    {
+        $this->http = new Client(
+            array_merge($config, [
+                'http_errors' => $config['http_errors'] ?? false,
+            ])
+        );
         $this->setTestMode($test_mode);
         !is_null($login) && $this->setLogin($login);
         !is_null($password) && $this->setPassword($password);
@@ -201,6 +208,7 @@ abstract class AtolClient
      *
      * @return array
      */
+    #[Pure]
     private function getHeaders(): array
     {
         $headers['Content-type'] = 'application/json; charset=utf-8';

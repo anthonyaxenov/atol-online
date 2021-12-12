@@ -12,10 +12,13 @@ declare(strict_types = 1);
 namespace AtolOnline\Api;
 
 use AtolOnline\Entities\Kkt;
-use AtolOnline\Exceptions\EmptyMonitorDataException;
-use AtolOnline\Exceptions\NotEnoughMonitorDataException;
+use AtolOnline\Exceptions\{
+    EmptyMonitorDataException,
+    NotEnoughMonitorDataException
+};
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Класс для мониторинга ККТ
@@ -27,6 +30,7 @@ class KktMonitor extends AtolClient
     /**
      * @inheritDoc
      */
+    #[Pure]
     protected function getAuthEndpoint(): string
     {
         return $this->isTestMode()
@@ -37,6 +41,7 @@ class KktMonitor extends AtolClient
     /**
      * @inheritDoc
      */
+    #[Pure]
     protected function getMainEndpoint(): string
     {
         return $this->isTestMode()

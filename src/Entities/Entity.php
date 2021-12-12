@@ -7,7 +7,9 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types=1);
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
+declare(strict_types = 1);
 
 namespace AtolOnline\Entities;
 

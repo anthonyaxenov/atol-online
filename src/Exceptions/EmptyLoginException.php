@@ -13,6 +13,7 @@ namespace AtolOnline\Exceptions;
 
 /**
  * Исключение, возникающее при попытке указать пустой логин
+ *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 12
  */
 class EmptyLoginException extends AtolException

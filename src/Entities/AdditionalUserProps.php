@@ -16,8 +16,12 @@ use AtolOnline\Exceptions\{
     EmptyAddUserPropNameException,
     EmptyAddUserPropValueException,
     TooLongAddUserPropNameException,
-    TooLongAddUserPropValueException};
-use JetBrains\PhpStorm\Pure;
+    TooLongAddUserPropValueException
+};
+use JetBrains\PhpStorm\{
+    ArrayShape,
+    Pure
+};
 
 /**
  * Класс, описывающий дополнительный реквизит пользователя
@@ -117,6 +121,7 @@ final class AdditionalUserProps extends Entity
      * @inheritDoc
      */
     #[Pure]
+    #[ArrayShape(['name' => 'string', 'value' => 'null|string'])]
     public function jsonSerialize(): array
     {
         return [

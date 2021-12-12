@@ -11,6 +11,8 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use JetBrains\PhpStorm\Pure;
+
 /**
  * Исключение, возникающее при ошибке валидации UUID
  */
@@ -19,13 +21,11 @@ class InvalidUuidException extends AtolException
     /**
      * Конструктор
      *
-     * @param                 $uuid
-     * @param string $message
-     * @param int $code
-     * @param Throwable|null $previous
+     * @param string $uuid
      */
-    public function __construct(?string $uuid = null)
+    #[Pure]
+    public function __construct(string $uuid = '')
     {
-        parent::__construct('Невалидный UUID' . ($uuid ? ': ' . $uuid : ''));
+        parent::__construct('Невалидный UUID: ' . $uuid);
     }
 }

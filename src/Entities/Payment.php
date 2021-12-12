@@ -11,10 +11,19 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Constants\Constraints;
-use AtolOnline\Enums\PaymentTypes;
-use AtolOnline\Exceptions\{InvalidEnumValueException, NegativePaymentSumException, TooHighPaymentSumException,};
-use JetBrains\PhpStorm\{ArrayShape, Pure};
+use AtolOnline\{
+    Constants\Constraints,
+    Enums\PaymentTypes,
+};
+use AtolOnline\Exceptions\{
+    InvalidEnumValueException,
+    NegativePaymentSumException,
+    TooHighPaymentSumException,
+};
+use JetBrains\PhpStorm\{
+    ArrayShape,
+    Pure
+};
 
 /**
  * Класс, описывающий оплату

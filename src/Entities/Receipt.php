@@ -34,8 +34,8 @@ final class Receipt extends Entity
     protected Client $client;
 
     /**
+     * @todo вынести в трейт?
      * @var Company Продавец
-     * @todo вынести в трейт
      */
     protected Company $company;
 
@@ -55,8 +55,8 @@ final class Receipt extends Entity
     protected Items $items;
 
     /**
+     * @todo вынести в трейт?
      * @var Payments Коллекция оплат
-     * @todo вынести в трейт
      */
     protected Payments $payments;
 
@@ -71,8 +71,8 @@ final class Receipt extends Entity
     protected float $total = 0;
 
     /**
+     * @todo вынести в трейт?
      * @var string|null ФИО кассира
-     * @todo вынести в трейт
      */
     protected ?string $cashier = null;
 
@@ -204,10 +204,9 @@ final class Receipt extends Entity
      *
      * @param Items $items
      * @return $this
-     * @throws EmptyItemsException
      * @throws InvalidEntityInCollectionException
      * @throws Exception
-     * @todo исключение при пустой коллекции
+     * @throws EmptyItemsException
      */
     public function setItems(Items $items): self
     {
