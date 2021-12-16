@@ -17,12 +17,11 @@ use AtolOnline\Exceptions\{
     EmptyLoginException,
     EmptyPasswordException,
     TooLongLoginException,
-    TooLongPasswordException
-};
+    TooLongPasswordException};
+use AtolOnline\TestEnvParams;
 use GuzzleHttp\{
     Client,
-    Exception\GuzzleException
-};
+    Exception\GuzzleException};
 use JetBrains\PhpStorm\Pure;
 
 /**
@@ -78,8 +77,7 @@ abstract class AtolClient
         ?string $login = null,
         ?string $password = null,
         array $config = []
-    )
-    {
+    ) {
         $this->http = new Client(
             array_merge($config, [
                 'http_errors' => $config['http_errors'] ?? false,
@@ -149,9 +147,12 @@ abstract class AtolClient
      *
      * @return string|null
      */
+    #[Pure]
     public function getLogin(): ?string
     {
-        return $this->login;
+        return $this->isTestMode()
+            ? TestEnvParams::FFD105()['login']
+            : $this->login;
     }
 
     /**
@@ -179,9 +180,12 @@ abstract class AtolClient
      *
      * @return string|null
      */
+    #[Pure]
     public function getPassword(): ?string
     {
-        return $this->password;
+        return $this->isTestMode()
+            ? TestEnvParams::FFD105()['password']
+            : $this->password;
     }
 
     /**
@@ -279,7 +283,7 @@ abstract class AtolClient
     /**
      * Выполняет авторизацию на сервере АТОЛ
      *
-     * Авторизация выолнится только если неизвестен токен
+     * Авторизация выполнится только если неизвестен токен
      *
      * @param string|null $login
      * @param string|null $password
@@ -294,8 +298,8 @@ abstract class AtolClient
     public function auth(?string $login = null, ?string $password = null): bool
     {
         if (empty($this->getToken())) {
-            $login && $this->setLogin($login);
-            $password && $this->setPassword($password);
+            !is_null($login) && $this->setLogin($login);
+            !is_null($password) && $this->setPassword($password);
             if ($token = $this->doAuth()) {
                 $this->setToken($token);
             }

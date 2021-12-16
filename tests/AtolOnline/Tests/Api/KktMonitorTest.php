@@ -32,7 +32,7 @@ use GuzzleHttp\Exception\GuzzleException;
 class KktMonitorTest extends BasicTestCase
 {
     /**
-     * Возвращает объект клиента для тестирования с тестовым API АТОЛ
+     * Возвращает объект монитора для тестирования с тестовым API АТОЛ
      *
      * @return KktMonitor
      * @throws EmptyLoginException
@@ -42,10 +42,9 @@ class KktMonitorTest extends BasicTestCase
      */
     private function newTestClient(): KktMonitor
     {
-        $credentials = TestEnvParams::FFD105();
         return (new KktMonitor(true))
-            ->setLogin($credentials['login'])
-            ->setPassword($credentials['password']);
+            ->setLogin(TestEnvParams::FFD105()['login'])
+            ->setPassword(TestEnvParams::FFD105()['password']);
     }
 
     /**
