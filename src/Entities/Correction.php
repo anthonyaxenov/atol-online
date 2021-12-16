@@ -10,14 +10,12 @@
 namespace AtolOnline\Entities;
 
 use AtolOnline\{
-    Constants\Constraints,
-    Payments,
-    Vats
-};
+    Collections\Payments,
+    Collections\Vats,
+    Constants\Constraints};
 use AtolOnline\Exceptions\{
     InvalidEntityInCollectionException,
-    TooLongCashierException
-};
+    TooLongCashierException};
 use Exception;
 use JetBrains\PhpStorm\ArrayShape;
 
