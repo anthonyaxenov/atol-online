@@ -30,6 +30,16 @@ use JetBrains\PhpStorm\Pure;
 abstract class AtolClient
 {
     /**
+     * @var array Последний запрос к серверу АТОЛ
+     */
+    protected array $request;
+
+    /**
+     * @var KktResponse|null Последний ответ сервера АТОЛ
+     */
+    protected ?KktResponse $response;
+
+    /**
      * @var bool Флаг тестового режима
      */
     protected bool $test_mode;
@@ -53,11 +63,6 @@ abstract class AtolClient
      * @var string|null Токен авторизации
      */
     private ?string $token = null;
-
-    /**
-     * @var KktResponse|null Последний ответ сервера АТОЛ
-     */
-    private ?KktResponse $response;
 
     /**
      * Конструктор
@@ -86,6 +91,26 @@ abstract class AtolClient
         $this->setTestMode($test_mode);
         !is_null($login) && $this->setLogin($login);
         !is_null($password) && $this->setPassword($password);
+    }
+
+    /**
+     * Возвращает последний запрос к серверу
+     *
+     * @return array
+     */
+    public function getLastRequest(): array
+    {
+        return $this->request;
+    }
+
+    /**
+     * Возвращает последний ответ сервера
+     *
+     * @return KktResponse|null
+     */
+    public function getLastResponse(): ?KktResponse
+    {
+        return $this->response;
     }
 
     /**
@@ -130,16 +155,6 @@ abstract class AtolClient
     {
         $this->token = $token;
         return $this;
-    }
-
-    /**
-     * Возвращает последний ответ сервера
-     *
-     * @return KktResponse|null
-     */
-    public function getResponse(): ?KktResponse
-    {
-        return $this->response;
     }
 
     /**
@@ -273,36 +288,29 @@ abstract class AtolClient
     ): KktResponse {
         $http_method = strtoupper(trim($http_method));
         $options['headers'] = array_merge($this->getHeaders(), $options['headers'] ?? []);
-        if ($http_method != 'GET') {
-            $options['json'] = $data;
-        }
+        $http_method != 'GET' && $options['json'] = $data;
+        $this->request = array_merge([
+            'method' => $http_method,
+            'url' => $url,
+        ], $options);
         $response = $this->http->request($http_method, $url, $options);
         return $this->response = new KktResponse($response);
     }
 
     /**
      * Выполняет авторизацию на сервере АТОЛ
-     *
      * Авторизация выполнится только если неизвестен токен
      *
-     * @param string|null $login
-     * @param string|null $password
      * @return bool
      * @throws AuthFailedException
-     * @throws TooLongLoginException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
-     * @throws TooLongPasswordException
      * @throws GuzzleException
      */
-    public function auth(?string $login = null, ?string $password = null): bool
+    public function auth(): bool
     {
-        if (empty($this->getToken())) {
-            !is_null($login) && $this->setLogin($login);
-            !is_null($password) && $this->setPassword($password);
-            if ($token = $this->doAuth()) {
-                $this->setToken($token);
-            }
+        if (empty($this->getToken()) && $token = $this->doAuth()) {
+            $this->setToken($token);
         }
         return !empty($this->getToken());
     }
@@ -320,4 +328,5 @@ abstract class AtolClient
      * @return string
      */
     abstract protected function getMainEndpoint(): string;
+
 }

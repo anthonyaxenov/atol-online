@@ -132,10 +132,10 @@ final class Client extends Entity
     public function jsonSerialize(): array
     {
         $json = [];
-        $this->getName() && $json['name'] = $this->getName();
-        $this->getEmail() && $json['email'] = $this->getEmail();
-        $this->getPhone() && $json['phone'] = $this->getPhone();
-        $this->getInn() && $json['inn'] = $this->getInn();
+        !is_null($this->getName()) && $json['name'] = $this->getName();
+        !is_null($this->getEmail()) && $json['email'] = $this->getEmail();
+        !is_null($this->getPhone()) && $json['phone'] = $this->getPhone();
+        !is_null($this->getInn()) && $json['inn'] = $this->getInn();
         return $json;
     }
 }

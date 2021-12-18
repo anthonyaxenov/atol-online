@@ -13,6 +13,7 @@ namespace AtolOnline\Exceptions;
 
 use AtolOnline\Constants\Constraints;
 use AtolOnline\Constants\Ffd105Tags;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Исключение, возникающее при попытке указать слишком высокую цену (сумму) предмета расчёта
@@ -28,6 +29,7 @@ class TooHighItemPriceException extends TooManyException
      * @param string $name
      * @param float $price
      */
+    #[Pure]
     public function __construct(string $name, float $price)
     {
         parent::__construct($price, "Слишком высокая цена для предмета расчёта '$name'");

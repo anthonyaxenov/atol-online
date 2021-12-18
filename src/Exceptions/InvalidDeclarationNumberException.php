@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace AtolOnline\Exceptions;
 
 use AtolOnline\Constants\Ffd105Tags;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Исключение, возникающее при ошибке валидации кода таможенной декларации
@@ -25,6 +26,7 @@ class InvalidDeclarationNumberException extends AtolException
      *
      * @param string $code
      */
+    #[Pure]
     public function __construct(string $code = '')
     {
         parent::__construct("Невалидный код таможенной декларации: '$code'");

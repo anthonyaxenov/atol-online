@@ -13,9 +13,11 @@ namespace AtolOnline\Api;
 
 use AtolOnline\Entities\Kkt;
 use AtolOnline\Exceptions\{
+    AuthFailedException,
+    EmptyLoginException,
     EmptyMonitorDataException,
-    NotEnoughMonitorDataException
-};
+    EmptyPasswordException,
+    NotEnoughMonitorDataException};
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\Pure;
@@ -54,16 +56,21 @@ class KktMonitor extends AtolClient
      *
      * @param int|null $limit
      * @param int|null $offset
-     * @return KktResponse
+     * @return KktResponse|null
      * @throws GuzzleException
+     * @throws AuthFailedException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
      * @see https://online.atol.ru/files/API_service_information.pdf Документация, стр 9
      */
-    protected function fetchAll(?int $limit = null, ?int $offset = null): KktResponse
+    protected function fetchAll(?int $limit = null, ?int $offset = null): ?KktResponse
     {
         $params = [];
         !is_null($limit) && $params['limit'] = $limit;
         !is_null($offset) && $params['offset'] = $offset;
-        return $this->sendRequest('GET', self::getUrlToMethod('cash-registers'), $params);
+        return $this->auth()
+            ? $this->sendRequest('GET', self::getUrlToMethod('cash-registers'), $params)
+            : null;
     }
 
     /**
@@ -72,6 +79,9 @@ class KktMonitor extends AtolClient
      * @param int|null $limit
      * @param int|null $offset
      * @return Collection
+     * @throws AuthFailedException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
      * @throws GuzzleException
      * @see https://online.atol.ru/files/API_service_information.pdf Документация, стр 9
      */

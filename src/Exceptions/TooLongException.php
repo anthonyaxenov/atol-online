@@ -11,6 +11,8 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use JetBrains\PhpStorm\Pure;
+
 /**
  * Исключение, возникающее при попытке указать слишком длинное что-либо
  */
@@ -33,6 +35,7 @@ class TooLongException extends AtolException
      * @param string $message
      * @param float $max
      */
+    #[Pure]
     public function __construct(string $value, string $message = '', float $max = 0)
     {
         parent::__construct(

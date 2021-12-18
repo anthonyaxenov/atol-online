@@ -9,18 +9,18 @@
 
 namespace AtolOnline\Tests\Entities;
 
-use AtolOnline\{Constants\Constraints, Helpers, Tests\BasicTestCase};
-use AtolOnline\Collections\{Payments, Vats,};
-use AtolOnline\Entities\{Company, Correction, CorrectionInfo};
-use AtolOnline\Enums\{CorrectionTypes, SnoTypes};
-use AtolOnline\Exceptions\{EmptyCorrectionNumberException,
+use AtolOnline\{
+    Constants\Constraints,
+    Helpers,
+    Tests\BasicTestCase};
+use AtolOnline\Exceptions\{
+    EmptyCorrectionNumberException,
     InvalidCorrectionDateException,
     InvalidEntityInCollectionException,
     InvalidEnumValueException,
     NegativePaymentSumException,
     TooHighPaymentSumException,
-    TooLongCashierException
-};
+    TooLongCashierException};
 use Exception;
 
 /**
@@ -113,26 +113,5 @@ class CorrectionTest extends BasicTestCase
     {
         $this->expectException(TooLongCashierException::class);
         $this->newCorrection()->setCashier(Helpers::randomStr(Constraints::MAX_LENGTH_CASHIER_NAME + 1));
-    }
-
-    /**
-     * Возвращает валидный тестовый объект чека
-     *
-     * @return Correction
-     * @throws InvalidEntityInCollectionException
-     * @throws InvalidEnumValueException
-     * @throws NegativePaymentSumException
-     * @throws TooHighPaymentSumException
-     * @throws EmptyCorrectionNumberException
-     * @throws InvalidCorrectionDateException
-     */
-    protected function newCorrection(): Correction
-    {
-        return new Correction(
-            new Company('company@example.com', SnoTypes::OSN, '1234567890', 'https://example.com'),
-            new CorrectionInfo(CorrectionTypes::SELF, '01.01.2021', Helpers::randomStr()),
-            new Payments($this->generatePaymentObjects(2)),
-            new Vats($this->generateVatObjects(2)),
-        );
     }
 }

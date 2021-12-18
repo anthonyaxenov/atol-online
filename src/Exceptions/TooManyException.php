@@ -11,6 +11,8 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use JetBrains\PhpStorm\Pure;
+
 /**
  * Исключение, возникающее при попытке указать слишком большое количество чего-либо
  */
@@ -33,6 +35,7 @@ class TooManyException extends AtolException
      * @param string $message
      * @param float|null $max
      */
+    #[Pure]
     public function __construct(float $value, string $message = '', ?float $max = null)
     {
         parent::__construct(

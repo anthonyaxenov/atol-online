@@ -18,6 +18,6 @@ use AtolOnline\Constants\Constraints;
  */
 class TooLongCallbackUrlException extends TooLongException
 {
-    protected $message = 'Слишком длинный адрес колбека';
+    protected $message = 'Слишком длинный callback_url';
     protected float $max = Constraints::MAX_LENGTH_CALLBACK_URL;
 }

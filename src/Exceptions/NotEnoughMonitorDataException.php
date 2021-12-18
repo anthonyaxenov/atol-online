@@ -11,6 +11,8 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Exceptions;
 
+use JetBrains\PhpStorm\Pure;
+
 /**
  * Исключение, возникающее при попытке создать объект ККТ с неполными данными от монитора
  */
@@ -27,6 +29,7 @@ class NotEnoughMonitorDataException extends AtolException
      * @param array $props_diff
      * @param string $message
      */
+    #[Pure]
     public function __construct(array $props_diff, string $message = '')
     {
         parent::__construct($message ?: $this->message . implode(', ', $props_diff));

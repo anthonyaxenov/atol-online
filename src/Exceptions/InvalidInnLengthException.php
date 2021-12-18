@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace AtolOnline\Exceptions;
 
 use AtolOnline\Constants\Ffd105Tags;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Исключение, возникающее при попытке указать ИНН некорректной длины
@@ -31,6 +32,7 @@ class InvalidInnLengthException extends AtolException
      * @param string $inn
      * @param string $message
      */
+    #[Pure]
     public function __construct(string $inn = '', string $message = '')
     {
         parent::__construct(

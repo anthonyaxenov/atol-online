@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace AtolOnline\Exceptions;
 
 use AtolOnline\Constants\Ffd105Tags;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Исключение, возникающее при попытке указать предмету расчёта отрицательный акциз
@@ -26,6 +27,7 @@ class NegativeItemExciseException extends AtolException
      * @param string $name
      * @param float $excise
      */
+    #[Pure]
     public function __construct(string $name, float $excise)
     {
         parent::__construct("Предмет расчёта '$name' не может иметь отрицательный акциз $excise");

@@ -16,6 +16,7 @@ namespace AtolOnline\Entities;
 use ArrayAccess;
 use BadMethodCallException;
 use Illuminate\Contracts\Support\Arrayable;
+use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
 use Stringable;
 
@@ -32,6 +33,13 @@ abstract class Entity implements JsonSerializable, Stringable, Arrayable, ArrayA
     /**
      * @inheritDoc
      */
+    #[ArrayShape([
+        'company' => "\AtolOnline\Entities\Company",
+        'correction_info' => "\AtolOnline\Entities\CorrectionInfo",
+        'payments' => "array",
+        'vats' => "\AtolOnline\Collections\Vats|null",
+        'cashier' => "\null|string"
+    ])]
     public function toArray()
     {
         return $this->jsonSerialize();

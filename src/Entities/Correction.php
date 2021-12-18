@@ -10,13 +10,22 @@
 namespace AtolOnline\Entities;
 
 use AtolOnline\{
+    Api\KktFiscalizer,
+    Api\KktResponse,
     Collections\Payments,
     Collections\Vats,
     Constants\Constraints};
 use AtolOnline\Exceptions\{
+    AuthFailedException,
+    EmptyLoginException,
+    EmptyPasswordException,
     InvalidEntityInCollectionException,
-    TooLongCashierException};
+    InvalidInnLengthException,
+    InvalidPaymentAddressException,
+    TooLongCashierException,
+    TooLongPaymentAddressException};
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
@@ -26,6 +35,11 @@ use JetBrains\PhpStorm\ArrayShape;
  */
 class Correction extends Entity
 {
+    /**
+     * Тип документа
+     */
+    public const DOC_TYPE = 'correction';
+
     /**
      * @var Company Продавец
      */
@@ -192,6 +206,46 @@ class Correction extends Entity
         $vats->checkItemsClasses();
         $this->vats = $vats;
         return $this;
+    }
+
+    /**
+     * Регистрирует коррекцию прихода по текущему документу
+     *
+     * @param KktFiscalizer $fiscalizer Объект фискализатора
+     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
+     * @return KktResponse|null
+     * @throws AuthFailedException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
+     * @throws GuzzleException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongPaymentAddressException
+     */
+    public function sellCorrect(KktFiscalizer $fiscalizer, ?string $external_id = null): ?KktResponse
+    {
+        return $fiscalizer->sellCorrect($this, $external_id);
+    }
+
+    /**
+     * Регистрирует коррекцию расхода по текущему документу
+     *
+     * @param KktFiscalizer $fiscalizer Объект фискализатора
+     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
+     * @return KktResponse|null
+     * @throws AuthFailedException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
+     * @throws GuzzleException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongPaymentAddressException
+     */
+    public function buyCorrect(KktFiscalizer $fiscalizer, ?string $external_id = null): ?KktResponse
+    {
+        return $fiscalizer->buyCorrect($this, $external_id);
     }
 
     /**

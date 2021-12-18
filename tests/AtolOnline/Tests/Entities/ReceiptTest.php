@@ -127,7 +127,7 @@ class ReceiptTest extends BasicTestCase
         );
         $receipt = $this->newReceipt()->setAgentInfo($agent_info);
         $this->assertArrayHasKey('agent_info', $receipt->jsonSerialize());
-        $this->assertEquals($receipt->getAgentInfo(), $receipt->jsonSerialize()['agent_info']);
+        $this->assertEquals($receipt->getAgentInfo()->jsonSerialize(), $receipt->jsonSerialize()['agent_info']);
         $this->assertArrayNotHasKey('agent_info', $receipt->setAgentInfo(null)->jsonSerialize());
     }
 
@@ -159,7 +159,7 @@ class ReceiptTest extends BasicTestCase
         $supplier = new Supplier('some name', '+fasd3\qe3fs_=nac99013928czc', ['+122997365456']);
         $receipt = $this->newReceipt()->setSupplier($supplier);
         $this->assertArrayHasKey('supplier_info', $receipt->jsonSerialize());
-        $this->assertEquals($receipt->getSupplier(), $receipt->jsonSerialize()['supplier_info']);
+        $this->assertEquals($receipt->getSupplier()->jsonSerialize(), $receipt->jsonSerialize()['supplier_info']);
         $this->assertArrayNotHasKey('supplier_info', $receipt->setSupplier(null)->jsonSerialize());
     }
 
@@ -207,7 +207,9 @@ class ReceiptTest extends BasicTestCase
     public function testInvalidItemInCollectionException(): void
     {
         $this->expectException(InvalidEntityInCollectionException::class);
-        $this->expectErrorMessage('Коллекция AtolOnline\Collections\Items должна содержать объекты AtolOnline\Entities\Item');
+        $this->expectErrorMessage(
+            'Коллекция AtolOnline\Collections\Items должна содержать объекты AtolOnline\Entities\Item'
+        );
         new Receipt(
             new Client('John Doe', 'john@example.com', '+1/22/99*73s dsdas654 5s6', '+fasd3\qe3fs_=nac99013928czc'),
             new Company('company@example.com', SnoTypes::OSN, '1234567890', 'https://example.com'),
@@ -267,7 +269,9 @@ class ReceiptTest extends BasicTestCase
     public function testInvalidPaymentInCollectionException(): void
     {
         $this->expectException(InvalidEntityInCollectionException::class);
-        $this->expectErrorMessage('Коллекция AtolOnline\Collections\Payments должна содержать объекты AtolOnline\Entities\Payment');
+        $this->expectErrorMessage(
+            'Коллекция AtolOnline\Collections\Payments должна содержать объекты AtolOnline\Entities\Payment'
+        );
         (string)new Receipt(
             new Client('John Doe', 'john@example.com', '+1/22/99*73s dsdas654 5s6', '+fasd3\qe3fs_=nac99013928czc'),
             new Company('company@example.com', SnoTypes::OSN, '1234567890', 'https://example.com'),
@@ -330,7 +334,9 @@ class ReceiptTest extends BasicTestCase
     public function testInvalidVatInCollectionException(): void
     {
         $this->expectException(InvalidEntityInCollectionException::class);
-        $this->expectErrorMessage('Коллекция AtolOnline\Collections\Vats должна содержать объекты AtolOnline\Entities\Vat');
+        $this->expectErrorMessage(
+            'Коллекция AtolOnline\Collections\Vats должна содержать объекты AtolOnline\Entities\Vat'
+        );
         (string)$this->newReceipt()->setVats(new Vats(['qwerty']));
     }
 
@@ -357,15 +363,8 @@ class ReceiptTest extends BasicTestCase
      */
     public function testCalculations(): void
     {
-        $items_total = 0;
         $receipt = $this->newReceipt();
-
-        //TODO при $receipt->getItems()->pluck('sum') стреляет InvalidEntityInCollectionException
-        // см. примечания в конструкторе EntityCollection
-        $receipt->getItems()->each(function ($item) use (&$items_total) {
-            /** @var Item $item */
-            return $items_total += $item->getSum();
-        });
+        $items_total = $receipt->getItems()->pluck('sum')->sum();
         $this->assertEquals($items_total, $receipt->getTotal());
 
         /** @var Vat $vat */
@@ -563,34 +562,10 @@ class ReceiptTest extends BasicTestCase
         $aup = new AdditionalUserProps('name', 'value');
         $receipt = $this->newReceipt()->setAddUserProps($aup);
         $this->assertArrayHasKey('additional_user_props', $receipt->jsonSerialize());
-        $this->assertEquals($receipt->getAddUserProps(), $receipt->jsonSerialize()['additional_user_props']);
-        $this->assertArrayNotHasKey('additional_user_props', $receipt->setAddUserProps(null)->jsonSerialize());
-    }
-
-    /**
-     * Возвращает валидный тестовый объект чека
-     *
-     * @return Receipt
-     * @throws EmptyItemNameException
-     * @throws EmptyItemsException
-     * @throws EmptyPaymentsException
-     * @throws InvalidEntityInCollectionException
-     * @throws InvalidEnumValueException
-     * @throws NegativeItemPriceException
-     * @throws NegativeItemQuantityException
-     * @throws NegativePaymentSumException
-     * @throws TooHighItemPriceException
-     * @throws TooHighPaymentSumException
-     * @throws TooLongItemNameException
-     * @throws TooManyException
-     */
-    protected function newReceipt(): Receipt
-    {
-        return new Receipt(
-            new Client('John Doe', 'john@example.com', '+1/22/99*73s dsdas654 5s6', '+fasd3\qe3fs_=nac99013928czc'),
-            new Company('company@example.com', SnoTypes::OSN, '1234567890', 'https://example.com'),
-            new Items($this->generateItemObjects(2)),
-            new Payments($this->generatePaymentObjects())
+        $this->assertEquals(
+            $receipt->getAddUserProps()->jsonSerialize(),
+            $receipt->jsonSerialize()['additional_user_props']
         );
+        $this->assertArrayNotHasKey('additional_user_props', $receipt->setAddUserProps(null)->jsonSerialize());
     }
 }

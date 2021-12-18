@@ -13,30 +13,30 @@ namespace AtolOnline\Api;
 
 use AtolOnline\{
     Constants\Constraints,
-    Entities\Company,
-    Entities\Document,
-    Exceptions\AuthFailedException,
-    Exceptions\EmptyCorrectionInfoException,
-    Exceptions\EmptyLoginException,
-    Exceptions\EmptyPasswordException,
-    Exceptions\InvalidCallbackUrlException,
-    Exceptions\InvalidDocumentTypeException,
-    Exceptions\InvalidInnLengthException,
-    Exceptions\InvalidUuidException,
-    Exceptions\TooLongCallbackUrlException,
-    Exceptions\TooLongLoginException,
-    Exceptions\TooLongPasswordException,
-    Exceptions\TooLongPaymentAddressException,
-    Exceptions\TooManyItemsException,
-    Exceptions\TooManyVatsException,
-    TestEnvParams
-};
-use Exception;
+    TestEnvParams};
+use AtolOnline\Entities\{
+    Correction,
+    Receipt};
+use AtolOnline\Exceptions\{
+    AuthFailedException,
+    EmptyGroupException,
+    EmptyLoginException,
+    EmptyPasswordException,
+    InvalidCallbackUrlException,
+    InvalidEntityInCollectionException,
+    InvalidInnLengthException,
+    InvalidPaymentAddressException,
+    InvalidUuidException,
+    TooLongCallbackUrlException,
+    TooLongLoginException,
+    TooLongPasswordException,
+    TooLongPaymentAddressException};
 use GuzzleHttp\Exception\GuzzleException;
+use JetBrains\PhpStorm\Pure;
 use Ramsey\Uuid\Uuid;
 
 /**
- * Класс для регистрации документов на ККТ
+ * Класс фискализатора для регистрации документов на ККТ
  */
 class KktFiscalizer extends AtolClient
 {
@@ -62,6 +62,7 @@ class KktFiscalizer extends AtolClient
      * @throws EmptyPasswordException
      * @throws TooLongLoginException
      * @throws TooLongPasswordException
+     * @throws EmptyGroupException
      * @see https://guzzle.readthedocs.io/en/latest/request-options.html
      */
     public function __construct(
@@ -76,210 +77,200 @@ class KktFiscalizer extends AtolClient
     }
 
     /**
-     * Устанавливает группу доступа к ККТ
-     *
-     * @param string $group
-     * @return $this
-     */
-    public function setGroup(string $group): self
-    {
-        // критерии к длине строки не описаны ни в схеме, ни в документации
-        $this->group = $group;
-        return $this;
-    }
-
-    /**
      * Возвращает группу доступа к ККТ в соответствии с флагом тестового режима
      *
      * @return string|null
      */
+    #[Pure]
     public function getGroup(): ?string
     {
-        return $this->group;
+        return $this->isTestMode()
+            ? TestEnvParams::FFD105()['group']
+            : $this->group;
     }
 
     /**
-     * Устанавливает URL для приёма колбеков
+     * Устанавливает группу доступа к ККТ
      *
-     * @param string $url
+     * @param string $group
      * @return $this
-     * @throws TooLongCallbackUrlException
-     * @throws InvalidCallbackUrlException
+     * @throws EmptyGroupException
      */
-    public function setCallbackUrl(string $url): self
+    public function setGroup(string $group): self
     {
-        if (mb_strlen($url) > Constraints::MAX_LENGTH_CALLBACK_URL) {
-            throw new TooLongCallbackUrlException($url, Constraints::MAX_LENGTH_CALLBACK_URL);
-        } elseif (!preg_match(Constraints::PATTERN_CALLBACK_URL, $url)) {
-            throw new InvalidCallbackUrlException('Callback URL not matches with pattern');
-        }
-        $this->callback_url = $url;
+        // критерии к длине строки не описаны ни в схеме, ни в документации
+        empty($group = trim($group)) && throw new EmptyGroupException();
+        $this->group = $group;
         return $this;
     }
 
     /**
      * Возвращает URL для приёма колбеков
      *
-     * @return string
+     * @return string|null
      */
-    public function getCallbackUrl(): string
+    public function getCallbackUrl(): ?string
     {
         return $this->callback_url;
     }
 
     /**
+     * Устанавливает URL для приёма колбеков
+     *
+     * @param string|null $url
+     * @return $this
+     * @throws TooLongCallbackUrlException
+     * @throws InvalidCallbackUrlException
+     */
+    public function setCallbackUrl(?string $url = null): self
+    {
+        $url = trim((string)$url);
+        if (mb_strlen($url) > Constraints::MAX_LENGTH_CALLBACK_URL) {
+            throw new TooLongCallbackUrlException($url);
+        } elseif (!empty($url) && !preg_match(Constraints::PATTERN_CALLBACK_URL, $url)) {
+            throw new InvalidCallbackUrlException();
+        }
+        $this->callback_url = $url ?: null;
+        return $this;
+    }
+
+    /**
      * Регистрирует документ прихода
      *
-     * @param Document $document Объект документа
-     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан UUID)
-     * @return KktResponse
+     * @param Receipt $receipt Объект документа
+     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
+     * @return KktResponse|null
      * @throws AuthFailedException
-     * @throws EmptyCorrectionInfoException
-     * @throws InvalidInnLengthException
-     * @throws TooLongPaymentAddressException
-     * @throws InvalidDocumentTypeException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
      * @throws GuzzleException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongPaymentAddressException
      */
-    public function sell(Document $document, ?string $external_id = null): KktResponse
+    public function sell(Receipt $receipt, ?string $external_id = null): ?KktResponse
     {
-        if ($document->getCorrectionInfo()) {
-            throw new EmptyCorrectionInfoException('Некорректная операция над документом коррекции');
-        }
-        return $this->registerDocument('sell', 'receipt', $document, $external_id);
+        return $this->registerDocument('sell', $receipt, $external_id);
     }
 
     /**
      * Регистрирует документ возврата прихода
      *
-     * @param Document $document Объект документа
-     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан UUID)
-     * @return KktResponse
+     * @param Receipt $receipt Объект документа
+     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
+     * @return KktResponse|null
      * @throws AuthFailedException
-     * @throws EmptyCorrectionInfoException
-     * @throws InvalidInnLengthException
-     * @throws TooLongPaymentAddressException
-     * @throws TooManyVatsException
-     * @throws InvalidDocumentTypeException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
      * @throws GuzzleException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongPaymentAddressException
      */
-    public function sellRefund(Document $document, ?string $external_id = null): KktResponse
+    public function sellRefund(Receipt $receipt, ?string $external_id = null): ?KktResponse
     {
-        if ($document->getCorrectionInfo()) {
-            throw new EmptyCorrectionInfoException('Invalid operation on correction document');
-        }
-        return $this->registerDocument('sell_refund', 'receipt', $document->clearVats(), $external_id);
+        return $this->registerDocument('sell_refund', $receipt, $external_id);
     }
 
     /**
      * Регистрирует документ коррекции прихода
      *
-     * @param Document $document Объект документа
-     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан UUID)
-     * @return KktResponse
+     * @param Correction $correction Объект документа
+     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
+     * @return KktResponse|null
      * @throws AuthFailedException
-     * @throws EmptyCorrectionInfoException
-     * @throws InvalidInnLengthException
-     * @throws TooLongPaymentAddressException
-     * @throws TooManyItemsException
-     * @throws InvalidDocumentTypeException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
      * @throws GuzzleException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongPaymentAddressException
      */
-    public function sellCorrection(Document $document, ?string $external_id = null): KktResponse
+    public function sellCorrect(Correction $correction, ?string $external_id = null): ?KktResponse
     {
-        if (!$document->getCorrectionInfo()) {
-            throw new EmptyCorrectionInfoException();
-        }
-        $document->setClient(null)->setItems([]);
-        return $this->registerDocument('sell_correction', 'correction', $document, $external_id);
+        return $this->registerDocument('sell_correction', $correction, $external_id);
     }
 
     /**
      * Регистрирует документ расхода
      *
-     * @param Document $document
-     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан UUID)
-     * @return KktResponse
+     * @param Receipt $receipt Объект документа
+     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
+     * @return KktResponse|null
      * @throws AuthFailedException
-     * @throws EmptyCorrectionInfoException
-     * @throws InvalidInnLengthException
-     * @throws TooLongPaymentAddressException
-     * @throws InvalidDocumentTypeException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
      * @throws GuzzleException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongPaymentAddressException
      */
-    public function buy(Document $document, ?string $external_id = null): KktResponse
+    public function buy(Receipt $receipt, ?string $external_id = null): ?KktResponse
     {
-        if ($document->getCorrectionInfo()) {
-            throw new EmptyCorrectionInfoException('Invalid operation on correction document');
-        }
-        return $this->registerDocument('buy', 'receipt', $document, $external_id);
+        return $this->registerDocument('buy', $receipt, $external_id);
     }
 
     /**
      * Регистрирует документ возврата расхода
      *
-     * @param Document $document
+     * @param Receipt $receipt Объект документа
      * @param string|null $external_id Уникальный код документа (если не указан, то будет создан UUID)
-     * @return KktResponse
+     * @return KktResponse|null
      * @throws AuthFailedException
-     * @throws EmptyCorrectionInfoException
-     * @throws InvalidInnLengthException
-     * @throws TooLongPaymentAddressException
-     * @throws TooManyVatsException
-     * @throws InvalidDocumentTypeException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
      * @throws GuzzleException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongPaymentAddressException
      */
-    public function buyRefund(Document $document, ?string $external_id = null): KktResponse
+    public function buyRefund(Receipt $receipt, ?string $external_id = null): ?KktResponse
     {
-        if ($document->getCorrectionInfo()) {
-            throw new EmptyCorrectionInfoException('Invalid operation on correction document');
-        }
-        return $this->registerDocument('buy_refund', 'receipt', $document->clearVats(), $external_id);
+        return $this->registerDocument('buy_refund', $receipt, $external_id);
     }
 
     /**
      * Регистрирует документ коррекции расхода
      *
-     * @param Document $document
-     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан UUID)
-     * @return KktResponse
-     * @throws AuthFailedException Ошибка авторизации
-     * @throws EmptyCorrectionInfoException В документе отсутствуют данные коррекции
-     * @throws InvalidInnLengthException Некорректная длтина ИНН
-     * @throws TooLongPaymentAddressException Слишком длинный адрес места расчётов
-     * @throws TooManyItemsException Слишком много предметов расчёта
-     * @throws InvalidDocumentTypeException Некорректный тип документа
+     * @param Correction $correction Объект документа
+     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
+     * @return KktResponse|null
+     * @throws AuthFailedException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
      * @throws GuzzleException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongPaymentAddressException
      */
-    public function buyCorrection(Document $document, ?string $external_id = null): KktResponse
+    public function buyCorrect(Correction $correction, ?string $external_id = null): ?KktResponse
     {
-        if (!$document->getCorrectionInfo()) {
-            throw new EmptyCorrectionInfoException();
-        }
-        $document->setClient(null)->setItems([]);
-        return $this->registerDocument('buy_correction', 'correction', $document, $external_id);
+        return $this->registerDocument('buy_correction', $correction, $external_id);
     }
 
     /**
      * Проверяет статус чека на ККТ один раз
      *
      * @param string $uuid UUID регистрации
-     * @return KktResponse
+     * @return KktResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
      * @throws GuzzleException
      * @throws InvalidUuidException
-     * @throws TooLongLoginException
-     * @throws TooLongPasswordException
      */
-    public function getDocumentStatus(string $uuid): KktResponse
+    public function getDocumentStatus(string $uuid): ?KktResponse
     {
-        $uuid = trim($uuid);
-        if (!Uuid::isValid($uuid)) {
-            throw new InvalidUuidException($uuid);
-        }
-        $this->auth();
-        return $this->sendRequest('GET', 'report/' . $uuid);
+        !Uuid::isValid($uuid = trim($uuid)) && throw new InvalidUuidException($uuid);
+        return $this->auth()
+            ? $this->sendRequest('GET', $this->getFullUrl('report/' . $uuid))
+            : null;
     }
 
     /**
@@ -289,16 +280,14 @@ class KktFiscalizer extends AtolClient
      * @param string $uuid UUID регистрации
      * @param int $retry_count Количество попыток
      * @param int $timeout Таймаут в секундах между попытками
-     * @return KktResponse
+     * @return KktResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
      * @throws GuzzleException
      * @throws InvalidUuidException
-     * @throws TooLongLoginException
-     * @throws TooLongPasswordException
      */
-    public function pollDocumentStatus(string $uuid, int $retry_count = 5, int $timeout = 1): KktResponse
+    public function pollDocumentStatus(string $uuid, int $retry_count = 5, int $timeout = 1): ?KktResponse
     {
         $try = 0;
         do {
@@ -317,62 +306,73 @@ class KktFiscalizer extends AtolClient
      * Отправляет документ на регистрацию
      *
      * @param string $api_method Метод API
-     * @param string $type Тип документа: receipt, correction
-     * @param Document $document Объект документа
-     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан UUID)
-     * @return KktResponse
-     * @throws AuthFailedException Ошибка авторизации
-     * @throws InvalidDocumentTypeException Некорректный тип документа
-     * @throws InvalidInnLengthException Некорректная длина ИНН
-     * @throws TooLongPaymentAddressException Слишком длинный адрес места расчётов
+     * @param Receipt|Correction $document Документ
+     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
+     * @return KktResponse|null
+     * @throws AuthFailedException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
      * @throws GuzzleException
-     * @throws Exception
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongPaymentAddressException
      */
     protected function registerDocument(
         string $api_method,
-        string $type,
-        Document $document,
+        Receipt|Correction $document,
         ?string $external_id = null
-    ): KktResponse {
-        $type = trim($type);
-        if (!in_array($type, ['receipt', 'correction'])) {
-            throw new InvalidDocumentTypeException($type);
-        }
-        $this->auth();
-        if ($this->isTestMode()) {
-            $document->setCompany(new Company(
-                'test@example.com',
-                TestEnvParams::FFD105()['sno'],
-                TestEnvParams::FFD105()['inn'],
-                TestEnvParams::FFD105()['payment_address'],
-            ));
-        }
-        $data['timestamp'] = date('d.m.y H:i:s');
-        $data['external_id'] = $external_id ?: Uuid::uuid4()->toString();
-        $data[$type] = $document;
-        if ($this->getCallbackUrl()) {
-            $data['service'] = ['callback_url' => $this->getCallbackUrl()];
-        }
-        return $this->sendRequest('POST', trim($api_method), $data);
+    ): ?KktResponse {
+        $this->isTestMode() && $document->getCompany()
+            ->setInn(TestEnvParams::FFD105()['inn'])
+            ->setPaymentAddress(TestEnvParams::FFD105()['payment_address']);
+        $this->isTestMode() && $document instanceof Receipt
+        && $document->getClient()->setInn(TestEnvParams::FFD105()['inn']);
+        $this->getCallbackUrl() && $data['service'] = ['callback_url' => $this->getCallbackUrl()];
+        return $this->auth()
+            ? $this->sendRequest(
+                'POST',
+                $this->getFullUrl($api_method),
+                array_merge($data ?? [], [
+                    'timestamp' => date('d.m.Y H:i:s'),
+                    'external_id' => $external_id ?: Uuid::uuid4()->toString(),
+                    $document::DOC_TYPE => $document->jsonSerialize(),
+                ])
+            )
+            : null;
     }
 
     /**
      * @inheritDoc
      */
+    #[Pure]
     protected function getAuthEndpoint(): string
     {
         return $this->isTestMode()
-            ? 'https://testonline.atol.ru/possystem/v1/getToken'
-            : 'https://online.atol.ru/possystem/v1/getToken';
+            ? 'https://testonline.atol.ru/possystem/v4/getToken'
+            : 'https://online.atol.ru/possystem/v4/getToken';
     }
 
     /**
      * @inheritDoc
      */
+    #[Pure]
     protected function getMainEndpoint(): string
     {
         return $this->isTestMode()
             ? 'https://testonline.atol.ru/possystem/v4/'
             : 'https://online.atol.ru/possystem/v4/';
+    }
+
+    /**
+     * Возвращает полный URL метода API
+     *
+     * @param string $api_method
+     * @return string
+     */
+    #[Pure]
+    protected function getFullUrl(string $api_method): string
+    {
+        return $this->getMainEndpoint() . $this->getGroup() . '/' . trim($api_method);
     }
 }

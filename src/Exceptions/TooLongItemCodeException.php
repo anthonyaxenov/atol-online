@@ -13,6 +13,7 @@ namespace AtolOnline\Exceptions;
 
 use AtolOnline\Constants\Constraints;
 use AtolOnline\Constants\Ffd105Tags;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Исключение, возникающее при попытке указать слишком длинный код товара
@@ -28,6 +29,7 @@ class TooLongItemCodeException extends TooLongException
      * @param string $name
      * @param string $code
      */
+    #[Pure]
     public function __construct(string $name, string $code)
     {
         parent::__construct($code, "Слишком длинный код товара '$name'");

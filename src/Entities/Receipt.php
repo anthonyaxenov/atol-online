@@ -11,15 +11,24 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Entities;
 
+use AtolOnline\Api\KktFiscalizer;
+use AtolOnline\Api\KktResponse;
 use AtolOnline\Collections\Items;
 use AtolOnline\Collections\Payments;
 use AtolOnline\Collections\Vats;
 use AtolOnline\Constants\Constraints;
+use AtolOnline\Exceptions\AuthFailedException;
 use AtolOnline\Exceptions\EmptyItemsException;
+use AtolOnline\Exceptions\EmptyLoginException;
+use AtolOnline\Exceptions\EmptyPasswordException;
 use AtolOnline\Exceptions\InvalidEntityInCollectionException;
+use AtolOnline\Exceptions\InvalidInnLengthException;
+use AtolOnline\Exceptions\InvalidPaymentAddressException;
 use AtolOnline\Exceptions\TooLongAddCheckPropException;
 use AtolOnline\Exceptions\TooLongCashierException;
+use AtolOnline\Exceptions\TooLongPaymentAddressException;
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * Класс, описывающий документ прихода, расхода, возврата прихода, возврата расхода
@@ -28,6 +37,11 @@ use Exception;
  */
 final class Receipt extends Entity
 {
+    /**
+     * Тип документа
+     */
+    public const DOC_TYPE = 'receipt';
+
     /**
      * @var Client Покупатель
      */
@@ -361,6 +375,86 @@ final class Receipt extends Entity
     }
 
     /**
+     * Регистрирует приход по текущему документу
+     *
+     * @param KktFiscalizer $fiscalizer Объект фискализатора
+     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
+     * @return KktResponse|null
+     * @throws AuthFailedException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
+     * @throws GuzzleException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongPaymentAddressException
+     */
+    public function sell(KktFiscalizer $fiscalizer, ?string $external_id = null): ?KktResponse
+    {
+        return $fiscalizer->sell($this, $external_id);
+    }
+
+    /**
+     * Регистрирует возврат прихода по текущему документу
+     *
+     * @param KktFiscalizer $fiscalizer Объект фискализатора
+     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
+     * @return KktResponse|null
+     * @throws AuthFailedException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
+     * @throws GuzzleException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongPaymentAddressException
+     */
+    public function sellRefund(KktFiscalizer $fiscalizer, ?string $external_id = null): ?KktResponse
+    {
+        return $fiscalizer->sellRefund($this, $external_id);
+    }
+
+    /**
+     * Регистрирует расход по текущему документу
+     *
+     * @param KktFiscalizer $fiscalizer Объект фискализатора
+     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
+     * @return KktResponse|null
+     * @throws AuthFailedException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
+     * @throws GuzzleException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongPaymentAddressException
+     */
+    public function buy(KktFiscalizer $fiscalizer, ?string $external_id = null): ?KktResponse
+    {
+        return $fiscalizer->buy($this, $external_id);
+    }
+
+    /**
+     * Регистрирует возврат расхода по текущему документу
+     *
+     * @param KktFiscalizer $fiscalizer Объект фискализатора
+     * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
+     * @return KktResponse|null
+     * @throws AuthFailedException
+     * @throws EmptyLoginException
+     * @throws EmptyPasswordException
+     * @throws GuzzleException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidInnLengthException
+     * @throws InvalidPaymentAddressException
+     * @throws TooLongPaymentAddressException
+     */
+    public function buyRefund(KktFiscalizer $fiscalizer, ?string $external_id = null): ?KktResponse
+    {
+        return $fiscalizer->buyRefund($this, $external_id);
+    }
+
+    /**
      * Возвращает массив для кодирования в json
      *
      * @throws Exception
@@ -368,18 +462,19 @@ final class Receipt extends Entity
     public function jsonSerialize(): array
     {
         $json = [
-            'client' => $this->getClient(),
-            'company' => $this->getCompany(),
+            'client' => $this->getClient()->jsonSerialize(),
+            'company' => $this->getCompany()->jsonSerialize(),
             'items' => $this->getItems()->jsonSerialize(),
             'total' => $this->getTotal(),
             'payments' => $this->getPayments()->jsonSerialize(),
         ];
-        $this->getAgentInfo()?->jsonSerialize() && $json['agent_info'] = $this->getAgentInfo();
-        $this->getSupplier()?->jsonSerialize() && $json['supplier_info'] = $this->getSupplier();
+        $this->getAgentInfo()?->jsonSerialize() && $json['agent_info'] = $this->getAgentInfo()->jsonSerialize();
+        $this->getSupplier()?->jsonSerialize() && $json['supplier_info'] = $this->getSupplier()->jsonSerialize();
         $this->getVats()?->isNotEmpty() && $json['vats'] = $this->getVats();
         !is_null($this->getAddCheckProps()) && $json['additional_check_props'] = $this->getAddCheckProps();
         !is_null($this->getCashier()) && $json['cashier'] = $this->getCashier();
-        $this->getAddUserProps()?->jsonSerialize() && $json['additional_user_props'] = $this->getAddUserProps();
+        $this->getAddUserProps()?->jsonSerialize() &&
+        $json['additional_user_props'] = $this->getAddUserProps()->jsonSerialize();
         return $json;
     }
 }

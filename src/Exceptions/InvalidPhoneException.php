@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace AtolOnline\Exceptions;
 
 use AtolOnline\Constants\Ffd105Tags;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Исключение, возникающее при ошибке валидации номера телефона
@@ -31,6 +32,7 @@ class InvalidPhoneException extends AtolException
      *
      * @param string $phone
      */
+    #[Pure]
     public function __construct(string $phone = '')
     {
         parent::__construct("Невалидный номер телефона: '$phone'");

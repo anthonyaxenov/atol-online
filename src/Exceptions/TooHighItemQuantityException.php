@@ -13,6 +13,7 @@ namespace AtolOnline\Exceptions;
 
 use AtolOnline\Constants\Constraints;
 use AtolOnline\Constants\Ffd105Tags;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Исключение, возникающее при попытке добавить слишком большое количество предмета расчёта
@@ -28,6 +29,7 @@ class TooHighItemQuantityException extends TooManyException
      * @param string $name
      * @param float $quantity
      */
+    #[Pure]
     public function __construct(string $name, float $quantity)
     {
         parent::__construct($quantity, "Слишком большое количество предмета расчёта '$name'");

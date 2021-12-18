@@ -92,14 +92,14 @@ class KktMonitorTest extends BasicTestCase
      */
     public function testLogin(): void
     {
-        $client = new KktMonitor(login: 'login');
+        $client = new KktMonitor(false, login: 'login');
         $this->assertEquals('login', $client->getLogin());
 
         $client = new KktMonitor();
-        $this->assertNull($client->getLogin());
+        $this->assertEquals(TestEnvParams::FFD105()['login'], $client->getLogin());
 
         $client->setLogin('login');
-        $this->assertEquals('login', $client->getLogin());
+        $this->assertEquals(TestEnvParams::FFD105()['login'], $client->getLogin());
     }
 
     /**
@@ -143,14 +143,14 @@ class KktMonitorTest extends BasicTestCase
      */
     public function testPassword(): void
     {
-        $client = new KktMonitor(password: 'password');
+        $client = new KktMonitor(false, password: 'password');
         $this->assertEquals('password', $client->getPassword());
 
         $client = new KktMonitor();
-        $this->assertNull($client->getPassword());
+        $this->assertEquals(TestEnvParams::FFD105()['password'], $client->getPassword());
 
         $client->setPassword('password');
-        $this->assertEquals('password', $client->getPassword());
+        $this->assertEquals(TestEnvParams::FFD105()['password'], $client->getPassword());
     }
 
     /**
@@ -262,7 +262,7 @@ class KktMonitorTest extends BasicTestCase
      * Тестирует возврат объекта последнего ответа от API
      *
      * @depends testAuth
-     * @covers  \AtolOnline\Api\KktMonitor::getResponse
+     * @covers  \AtolOnline\Api\KktMonitor::getLastResponse
      * @covers  \AtolOnline\Exceptions\AuthFailedException
      * @throws AuthFailedException
      * @throws EmptyLoginException
@@ -276,7 +276,7 @@ class KktMonitorTest extends BasicTestCase
         $this->skipIfMonitoringIsOffline();
         $client = $this->newTestClient();
         $client->auth();
-        $this->assertIsSameClass(KktResponse::class, $client->getResponse());
+        $this->assertIsSameClass(KktResponse::class, $client->getLastResponse());
     }
 
     /**
@@ -301,7 +301,8 @@ class KktMonitorTest extends BasicTestCase
         $client = $this->newTestClient();
         $client->auth();
         $kkts = $client->getAll();
-        $this->assertNotEmpty($client->getResponse()->getContent());
+        $sss = $kkts->where('deviceNumber', 'KKT014034');
+        $this->assertNotEmpty($client->getLastResponse()->getContent());
         $this->assertIsCollection($kkts);
         $this->assertTrue($kkts->count() > 0);
         $this->assertIsSameClass(Kkt::class, $kkts->random());
@@ -336,7 +337,7 @@ class KktMonitorTest extends BasicTestCase
         $client->auth();
         $serial_number = $client->getAll()->first()->serialNumber;
         $kkt = $client->getOne($serial_number);
-        $this->assertNotEmpty($client->getResponse());
+        $this->assertNotEmpty($client->getLastResponse());
         $this->assertIsSameClass(Kkt::class, $kkt);
         $this->assertIsAtolable($kkt);
         $this->assertNotNull($kkt->serialNumber);

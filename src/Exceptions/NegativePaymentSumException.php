@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace AtolOnline\Exceptions;
 
 use AtolOnline\Constants\Ffd105Tags;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Исключение, возникающее при попытке указать оплате отрицательную сумму
@@ -31,6 +32,7 @@ class NegativePaymentSumException extends AtolException
      *
      * @param float $sum
      */
+    #[Pure]
     public function __construct(float $sum)
     {
         parent::__construct('Размер оплаты не может быть отрицательным: ' . $sum);

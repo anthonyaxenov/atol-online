@@ -12,13 +12,27 @@ declare(strict_types = 1);
 namespace AtolOnline\Tests;
 
 use AtolOnline\Collections\EntityCollection;
+use AtolOnline\Collections\Items;
+use AtolOnline\Collections\Payments;
+use AtolOnline\Collections\Vats;
+use AtolOnline\Entities\Client;
+use AtolOnline\Entities\Company;
+use AtolOnline\Entities\Correction;
+use AtolOnline\Entities\CorrectionInfo;
 use AtolOnline\Entities\Entity;
 use AtolOnline\Entities\Item;
 use AtolOnline\Entities\Payment;
+use AtolOnline\Entities\Receipt;
 use AtolOnline\Entities\Vat;
+use AtolOnline\Enums\CorrectionTypes;
 use AtolOnline\Enums\PaymentTypes;
+use AtolOnline\Enums\SnoTypes;
 use AtolOnline\Enums\VatTypes;
+use AtolOnline\Exceptions\EmptyCorrectionNumberException;
 use AtolOnline\Exceptions\EmptyItemNameException;
+use AtolOnline\Exceptions\EmptyItemsException;
+use AtolOnline\Exceptions\InvalidCorrectionDateException;
+use AtolOnline\Exceptions\InvalidEntityInCollectionException;
 use AtolOnline\Exceptions\InvalidEnumValueException;
 use AtolOnline\Exceptions\NegativeItemPriceException;
 use AtolOnline\Exceptions\NegativeItemQuantityException;
@@ -29,7 +43,7 @@ use AtolOnline\Exceptions\TooLongItemNameException;
 use AtolOnline\Exceptions\TooManyException;
 use AtolOnline\Helpers;
 use Exception;
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
 use PHPUnit\Framework\TestCase;
@@ -53,7 +67,7 @@ class BasicTestCase extends TestCase
     protected function ping(string $url, int $code): bool
     {
         try {
-            $result = (new Client([
+            $result = (new GuzzleClient([
                 'http_errors' => false,
                 'timeout' => 3,
             ]))->request('GET', $url);
@@ -386,5 +400,52 @@ class BasicTestCase extends TestCase
             );
         }
         return $result;
+    }
+
+    /**
+     * Возвращает валидный тестовый объект чека прихода
+     *
+     * @return Receipt
+     * @throws EmptyItemNameException
+     * @throws EmptyItemsException
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidEnumValueException
+     * @throws NegativeItemPriceException
+     * @throws NegativeItemQuantityException
+     * @throws NegativePaymentSumException
+     * @throws TooHighItemPriceException
+     * @throws TooHighPaymentSumException
+     * @throws TooLongItemNameException
+     * @throws TooManyException
+     */
+    protected function newReceipt(): Receipt
+    {
+        return new Receipt(
+            new Client('John Doe', 'john@example.com', '+79501234567', '1234567890'),
+            new Company('company@example.com', SnoTypes::OSN, '1234567890', 'https://example.com'),
+            new Items($this->generateItemObjects(2)),
+            new Payments($this->generatePaymentObjects())
+        );
+    }
+
+    /**
+     * Возвращает валидный тестовый объект чека
+     *
+     * @return Correction
+     * @throws InvalidEntityInCollectionException
+     * @throws InvalidEnumValueException
+     * @throws NegativePaymentSumException
+     * @throws TooHighPaymentSumException
+     * @throws EmptyCorrectionNumberException
+     * @throws InvalidCorrectionDateException
+     */
+    protected function newCorrection(): Correction
+    {
+        return new Correction(
+            new Company('company@example.com', SnoTypes::OSN, '1234567890', 'https://example.com'),
+            new CorrectionInfo(CorrectionTypes::SELF, '01.01.2021', Helpers::randomStr()),
+            new Payments($this->generatePaymentObjects(2)),
+            new Vats($this->generateVatObjects(2)),
+        );
     }
 }
