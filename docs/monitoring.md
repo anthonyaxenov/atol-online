@@ -1,6 +1,6 @@
 # Мониторинг ККТ
 
-[Вернуться к содержанию](readme.md)
+[Вернуться к содержанию](readme.md#toc)
 
 ---
 
@@ -12,13 +12,13 @@
 
 ```php
 // можно передать параметры подключения в конструктор
-$monitor = new AtolOnline\Api\KktMonitor(
+$monitor = new AtolOnline\Api\Monitor(
     login: 'mylogin',
     password: 'qwerty'
 );
 
 // можно - отдельными сеттерами
-$monitor = new AtolOnline\Api\KktMonitor();
+$monitor = new AtolOnline\Api\Monitor();
     ->setLogin($credentials['login'])
     ->setPassword($credentials['password']);
 ```
@@ -30,7 +30,7 @@ $monitor = new AtolOnline\Api\KktMonitor();
 
 ```php
 // передачей в конструктор `false` первым параметром:
-$monitor = new AtolOnline\Api\KktMonitor(false, /*...*/);
+$monitor = new AtolOnline\Api\Monitor(false, /*...*/);
 
 // или отдельным сеттером
 $monitor->setTestMode(false);
@@ -107,10 +107,12 @@ $kkt = $monitor->getOne($kkts->first()->serialNumber);
 
 Класс `AtolOnline\Api\KktMonitor` расширяет абстрактный класс `AtolOnline\Api\AtolClient`.
 
-Это значит, что последний ответ от API АТОЛ всегда сохраняется объектом класса `AtolOnline\Api\KktResponse`. К нему
+Это значит, что последний ответ от API АТОЛ всегда сохраняется объектом класса `AtolOnline\Api\AtolReponse`. К нему
 можно обратиться через метод `AtolOnline\Api\KktMonitor::getResponse()`, независимо от того, что возвращают другие
 методы монитора.
 
 ---
 
-[Вернуться к содержанию](readme.md)
+Читай также: [Обработка ответа API](response.md)
+
+[Вернуться к содержанию](readme.md#toc)
