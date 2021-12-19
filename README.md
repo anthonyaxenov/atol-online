@@ -6,27 +6,22 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/axenov/atol-online)](https://packagist.org/packages/axenov/atol-online)
 [![License](https://img.shields.io/packagist/l/axenov/atol-online?color=%23369883)](LICENSE)
 
-Библиотека для фискализации чеков по 54-ФЗ через [облачную ККТ АТОЛ](https://online.atol.ru/).
+Библиотека для фискализации чеков по 54-ФЗ через [облачные ККТ АТОЛ](https://online.atol.ru/).
 
 **[Документация](/docs/readme.md)**
 
----
+Текущие поддерживаемые версии АТОЛ Онлайн:
 
-**В ветке `dev` проводится глубокий рефакторинг, стабилизация и активная подготовка к `v1.0.0`.
-Документация актуализируется постепенно.**
+| Протокол | API | ФФД  | Статус         |
+|----------|-----|------|----------------|
+| v4       | 5.8 | 1.05 | Поддерживается |
+| v5       | 2.0 | 1.2  | В планах       |
 
----
+Состояние веток:
 
 | master | [![GitHub Workflow Status (master)](https://img.shields.io/github/workflow/status/anthonyaxenov/atol-online/CI/master?logo=github)](https://github.com/anthonyaxenov/atol-online/actions/workflows/ci.yml) | [![codecov](https://codecov.io/gh/anthonyaxenov/atol-online/branch/master/graph/badge.svg?token=WR2IV7FTF0)](https://codecov.io/gh/anthonyaxenov/atol-online)  |
 |--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | dev    | [![GitHub Workflow Status (dev)](https://img.shields.io/github/workflow/status/anthonyaxenov/atol-online/CI/dev?logo=github)](https://github.com/anthonyaxenov/atol-online/actions/workflows/ci.yml)       | [![codecov dev](https://codecov.io/gh/anthonyaxenov/atol-online/branch/dev/graph/badge.svg?token=WR2IV7FTF0)](https://codecov.io/gh/anthonyaxenov/atol-online) |
-
-Текущие поддерживаемые версии АТОЛ Онлайн:
-
-| Протокол | API | ФФД  | Статус      |
-|----------|-----|------|-------------|
-| v4       | 5.8 | 1.05 | Рефакторинг |
-| v5       | 2.0 | 1.2  | В планах    |
 
 ## Плюшечки
 
@@ -34,8 +29,7 @@
 * Фискализация докумнетов на облачной ККТ
 * Валидация данных до отправки документа на ККТ (насколько это возможно, согласно схеме)
 * Расчёты денег в копейках
-* PSR-4 автозагрузка
-<!--* Фактически полное покрытие тестами-->
+* PSR-4 автозагрузка, покрытие настоящими тестами, fluent-setters
 
 ## Системные требования
 
@@ -51,7 +45,7 @@
 
 ### Подключение библиотеки
 
-1. Установить библиотеку пакет к проекту:
+1. Подключить пакет к проекту:
    ```bash
    composer require axenov/atol-online
    ```
@@ -70,10 +64,10 @@
 
 ```bash
 composer test # обычное тестирование
-composer test-cov # тестирование с покрытием
+composer coverage # тестирование с покрытием
 ```
 
-После тестирования с покрытием создаётся отчёт в директории `.coverage-report` в корне репозитория.
+После тестирования с покрытием создаётся отчёт в директории `.coverage` в корне репозитория.
 
 ## Использование библиотеки
 
@@ -90,8 +84,6 @@ composer test-cov # тестирование с покрытием
 
 ## Дополнительные ресурсы
 
-* **[Документация к библиотеке](/docs/readme.md)**
-* Telegram-канал: [@atolonline_php](https://t.me/atolonline_php)
 * [Документация АТОЛ Онлайн](https://online.atol.ru/lib/)
 
 ## Лицензия
