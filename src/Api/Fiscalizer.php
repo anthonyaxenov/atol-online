@@ -38,7 +38,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * Класс фискализатора для регистрации документов на ККТ
  */
-class Fiscalizer extends AtolClient
+final class Fiscalizer extends AtolClient
 {
     /**
      * @var string|null Группа ККТ

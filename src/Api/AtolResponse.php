@@ -15,8 +15,7 @@ namespace AtolOnline\Api;
 
 use JetBrains\PhpStorm\{
     ArrayShape,
-    Pure
-};
+    Pure};
 use JsonSerializable;
 use Psr\Http\Message\ResponseInterface;
 use Stringable;
@@ -27,7 +26,7 @@ use Stringable;
  * @property mixed $error
  * @package AtolOnline\Api
  */
-class AtolResponse implements JsonSerializable, Stringable
+final class AtolResponse implements JsonSerializable, Stringable
 {
     /**
      * @var int Код ответа сервера

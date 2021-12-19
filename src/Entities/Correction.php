@@ -33,7 +33,7 @@ use JetBrains\PhpStorm\ArrayShape;
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 35
  */
-class Correction extends Entity
+final class Correction extends Entity
 {
     /**
      * Тип документа
@@ -188,7 +188,7 @@ class Correction extends Entity
      *
      * @return Vats|null
      */
-    public function getVats(): ?Vats
+    public function getVats(): Vats
     {
         return $this->vats ?? new Vats();
     }
@@ -200,7 +200,7 @@ class Correction extends Entity
      * @return $this
      * @throws Exception
      */
-    public function setVats(?Vats $vats): self
+    public function setVats(Vats $vats): self
     {
         $vats->checkCount();
         $vats->checkItemsClasses();

@@ -27,7 +27,7 @@ use JetBrains\PhpStorm\Pure;
  *
  * @see https://online.atol.ru/files/API_service_information.pdf Документация
  */
-class Monitor extends AtolClient
+final class Monitor extends AtolClient
 {
     /**
      * @inheritDoc
