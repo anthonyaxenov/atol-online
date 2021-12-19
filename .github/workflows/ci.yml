@@ -1,0 +1,49 @@
+# https://github.com/shivammathur/setup-php/blob/master/README.md
+
+name: CI
+
+on:
+  push:
+    branches: [ master, dev ]
+  pull_request:
+    branches: [ dev ]
+
+jobs:
+  Tests:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version:
+          - 8.0
+          - 8.1
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.composer/cache
+          key: php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-
+
+      - name: Setup PHP v ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: json, curl, tokenizer, mbstring, xdebug
+          coverage: xdebug
+          tools: composer, phpunit
+
+      - name: Install dependencies with composer
+        run: composer install --no-ansi --no-interaction --no-progress
+
+      - name: Run tests with phpunit/phpunit
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml --configuration=phpunit.xml
+
+      - name: Send code coverage report to Codecov.io
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: bash <(curl -s https://codecov.io/bash) || true

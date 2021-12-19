@@ -1,22 +1,26 @@
 {
     "name": "axenov/atol-online",
-    "description": "Library to use cloud cash register in e-commerce according to Russian Federal Law #54",
+    "description": "Библиотека для работы с API АТОЛ Онлайн (облачные ККТ для приёма платежей по 54-ФЗ)",
     "license": "MIT",
     "type": "library",
     "keywords": [
+        "api",
+        "e-commerce",
         "54-fz",
         "54-фз",
         "kkt",
         "ккт",
-        "e-commerce",
         "cash",
         "cash register",
         "payment",
         "payment system",
         "atol",
         "атол",
-        "atol-online",
-        "атол онлайн"
+        "atol online",
+        "атол онлайн",
+        "fiscalization",
+        "фискализация",
+        "чек"
     ],
     "homepage": "https://github.com/anthonyaxenov/atol-online",
     "readme": "https://github.com/anthonyaxenov/atol-online/blob/master/README.md",
@@ -28,37 +32,52 @@
         }
     ],
     "support": {
+        "rss": "https://github.com/anthonyaxenov/atol-online/discussions/categories/announcements",
+        "chat": "https://github.com/anthonyaxenov/atol-online/discussions",
         "source": "https://github.com/anthonyaxenov/atol-online",
         "issues": "https://github.com/anthonyaxenov/atol-online/issues",
         "docs": "https://github.com/anthonyaxenov/atol-online/blob/master/docs/readme.md"
     },
     "funding": [
         {
+            "type": "Patreon",
+            "url": "https://www.patreon.com/anthonyaxenov"
+        },
+        {
             "type": "Yoomoney",
             "url": "https://yoomoney.ru/to/41001685237530"
         }
     ],
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^6.5",
-        "psr/log": "^1.1",
-        "ramsey/uuid": "^3.9"
+        "ext-mbstring": "*",
+        "guzzlehttp/guzzle": "^7.4",
+        "psr/log": "^3",
+        "ramsey/uuid": "^4.2",
+        "myclabs/php-enum": "^1.8",
+        "illuminate/collections": "^8.70",
+        "jetbrains/phpstorm-attributes": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5"
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
+        "psr-4": {
+            "AtolOnline\\": "src/"
+        }
+    },
+    "autoload-dev": {
         "classmap": [
-            "src/AtolOnline/Api/",
-            "src/AtolOnline/Exceptions/",
-            "src/AtolOnline/Entities/",
-            "src/AtolOnline/Traits/",
-            "src/AtolOnline/Constants/",
             "tests/"
-        ],
-        "files": [
-            "src/helpers.php"
         ]
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --colors=always",
+        "coverage": "php -dxdebug.mode=coverage vendor/bin/phpunit --coverage-html .coverage"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
     }
 }

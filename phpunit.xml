@@ -1,25 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
+  ~
+  ~ This code is licensed under MIT.
+  ~ Этот код распространяется по лицензии MIT.
+  ~ https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
+  -->
+
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
-         backupGlobals="false"
-         backupStaticAttributes="false"
          bootstrap="vendor/autoload.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false">
+         colors="true">
 	<testsuites>
-		<testsuite name="Unit">
-			<file>ClientTest.php</file>
-			<file>CompanyTest.php</file>
-			<file>VatTest.php</file>
-			<directory suffix="Test.php">./tests/Unit</directory>
+		<testsuite name="Helpers">
+			<file>tests/AtolOnline/Tests/HelpersTest.php</file>
 		</testsuite>
-		<testsuite name="Feature">
-			<file>ItemTest.php</file>
-			<directory suffix="Test.php">./tests/Feature</directory>
+		<testsuite name="Entities">
+			<directory>tests/AtolOnline/Tests/Entities</directory>
+		</testsuite>
+		<testsuite name="Collections">
+			<directory>tests/AtolOnline/Tests/Collections</directory>
+		</testsuite>
+		<testsuite name="Api">
+			<directory>tests/AtolOnline/Tests/Api</directory>
 		</testsuite>
 	</testsuites>
+
+	<coverage>
+		<include>
+			<directory suffix=".php">src</directory>
+		</include>
+	</coverage>
 </phpunit>
