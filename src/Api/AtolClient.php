@@ -35,9 +35,9 @@ abstract class AtolClient
     protected array $request;
 
     /**
-     * @var KktResponse|null Последний ответ сервера АТОЛ
+     * @var AtolResponse|null Последний ответ сервера АТОЛ
      */
-    protected ?KktResponse $response;
+    protected ?AtolResponse $response;
 
     /**
      * @var bool Флаг тестового режима
@@ -106,9 +106,9 @@ abstract class AtolClient
     /**
      * Возвращает последний ответ сервера
      *
-     * @return KktResponse|null
+     * @return AtolResponse|null
      */
-    public function getLastResponse(): ?KktResponse
+    public function getLastResponse(): ?AtolResponse
     {
         return $this->response;
     }
@@ -263,7 +263,7 @@ abstract class AtolClient
             'login' => $this->getLogin() ?? throw new EmptyLoginException(),
             'pass' => $this->getPassword() ?? throw new EmptyPasswordException(),
         ]);
-        if (!$result->isValid() || !$result->getContent()->token) {
+        if (!$result->isSuccessful() || !$result->getContent()->token) {
             throw new AuthFailedException($result);
         }
         return $result->getContent()?->token;
@@ -276,7 +276,7 @@ abstract class AtolClient
      * @param string $url URL
      * @param array|null $data Данные для передачи
      * @param array|null $options Параметры Guzzle
-     * @return KktResponse
+     * @return AtolResponse
      * @throws GuzzleException
      * @see https://guzzle.readthedocs.io/en/latest/request-options.html
      */
@@ -285,7 +285,7 @@ abstract class AtolClient
         string $url,
         ?array $data = null,
         ?array $options = null
-    ): KktResponse {
+    ): AtolResponse {
         $http_method = strtoupper(trim($http_method));
         $options['headers'] = array_merge($this->getHeaders(), $options['headers'] ?? []);
         $http_method != 'GET' && $options['json'] = $data;
@@ -294,7 +294,7 @@ abstract class AtolClient
             'url' => $url,
         ], $options);
         $response = $this->http->request($http_method, $url, $options);
-        return $this->response = new KktResponse($response);
+        return $this->response = new AtolResponse($response);
     }
 
     /**
@@ -328,5 +328,4 @@ abstract class AtolClient
      * @return string
      */
     abstract protected function getMainEndpoint(): string;
-
 }

@@ -38,7 +38,7 @@ abstract class Entity implements JsonSerializable, Stringable, Arrayable, ArrayA
         'correction_info' => "\AtolOnline\Entities\CorrectionInfo",
         'payments' => "array",
         'vats' => "\AtolOnline\Collections\Vats|null",
-        'cashier' => "\null|string"
+        'cashier' => "null|string",
     ])]
     public function toArray()
     {

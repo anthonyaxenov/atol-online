@@ -38,7 +38,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * Класс фискализатора для регистрации документов на ККТ
  */
-class KktFiscalizer extends AtolClient
+class Fiscalizer extends AtolClient
 {
     /**
      * @var string|null Группа ККТ
@@ -139,7 +139,7 @@ class KktFiscalizer extends AtolClient
      *
      * @param Receipt $receipt Объект документа
      * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -149,7 +149,7 @@ class KktFiscalizer extends AtolClient
      * @throws InvalidPaymentAddressException
      * @throws TooLongPaymentAddressException
      */
-    public function sell(Receipt $receipt, ?string $external_id = null): ?KktResponse
+    public function sell(Receipt $receipt, ?string $external_id = null): ?AtolResponse
     {
         return $this->registerDocument('sell', $receipt, $external_id);
     }
@@ -159,7 +159,7 @@ class KktFiscalizer extends AtolClient
      *
      * @param Receipt $receipt Объект документа
      * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -169,7 +169,7 @@ class KktFiscalizer extends AtolClient
      * @throws InvalidPaymentAddressException
      * @throws TooLongPaymentAddressException
      */
-    public function sellRefund(Receipt $receipt, ?string $external_id = null): ?KktResponse
+    public function sellRefund(Receipt $receipt, ?string $external_id = null): ?AtolResponse
     {
         return $this->registerDocument('sell_refund', $receipt, $external_id);
     }
@@ -179,7 +179,7 @@ class KktFiscalizer extends AtolClient
      *
      * @param Correction $correction Объект документа
      * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -189,7 +189,7 @@ class KktFiscalizer extends AtolClient
      * @throws InvalidPaymentAddressException
      * @throws TooLongPaymentAddressException
      */
-    public function sellCorrect(Correction $correction, ?string $external_id = null): ?KktResponse
+    public function sellCorrect(Correction $correction, ?string $external_id = null): ?AtolResponse
     {
         return $this->registerDocument('sell_correction', $correction, $external_id);
     }
@@ -199,7 +199,7 @@ class KktFiscalizer extends AtolClient
      *
      * @param Receipt $receipt Объект документа
      * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -209,7 +209,7 @@ class KktFiscalizer extends AtolClient
      * @throws InvalidPaymentAddressException
      * @throws TooLongPaymentAddressException
      */
-    public function buy(Receipt $receipt, ?string $external_id = null): ?KktResponse
+    public function buy(Receipt $receipt, ?string $external_id = null): ?AtolResponse
     {
         return $this->registerDocument('buy', $receipt, $external_id);
     }
@@ -219,7 +219,7 @@ class KktFiscalizer extends AtolClient
      *
      * @param Receipt $receipt Объект документа
      * @param string|null $external_id Уникальный код документа (если не указан, то будет создан UUID)
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -229,7 +229,7 @@ class KktFiscalizer extends AtolClient
      * @throws InvalidPaymentAddressException
      * @throws TooLongPaymentAddressException
      */
-    public function buyRefund(Receipt $receipt, ?string $external_id = null): ?KktResponse
+    public function buyRefund(Receipt $receipt, ?string $external_id = null): ?AtolResponse
     {
         return $this->registerDocument('buy_refund', $receipt, $external_id);
     }
@@ -239,7 +239,7 @@ class KktFiscalizer extends AtolClient
      *
      * @param Correction $correction Объект документа
      * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -249,7 +249,7 @@ class KktFiscalizer extends AtolClient
      * @throws InvalidPaymentAddressException
      * @throws TooLongPaymentAddressException
      */
-    public function buyCorrect(Correction $correction, ?string $external_id = null): ?KktResponse
+    public function buyCorrect(Correction $correction, ?string $external_id = null): ?AtolResponse
     {
         return $this->registerDocument('buy_correction', $correction, $external_id);
     }
@@ -258,14 +258,14 @@ class KktFiscalizer extends AtolClient
      * Проверяет статус чека на ККТ один раз
      *
      * @param string $uuid UUID регистрации
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
      * @throws GuzzleException
      * @throws InvalidUuidException
      */
-    public function getDocumentStatus(string $uuid): ?KktResponse
+    public function getDocumentStatus(string $uuid): ?AtolResponse
     {
         !Uuid::isValid($uuid = trim($uuid)) && throw new InvalidUuidException($uuid);
         return $this->auth()
@@ -280,19 +280,19 @@ class KktFiscalizer extends AtolClient
      * @param string $uuid UUID регистрации
      * @param int $retry_count Количество попыток
      * @param int $timeout Таймаут в секундах между попытками
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
      * @throws GuzzleException
      * @throws InvalidUuidException
      */
-    public function pollDocumentStatus(string $uuid, int $retry_count = 5, int $timeout = 1): ?KktResponse
+    public function pollDocumentStatus(string $uuid, int $retry_count = 5, int $timeout = 1): ?AtolResponse
     {
         $try = 0;
         do {
             $response = $this->getDocumentStatus($uuid);
-            if ($response->isValid() && $response->getContent()->status == 'done') {
+            if ($response->isSuccessful() && $response->getContent()->status == 'done') {
                 break;
             } else {
                 sleep($timeout);
@@ -308,7 +308,7 @@ class KktFiscalizer extends AtolClient
      * @param string $api_method Метод API
      * @param Receipt|Correction $document Документ
      * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -322,7 +322,7 @@ class KktFiscalizer extends AtolClient
         string $api_method,
         Receipt|Correction $document,
         ?string $external_id = null
-    ): ?KktResponse {
+    ): ?AtolResponse {
         $this->isTestMode() && $document->getCompany()
             ->setInn(TestEnvParams::FFD105()['inn'])
             ->setPaymentAddress(TestEnvParams::FFD105()['payment_address']);

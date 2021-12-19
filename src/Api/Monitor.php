@@ -27,7 +27,7 @@ use JetBrains\PhpStorm\Pure;
  *
  * @see https://online.atol.ru/files/API_service_information.pdf Документация
  */
-class KktMonitor extends AtolClient
+class Monitor extends AtolClient
 {
     /**
      * @inheritDoc
@@ -56,14 +56,14 @@ class KktMonitor extends AtolClient
      *
      * @param int|null $limit
      * @param int|null $offset
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws GuzzleException
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
      * @see https://online.atol.ru/files/API_service_information.pdf Документация, стр 9
      */
-    protected function fetchAll(?int $limit = null, ?int $offset = null): ?KktResponse
+    protected function fetchAll(?int $limit = null, ?int $offset = null): ?AtolResponse
     {
         $params = [];
         !is_null($limit) && $params['limit'] = $limit;
@@ -95,11 +95,11 @@ class KktMonitor extends AtolClient
      * Получает от API информацию о конкретной ККТ по её серийному номеру
      *
      * @param string $serial_number
-     * @return KktResponse
+     * @return AtolResponse
      * @throws GuzzleException
      * @see https://online.atol.ru/files/API_service_information.pdf Документация, стр 11
      */
-    protected function fetchOne(string $serial_number): KktResponse
+    protected function fetchOne(string $serial_number): AtolResponse
     {
         return $this->sendRequest(
             'GET',

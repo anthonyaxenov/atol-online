@@ -11,8 +11,8 @@ declare(strict_types = 1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Api\KktFiscalizer;
-use AtolOnline\Api\KktResponse;
+use AtolOnline\Api\AtolResponse;
+use AtolOnline\Api\Fiscalizer;
 use AtolOnline\Collections\Items;
 use AtolOnline\Collections\Payments;
 use AtolOnline\Collections\Vats;
@@ -377,9 +377,9 @@ final class Receipt extends Entity
     /**
      * Регистрирует приход по текущему документу
      *
-     * @param KktFiscalizer $fiscalizer Объект фискализатора
+     * @param Fiscalizer $fiscalizer Объект фискализатора
      * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -389,7 +389,7 @@ final class Receipt extends Entity
      * @throws InvalidPaymentAddressException
      * @throws TooLongPaymentAddressException
      */
-    public function sell(KktFiscalizer $fiscalizer, ?string $external_id = null): ?KktResponse
+    public function sell(Fiscalizer $fiscalizer, ?string $external_id = null): ?AtolResponse
     {
         return $fiscalizer->sell($this, $external_id);
     }
@@ -397,9 +397,9 @@ final class Receipt extends Entity
     /**
      * Регистрирует возврат прихода по текущему документу
      *
-     * @param KktFiscalizer $fiscalizer Объект фискализатора
+     * @param Fiscalizer $fiscalizer Объект фискализатора
      * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -409,7 +409,7 @@ final class Receipt extends Entity
      * @throws InvalidPaymentAddressException
      * @throws TooLongPaymentAddressException
      */
-    public function sellRefund(KktFiscalizer $fiscalizer, ?string $external_id = null): ?KktResponse
+    public function sellRefund(Fiscalizer $fiscalizer, ?string $external_id = null): ?AtolResponse
     {
         return $fiscalizer->sellRefund($this, $external_id);
     }
@@ -417,9 +417,9 @@ final class Receipt extends Entity
     /**
      * Регистрирует расход по текущему документу
      *
-     * @param KktFiscalizer $fiscalizer Объект фискализатора
+     * @param Fiscalizer $fiscalizer Объект фискализатора
      * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -429,7 +429,7 @@ final class Receipt extends Entity
      * @throws InvalidPaymentAddressException
      * @throws TooLongPaymentAddressException
      */
-    public function buy(KktFiscalizer $fiscalizer, ?string $external_id = null): ?KktResponse
+    public function buy(Fiscalizer $fiscalizer, ?string $external_id = null): ?AtolResponse
     {
         return $fiscalizer->buy($this, $external_id);
     }
@@ -437,9 +437,9 @@ final class Receipt extends Entity
     /**
      * Регистрирует возврат расхода по текущему документу
      *
-     * @param KktFiscalizer $fiscalizer Объект фискализатора
+     * @param Fiscalizer $fiscalizer Объект фискализатора
      * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -449,7 +449,7 @@ final class Receipt extends Entity
      * @throws InvalidPaymentAddressException
      * @throws TooLongPaymentAddressException
      */
-    public function buyRefund(KktFiscalizer $fiscalizer, ?string $external_id = null): ?KktResponse
+    public function buyRefund(Fiscalizer $fiscalizer, ?string $external_id = null): ?AtolResponse
     {
         return $fiscalizer->buyRefund($this, $external_id);
     }

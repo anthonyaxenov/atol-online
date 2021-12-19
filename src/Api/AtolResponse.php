@@ -27,7 +27,7 @@ use Stringable;
  * @property mixed $error
  * @package AtolOnline\Api
  */
-class KktResponse implements JsonSerializable, Stringable
+class AtolResponse implements JsonSerializable, Stringable
 {
     /**
      * @var int Код ответа сервера
@@ -104,7 +104,7 @@ class KktResponse implements JsonSerializable, Stringable
      * @return bool
      */
     #[Pure]
-    public function isValid(): bool
+    public function isSuccessful(): bool
     {
         return !empty($this->getCode())
             && !empty($this->getContent())

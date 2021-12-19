@@ -10,8 +10,8 @@
 namespace AtolOnline\Entities;
 
 use AtolOnline\{
-    Api\KktFiscalizer,
-    Api\KktResponse,
+    Api\AtolResponse,
+    Api\Fiscalizer,
     Collections\Payments,
     Collections\Vats,
     Constants\Constraints};
@@ -211,9 +211,9 @@ class Correction extends Entity
     /**
      * Регистрирует коррекцию прихода по текущему документу
      *
-     * @param KktFiscalizer $fiscalizer Объект фискализатора
+     * @param Fiscalizer $fiscalizer Объект фискализатора
      * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -223,7 +223,7 @@ class Correction extends Entity
      * @throws InvalidPaymentAddressException
      * @throws TooLongPaymentAddressException
      */
-    public function sellCorrect(KktFiscalizer $fiscalizer, ?string $external_id = null): ?KktResponse
+    public function sellCorrect(Fiscalizer $fiscalizer, ?string $external_id = null): ?AtolResponse
     {
         return $fiscalizer->sellCorrect($this, $external_id);
     }
@@ -231,9 +231,9 @@ class Correction extends Entity
     /**
      * Регистрирует коррекцию расхода по текущему документу
      *
-     * @param KktFiscalizer $fiscalizer Объект фискализатора
+     * @param Fiscalizer $fiscalizer Объект фискализатора
      * @param string|null $external_id Уникальный код документа (если не указан, то будет создан новый UUID)
-     * @return KktResponse|null
+     * @return AtolResponse|null
      * @throws AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -243,7 +243,7 @@ class Correction extends Entity
      * @throws InvalidPaymentAddressException
      * @throws TooLongPaymentAddressException
      */
-    public function buyCorrect(KktFiscalizer $fiscalizer, ?string $external_id = null): ?KktResponse
+    public function buyCorrect(Fiscalizer $fiscalizer, ?string $external_id = null): ?AtolResponse
     {
         return $fiscalizer->buyCorrect($this, $external_id);
     }

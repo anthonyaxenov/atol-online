@@ -10,8 +10,8 @@
 namespace AtolOnline\Tests\Api;
 
 use AtolOnline\Api\AtolClient;
-use AtolOnline\Api\KktMonitor;
-use AtolOnline\Api\KktResponse;
+use AtolOnline\Api\AtolResponse;
+use AtolOnline\Api\Monitor;
 use AtolOnline\Entities\Kkt;
 use AtolOnline\Exceptions\AuthFailedException;
 use AtolOnline\Exceptions\EmptyLoginException;
@@ -29,20 +29,20 @@ use GuzzleHttp\Exception\GuzzleException;
 /**
  * Набор тестов для проверки работы API-клиента на примере монитора ККТ
  */
-class KktMonitorTest extends BasicTestCase
+class MonitorTest extends BasicTestCase
 {
     /**
      * Возвращает объект монитора для тестирования с тестовым API АТОЛ
      *
-     * @return KktMonitor
+     * @return Monitor
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
      * @throws TooLongLoginException
      * @throws TooLongPasswordException
      */
-    private function newTestClient(): KktMonitor
+    private function newTestClient(): Monitor
     {
-        return (new KktMonitor(true))
+        return (new Monitor(true))
             ->setLogin(TestEnvParams::FFD105()['login'])
             ->setPassword(TestEnvParams::FFD105()['password']);
     }
@@ -50,24 +50,24 @@ class KktMonitorTest extends BasicTestCase
     /**
      * Тестирует успешное создание объекта монитора без аргументов конструктора
      *
-     * @covers \AtolOnline\Api\KktMonitor::__construct
+     * @covers \AtolOnline\Api\Monitor::__construct
      */
     public function testConstructorWithoutArgs(): void
     {
-        $client = new KktMonitor();
+        $client = new Monitor();
         $this->assertIsObject($client);
-        $this->assertIsSameClass(KktMonitor::class, $client);
+        $this->assertIsSameClass(Monitor::class, $client);
         $this->assertExtendsClasses([AtolClient::class], $client);
     }
 
     /**
      * Тестирует успешное создание объекта монитора с аргументами конструктора
      *
-     * @covers \AtolOnline\Api\KktMonitor::__construct
-     * @covers \AtolOnline\Api\KktMonitor::setLogin
-     * @covers \AtolOnline\Api\KktMonitor::getLogin
-     * @covers \AtolOnline\Api\KktMonitor::setPassword
-     * @covers \AtolOnline\Api\KktMonitor::getPassword
+     * @covers \AtolOnline\Api\Monitor::__construct
+     * @covers \AtolOnline\Api\Monitor::setLogin
+     * @covers \AtolOnline\Api\Monitor::getLogin
+     * @covers \AtolOnline\Api\Monitor::setPassword
+     * @covers \AtolOnline\Api\Monitor::getPassword
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
      * @throws TooLongLoginException
@@ -75,27 +75,28 @@ class KktMonitorTest extends BasicTestCase
      */
     public function testConstructorWithArgs(): void
     {
-        $client = new KktMonitor(false, 'login', 'password', []);
+        $client = new Monitor(false, 'login', 'password', []);
         $this->assertIsObject($client);
-        $this->assertIsSameClass($client, KktMonitor::class);
+        $this->assertIsSameClass($client, Monitor::class);
         $this->assertExtendsClasses([AtolClient::class], $client);
     }
+    //
 
     /**
      * Тестирует установку и возврат логина
      *
-     * @covers \AtolOnline\Api\KktMonitor::__construct
-     * @covers \AtolOnline\Api\KktMonitor::getLogin
-     * @covers \AtolOnline\Api\KktMonitor::setLogin
+     * @covers \AtolOnline\Api\Monitor::__construct
+     * @covers \AtolOnline\Api\Monitor::getLogin
+     * @covers \AtolOnline\Api\Monitor::setLogin
      * @throws EmptyLoginException
      * @throws TooLongLoginException
      */
     public function testLogin(): void
     {
-        $client = new KktMonitor(false, login: 'login');
+        $client = new Monitor(false, login: 'login');
         $this->assertEquals('login', $client->getLogin());
 
-        $client = new KktMonitor();
+        $client = new Monitor();
         $this->assertEquals(TestEnvParams::FFD105()['login'], $client->getLogin());
 
         $client->setLogin('login');
@@ -105,21 +106,21 @@ class KktMonitorTest extends BasicTestCase
     /**
      * Тестирует исключение при попытке передать пустой логин в конструктор
      *
-     * @covers \AtolOnline\Api\KktMonitor::__construct
-     * @covers \AtolOnline\Api\KktMonitor::setLogin
+     * @covers \AtolOnline\Api\Monitor::__construct
+     * @covers \AtolOnline\Api\Monitor::setLogin
      * @covers \AtolOnline\Exceptions\EmptyLoginException
      */
     public function testEmptyLoginException(): void
     {
         $this->expectException(EmptyLoginException::class);
-        new KktMonitor(login: '');
+        new Monitor(login: '');
     }
 
     /**
      * Тестирует исключение при попытке передать слишком длинный логин в конструктор
      *
-     * @covers \AtolOnline\Api\KktMonitor::__construct
-     * @covers \AtolOnline\Api\KktMonitor::setLogin
+     * @covers \AtolOnline\Api\Monitor::__construct
+     * @covers \AtolOnline\Api\Monitor::setLogin
      * @covers \AtolOnline\Exceptions\TooLongLoginException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -129,24 +130,24 @@ class KktMonitorTest extends BasicTestCase
     public function testTooLongLoginException(): void
     {
         $this->expectException(TooLongLoginException::class);
-        new KktMonitor(login: Helpers::randomStr(101));
+        new Monitor(login: Helpers::randomStr(101));
     }
 
     /**
      * Тестирует установку и возврат пароля
      *
-     * @covers \AtolOnline\Api\KktMonitor::__construct
-     * @covers \AtolOnline\Api\KktMonitor::getPassword
-     * @covers \AtolOnline\Api\KktMonitor::setPassword
+     * @covers \AtolOnline\Api\Monitor::__construct
+     * @covers \AtolOnline\Api\Monitor::getPassword
+     * @covers \AtolOnline\Api\Monitor::setPassword
      * @throws EmptyPasswordException
      * @throws TooLongPasswordException
      */
     public function testPassword(): void
     {
-        $client = new KktMonitor(false, password: 'password');
+        $client = new Monitor(false, password: 'password');
         $this->assertEquals('password', $client->getPassword());
 
-        $client = new KktMonitor();
+        $client = new Monitor();
         $this->assertEquals(TestEnvParams::FFD105()['password'], $client->getPassword());
 
         $client->setPassword('password');
@@ -156,21 +157,21 @@ class KktMonitorTest extends BasicTestCase
     /**
      * Тестирует исключение при попытке передать пустой пароль в конструктор
      *
-     * @covers \AtolOnline\Api\KktMonitor::__construct
-     * @covers \AtolOnline\Api\KktMonitor::setPassword
+     * @covers \AtolOnline\Api\Monitor::__construct
+     * @covers \AtolOnline\Api\Monitor::setPassword
      * @covers \AtolOnline\Exceptions\EmptyPasswordException
      */
     public function testEmptyPasswordException(): void
     {
         $this->expectException(EmptyPasswordException::class);
-        new KktMonitor(password: '');
+        new Monitor(password: '');
     }
 
     /**
      * Тестирует исключение при попытке передать слишком длинный пароль в конструктор
      *
-     * @covers \AtolOnline\Api\KktMonitor::__construct
-     * @covers \AtolOnline\Api\KktMonitor::setPassword
+     * @covers \AtolOnline\Api\Monitor::__construct
+     * @covers \AtolOnline\Api\Monitor::setPassword
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
      * @throws TooLongLoginException
@@ -179,34 +180,34 @@ class KktMonitorTest extends BasicTestCase
     public function testConstructorWithLongPassword(): void
     {
         $this->expectException(TooLongPasswordException::class);
-        new KktMonitor(password: Helpers::randomStr(101));
+        new Monitor(password: Helpers::randomStr(101));
     }
 
     /**
      * Тестирует установку тестового режима
      *
-     * @covers \AtolOnline\Api\KktMonitor::__construct
-     * @covers \AtolOnline\Api\KktMonitor::isTestMode
-     * @covers \AtolOnline\Api\KktMonitor::setTestMode
+     * @covers \AtolOnline\Api\Monitor::__construct
+     * @covers \AtolOnline\Api\Monitor::isTestMode
+     * @covers \AtolOnline\Api\Monitor::setTestMode
      */
     public function testTestMode(): void
     {
-        $client = new KktMonitor();
+        $client = new Monitor();
         $this->assertTrue($client->isTestMode());
 
-        $client = new KktMonitor(true);
+        $client = new Monitor(true);
         $this->assertTrue($client->isTestMode());
 
-        $client = new KktMonitor(false);
+        $client = new Monitor(false);
         $this->assertFalse($client->isTestMode());
 
-        $client = (new KktMonitor())->setTestMode();
+        $client = (new Monitor())->setTestMode();
         $this->assertTrue($client->isTestMode());
 
-        $client = (new KktMonitor())->setTestMode(true);
+        $client = (new Monitor())->setTestMode(true);
         $this->assertTrue($client->isTestMode());
 
-        $client = (new KktMonitor())->setTestMode(false);
+        $client = (new Monitor())->setTestMode(false);
         $this->assertFalse($client->isTestMode());
     }
 
@@ -214,10 +215,10 @@ class KktMonitorTest extends BasicTestCase
      * Тестирует авторизацию
      *
      * @covers \AtolOnline\Api\AtolClient::getHeaders
-     * @covers \AtolOnline\Api\KktMonitor::sendRequest
-     * @covers \AtolOnline\Api\KktMonitor::getAuthEndpoint
-     * @covers \AtolOnline\Api\KktMonitor::doAuth
-     * @covers \AtolOnline\Api\KktMonitor::auth
+     * @covers \AtolOnline\Api\Monitor::sendRequest
+     * @covers \AtolOnline\Api\Monitor::getAuthEndpoint
+     * @covers \AtolOnline\Api\Monitor::doAuth
+     * @covers \AtolOnline\Api\Monitor::auth
      * @covers \AtolOnline\Exceptions\AuthFailedException
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
@@ -237,8 +238,8 @@ class KktMonitorTest extends BasicTestCase
      * Тестирует возврат токена после авторизации
      *
      * @depends testAuth
-     * @covers  \AtolOnline\Api\KktMonitor::setToken
-     * @covers  \AtolOnline\Api\KktMonitor::getToken
+     * @covers  \AtolOnline\Api\Monitor::setToken
+     * @covers  \AtolOnline\Api\Monitor::getToken
      * @covers  \AtolOnline\Exceptions\AuthFailedException
      * @throws AuthFailedException
      * @throws EmptyLoginException
@@ -249,7 +250,7 @@ class KktMonitorTest extends BasicTestCase
      */
     public function testGetToken(): void
     {
-        $client = new KktMonitor();
+        $client = new Monitor();
         $this->assertNull($client->getToken());
 
         $this->skipIfMonitoringIsOffline();
@@ -262,7 +263,7 @@ class KktMonitorTest extends BasicTestCase
      * Тестирует возврат объекта последнего ответа от API
      *
      * @depends testAuth
-     * @covers  \AtolOnline\Api\KktMonitor::getLastResponse
+     * @covers  \AtolOnline\Api\Monitor::getLastResponse
      * @covers  \AtolOnline\Exceptions\AuthFailedException
      * @throws AuthFailedException
      * @throws EmptyLoginException
@@ -276,17 +277,17 @@ class KktMonitorTest extends BasicTestCase
         $this->skipIfMonitoringIsOffline();
         $client = $this->newTestClient();
         $client->auth();
-        $this->assertIsSameClass(KktResponse::class, $client->getLastResponse());
+        $this->assertIsSameClass(AtolResponse::class, $client->getLastResponse());
     }
 
     /**
      * [Мониторинг] Тестирует получение данных о всех ККТ
      *
      * @depends testAuth
-     * @covers  \AtolOnline\Api\KktMonitor::getMainEndpoint
+     * @covers  \AtolOnline\Api\Monitor::getMainEndpoint
      * @covers  \AtolOnline\Api\AtolClient::getUrlToMethod
-     * @covers  \AtolOnline\Api\KktMonitor::fetchAll
-     * @covers  \AtolOnline\Api\KktMonitor::getAll
+     * @covers  \AtolOnline\Api\Monitor::fetchAll
+     * @covers  \AtolOnline\Api\Monitor::getAll
      * @covers  \AtolOnline\Exceptions\AuthFailedException
      * @throws AuthFailedException
      * @throws EmptyLoginException
@@ -312,10 +313,10 @@ class KktMonitorTest extends BasicTestCase
      * [Мониторинг] Тестирует получение данных о конкретной ККТ
      *
      * @depends testAuth
-     * @covers  \AtolOnline\Api\KktMonitor::getMainEndpoint
+     * @covers  \AtolOnline\Api\Monitor::getMainEndpoint
      * @covers  \AtolOnline\Api\AtolClient::getUrlToMethod
-     * @covers  \AtolOnline\Api\KktMonitor::fetchOne
-     * @covers  \AtolOnline\Api\KktMonitor::getOne
+     * @covers  \AtolOnline\Api\Monitor::fetchOne
+     * @covers  \AtolOnline\Api\Monitor::getOne
      * @covers  \AtolOnline\Entities\Kkt::__construct
      * @covers  \AtolOnline\Entities\Kkt::__get
      * @covers  \AtolOnline\Entities\Kkt::jsonSerialize
