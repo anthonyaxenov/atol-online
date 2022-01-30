@@ -7,6 +7,7 @@
 [![Stable Version](https://img.shields.io/packagist/v/axenov/atol-online?label=stable)](https://packagist.org/packages/axenov/atol-online)
 [![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/axenov/atol-online?color=%23787cb4)](https://packagist.org/packages/axenov/atol-online)
 [![License](https://img.shields.io/packagist/l/axenov/atol-online?color=%23369883)](LICENSE)
+[![Liberapay](https://img.shields.io/liberapay/patrons/AnthonyAxenov.svg?logo=liberapay)](LICENSE)
 
 **[Документация](/docs/readme.md)**
 
@@ -76,3 +77,5 @@ composer coverage # тестирование с покрытием
 ## Дополнительные ресурсы
 
 * [Документация АТОЛ Онлайн](https://online.atol.ru/lib/)
+
+[![Donate using Liberapay](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/AnthonyAxenov/donate)
