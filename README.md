@@ -6,8 +6,8 @@
 [![codecov](https://codecov.io/gh/anthonyaxenov/atol-online/branch/master/graph/badge.svg?token=WR2IV7FTF0)](https://codecov.io/gh/anthonyaxenov/atol-online)
 [![Stable Version](https://img.shields.io/packagist/v/axenov/atol-online?label=stable)](https://packagist.org/packages/axenov/atol-online)
 [![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/axenov/atol-online?color=%23787cb4)](https://packagist.org/packages/axenov/atol-online)
+[![Liberapay](https://img.shields.io/liberapay/patrons/AnthonyAxenov.svg?logo=liberapay)](https://liberapay.com/AnthonyAxenov/donate)
 [![License](https://img.shields.io/packagist/l/axenov/atol-online?color=%23369883)](LICENSE)
-[![Liberapay](https://img.shields.io/liberapay/patrons/AnthonyAxenov.svg?logo=liberapay)](LICENSE)
 
 **[Документация](/docs/readme.md)**
 
@@ -28,13 +28,12 @@
 
 ## Системные требования
 
-* php8.0+
+* `php v8.0` и выше
+* `php-json`
+* `php-curl`
+* `php-mbstring`
+* `php-tokenizer`
 * [composer](https://getcomposer.org/)
-* расширения php (скорее всего, устанавливать их отдельно не придётся):
-    * `php-json`
-    * `php-curl`
-    * `php-mbstring`
-    * `php-tokenizer`
 
 ## Начало работы
 
