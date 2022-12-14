@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
+  ~
+  ~ This code is licensed under MIT.
+  ~ Этот код распространяется по лицензии MIT.
+  ~ https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
+  -->
+
+<psalm
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://getpsalm.org/schema/config"
+        xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+
+        errorLevel="7"
+        addParamDefaultToDocblockType="true"
+        allowStringToStandInForClass="true"
+        disableSuppressAll="true"
+        ensureArrayIntOffsetsExist="true"
+        ensureArrayStringOffsetsExist="true"
+        findUnusedCode="true"
+        findUnusedPsalmSuppress="true"
+        findUnusedVariablesAndParams="true"
+        runTaintAnalysis="true"
+        sealAllMethods="true"
+        sealAllProperties="true"
+        strictBinaryOperands="true"
+>
+    <!-- Default values:
+        allowNamedArgumentCalls="true"
+        checkForThrowsDocblock="false"
+        checkForThrowsInGlobalScope="false"
+        hideExternalErrors="false"
+        hoistConstants="false"
+        ignoreInternalFunctionFalseReturn="true"
+        ignoreInternalFunctionNullReturn="true"
+        inferPropertyTypesFromConstructor="true"
+        memoizeMethodCallResults="false"
+        rememberPropertyAssignmentsAfterCall="true"
+        reportInfo="true"
+        reportMixedIssues="true" - when errorLevel>=3
+        resolveFromConfigFile="true"
+        skipChecksOnUnresolvableIncludes="false"
+        throwExceptionOnError="false"
+        useDocblockPropertyTypes="false"
+        useDocblockTypes="true"
+        usePhpDocMethodsWithoutMagicCall="false"
+        usePhpDocPropertiesWithoutMagicCall="false"
+    -->
+
+    <projectFiles>
+        <directory name="src"/>
+        <directory name="tests"/>
+        <ignoreFiles>
+            <directory name="vendor"/>
+        </ignoreFiles>
+    </projectFiles>
+
+    <plugins>
+        <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
+    </plugins>
+</psalm>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
+  ~
+  ~ This code is licensed under MIT.
+  ~ Этот код распространяется по лицензии MIT.
+  ~ https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
+  -->
+
+<ruleset name="atol-online standards">
+    <description>atol-online coding standards</description>
+
+    <file>src</file>
+    <file>tests</file>
+
+    <exclude-pattern>*/docs/*</exclude-pattern>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+
+    <arg name="extensions" value="php"/>
+    <arg name="colors"/>
+    <arg value="p"/>
+
+    <rule ref="PSR12">
+        <exclude name="PSR12.Files.FileHeader.SpacingInsideBlock"/>
+    </rule>
+</ruleset>
