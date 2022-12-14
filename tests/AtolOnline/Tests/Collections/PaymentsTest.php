@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -11,10 +12,9 @@ namespace AtolOnline\Tests\Collections;
 
 use AtolOnline\{
     Collections\Payments,
-    Constants\Constraints,
+    Constraints,
     Exceptions\EmptyPaymentsException,
     Exceptions\InvalidEntityInCollectionException,
-    Exceptions\InvalidEnumValueException,
     Exceptions\NegativePaymentSumException,
     Exceptions\TooHighPaymentSumException,
     Exceptions\TooManyPaymentsException,
@@ -31,7 +31,6 @@ class PaymentsTest extends BasicTestCase
      * @covers \AtolOnline\Collections\EntityCollection
      * @covers \AtolOnline\Collections\EntityCollection::checkCount
      * @covers \AtolOnline\Exceptions\TooManyPaymentsException
-     * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
      * @throws TooHighPaymentSumException
      * @throws InvalidEntityInCollectionException

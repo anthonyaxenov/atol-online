@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,7 +8,7 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Entities;
 
@@ -16,7 +17,7 @@ use AtolOnline\Api\Fiscalizer;
 use AtolOnline\Collections\Items;
 use AtolOnline\Collections\Payments;
 use AtolOnline\Collections\Vats;
-use AtolOnline\Constants\Constraints;
+use AtolOnline\Constraints;
 use AtolOnline\Exceptions\AuthFailedException;
 use AtolOnline\Exceptions\EmptyItemsException;
 use AtolOnline\Exceptions\EmptyLoginException;
@@ -227,7 +228,7 @@ final class Receipt extends Entity
         $items->checkCount();
         $items->checkItemsClasses();
         $this->items = $items;
-        $this->getItems()->each(fn($item) => $this->total += $item->getSum());
+        $this->getItems()->each(fn ($item) => $this->total += $item->getSum());
         $this->total = round($this->total, 2);
         return $this;
     }
@@ -280,7 +281,7 @@ final class Receipt extends Entity
         $vats->checkItemsClasses();
         $this->vats = $vats;
         /** @var Vat $vat */
-        $this->getVats()->each(fn($vat) => $vat->setSum($this->getTotal()));
+        $this->getVats()->each(fn ($vat) => $vat->setSum($this->getTotal()));
         return $this;
     }
 

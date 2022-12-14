@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -29,7 +30,7 @@ class SupplierTest extends BasicTestCase
      */
     public function testConstructorWithoutArgs(): void
     {
-        $this->assertEquals('[]', (string)(new Supplier()));
+        $this->assertSame('[]', (string)(new Supplier()));
     }
 
     /**
@@ -52,15 +53,18 @@ class SupplierTest extends BasicTestCase
         $this->assertIsAtolable(new Supplier('some name'), ['name' => 'some name']);
         $this->assertIsAtolable(new Supplier(inn: '+fasd3\qe3fs_=nac99013928czc'), ['inn' => '3399013928']);
         $this->assertIsAtolable(new Supplier(phones: ['+122997365456']), ['phones' => ['+122997365456']]);
-        $this->assertIsAtolable(new Supplier(
-            'some name',
-            '+fasd3\qe3fs_=nac99013928czc',
-            ['+122997365456'],
-        ), [
-            'name' => 'some name',
-            'inn' => '3399013928',
-            'phones' => ['+122997365456'],
-        ]);
+        $this->assertIsAtolable(
+            new Supplier(
+                'some name',
+                '+fasd3\qe3fs_=nac99013928czc',
+                ['+122997365456'],
+            ),
+            [
+                'name' => 'some name',
+                'inn' => '3399013928',
+                'phones' => ['+122997365456'],
+            ]
+        );
     }
 
     /**
@@ -140,8 +144,8 @@ class SupplierTest extends BasicTestCase
      */
     public function testValidInn(): void
     {
-        $this->assertEquals('1234567890', (new Supplier())->setInn('1234567890')->getInn());
-        $this->assertEquals('123456789012', (new Supplier())->setInn('123456789012')->getInn());
+        $this->assertSame('1234567890', (new Supplier())->setInn('1234567890')->getInn());
+        $this->assertSame('123456789012', (new Supplier())->setInn('123456789012')->getInn());
     }
 
     /**

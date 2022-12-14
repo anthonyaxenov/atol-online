@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,18 +8,16 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Entities;
 
 use AtolOnline\Exceptions\{
     InvalidInnLengthException,
-    InvalidPhoneException
-};
+    InvalidPhoneException};
 use AtolOnline\Traits\{
     HasInn,
-    HasPhones
-};
+    HasPhones};
 use Illuminate\Support\Collection;
 
 /**
@@ -28,7 +27,8 @@ use Illuminate\Support\Collection;
  */
 final class Supplier extends Entity
 {
-    use HasPhones, HasInn;
+    use HasPhones;
+    use HasInn;
 
     /**
      * @var string|null Наименование (1225)
@@ -47,7 +47,7 @@ final class Supplier extends Entity
     public function __construct(
         ?string $name = null,
         ?string $inn = null,
-        array|Collection|null $phones = null,
+        array | Collection | null $phones = null,
     ) {
         !is_null($name) && $this->setName($name);
         !is_null($inn) && $this->setInn($inn);

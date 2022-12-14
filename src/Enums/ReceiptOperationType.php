@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,44 +8,42 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Enums;
-
-use MyCLabs\Enum\Enum;
 
 /**
  * Константы, определяющие типы операций (чеков)
  */
-final class ReceiptOperationTypes extends Enum
+enum ReceiptOperationType: string
 {
     /**
      * Приход (мы продали)
      */
-    const SELL = 'sell';
+    case SELL = 'sell';
 
     /**
      * Возврат прихода (нам вернули предмет расчёта, мы вернули средства)
      */
-    const SELL_REFUND = 'sell_refund';
+    case SELL_REFUND = 'sell_refund';
 
     /**
      * Коррекция прихода
      */
-    const SELL_CORRECTION = 'sell_correction';
+    case SELL_CORRECTION = 'sell_correction';
 
     /**
      * Расход (мы купили)
      */
-    const BUY = 'buy';
+    case BUY = 'buy';
 
     /**
      * Возврат расхода (мы вернули предмет расчёта, нам вернули средства)
      */
-    const BUY_REFUND = 'buy_refund';
+    case BUY_REFUND = 'buy_refund';
 
     /**
      * Коррекция прихода (догоняем неучтённые средства)
      */
-    const BUY_CORRECTION = 'buy_correction';
+    case BUY_CORRECTION = 'buy_correction';
 }

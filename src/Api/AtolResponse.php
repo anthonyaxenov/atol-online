@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -9,7 +10,7 @@
 
 /** @noinspection PhpMultipleClassDeclarationsInspection */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Api;
 
@@ -36,7 +37,7 @@ final class AtolResponse implements JsonSerializable, Stringable
     /**
      * @var object|array|null Содержимое ответа сервера
      */
-    protected object|array|null $content;
+    protected object | array | null $content;
 
     /**
      * @var array Заголовки ответа
@@ -122,7 +123,8 @@ final class AtolResponse implements JsonSerializable, Stringable
     /**
      * @inheritDoc
      */
-    #[ArrayShape([
+    #[ArrayShape(
+        [
             'code' => 'int',
             'headers' => 'array|\string[][]',
             'body' => 'mixed',

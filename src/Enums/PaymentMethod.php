@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,59 +8,49 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Enums;
-
-use AtolOnline\Constants\Ffd105Tags;
 
 /**
  * Константы, определяющие признаки способов расчёта
  *
  * @see https://online.atol.ru/files/API_atol_online_v4.pdf Документация, стр 22
  */
-final class PaymentMethods extends Enum
+enum PaymentMethod: string
 {
     /**
      * Предоплата 100% до передачи предмета расчёта
      */
-    const FULL_PREPAYMENT = 'full_prepayment';
+    case FULL_PREPAYMENT = 'full_prepayment';
 
     /**
      * Частичная предоплата до передачи предмета расчёта
      */
-    const PREPAYMENT = 'prepayment';
+    case PREPAYMENT = 'prepayment';
 
     /**
      * Аванс
      */
-    const ADVANCE = 'advance';
+    case ADVANCE = 'advance';
 
     /**
      * Полная оплата с учётом аванса/предоплаты в момент передачи предмета расчёта
      */
-    const FULL_PAYMENT = 'full_payment';
+    case FULL_PAYMENT = 'full_payment';
 
     /**
      * Частичный расчёт в момент передачи предмета расчёта (дальнейшая оплата в кредит)
      */
-    const PARTIAL_PAYMENT = 'partial_payment';
+    case PARTIAL_PAYMENT = 'partial_payment';
 
     /**
      * Передача предмета расчёта в кредит
      */
-    const CREDIT = 'credit';
+    case CREDIT = 'credit';
 
     /**
      * Оплата кредита
      */
-    const CREDIT_PAYMENT = 'credit_payment';
-
-    /**
-     * @inheritDoc
-     */
-    public static function getFfdTags(): array
-    {
-        return [Ffd105Tags::ITEM_PAYMENT_METHOD];
-    }
+    case CREDIT_PAYMENT = 'credit_payment';
 }

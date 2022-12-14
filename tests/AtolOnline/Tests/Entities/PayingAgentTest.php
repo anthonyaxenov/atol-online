@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -30,7 +31,7 @@ class PayingAgentTest extends BasicTestCase
      */
     public function testConstructorWithoutArgs(): void
     {
-        $this->assertEquals('[]', (string)(new PayingAgent()));
+        $this->assertSame('[]', (string)(new PayingAgent()));
     }
 
     /**
@@ -49,13 +50,16 @@ class PayingAgentTest extends BasicTestCase
     public function testConstructorWithArgs(): void
     {
         $operation = Helpers::randomStr();
-        $this->assertIsAtolable(new PayingAgent(
-            $operation,
-            ['+122997365456'],
-        ), [
-            'operation' => $operation,
-            'phones' => ['+122997365456'],
-        ]);
+        $this->assertIsAtolable(
+            new PayingAgent(
+                $operation,
+                ['+122997365456'],
+            ),
+            [
+                'operation' => $operation,
+                'phones' => ['+122997365456'],
+            ]
+        );
         $this->assertIsAtolable(
             new PayingAgent($operation),
             ['operation' => $operation]

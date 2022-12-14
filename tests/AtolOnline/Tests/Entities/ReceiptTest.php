@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -10,7 +11,7 @@
 namespace AtolOnline\Tests\Entities;
 
 use AtolOnline\{
-    Constants\Constraints,
+    Constraints,
     Helpers,
     Tests\BasicTestCase};
 use AtolOnline\Collections\{
@@ -30,8 +31,8 @@ use AtolOnline\Entities\{
     Supplier,
     Vat,};
 use AtolOnline\Enums\{
-    AgentTypes,
-    SnoTypes,};
+    AgentType,
+    SnoType,};
 use AtolOnline\Exceptions\{
     EmptyItemNameException,
     EmptyItemsException,
@@ -120,14 +121,14 @@ class ReceiptTest extends BasicTestCase
     public function testAgentInfo(): void
     {
         $agent_info = new AgentInfo(
-            AgentTypes::ANOTHER,
+            AgentType::ANOTHER,
             new PayingAgent('test', ['+79518888888']),
             new ReceivePaymentsOperator(['+79519999999']),
             new MoneyTransferOperator('MTO Name', '9876543210', 'London', ['+79517777777']),
         );
         $receipt = $this->newReceipt()->setAgentInfo($agent_info);
         $this->assertArrayHasKey('agent_info', $receipt->jsonSerialize());
-        $this->assertEquals($receipt->getAgentInfo()->jsonSerialize(), $receipt->jsonSerialize()['agent_info']);
+        $this->assertSame($receipt->getAgentInfo()->jsonSerialize(), $receipt->jsonSerialize()['agent_info']);
         $this->assertArrayNotHasKey('agent_info', $receipt->setAgentInfo(null)->jsonSerialize());
     }
 
@@ -159,7 +160,7 @@ class ReceiptTest extends BasicTestCase
         $supplier = new Supplier('some name', '+fasd3\qe3fs_=nac99013928czc', ['+122997365456']);
         $receipt = $this->newReceipt()->setSupplier($supplier);
         $this->assertArrayHasKey('supplier_info', $receipt->jsonSerialize());
-        $this->assertEquals($receipt->getSupplier()->jsonSerialize(), $receipt->jsonSerialize()['supplier_info']);
+        $this->assertSame($receipt->getSupplier()->jsonSerialize(), $receipt->jsonSerialize()['supplier_info']);
         $this->assertArrayNotHasKey('supplier_info', $receipt->setSupplier(null)->jsonSerialize());
     }
 
@@ -181,8 +182,8 @@ class ReceiptTest extends BasicTestCase
     {
         $this->expectException(EmptyItemsException::class);
         new Receipt(
-            new Client('John Doe', 'john@example.com', '+1/22/99*73s dsdas654 5s6', '+fasd3\qe3fs_=nac99013928czc'),
-            new Company('company@example.com', SnoTypes::OSN, '1234567890', 'https://example.com'),
+            new Client('John Doe', '+1/22/99*73s dsdas654 5s6', 'john@example.com', '+fasd3\qe3fs_=nac99013928czc'),
+            new Company('1234567890', SnoType::OSN, 'https://example.com', 'company@example.com'),
             new Items([]),
             new Payments($this->generatePaymentObjects())
         );
@@ -211,8 +212,8 @@ class ReceiptTest extends BasicTestCase
             'Коллекция AtolOnline\Collections\Items должна содержать объекты AtolOnline\Entities\Item'
         );
         new Receipt(
-            new Client('John Doe', 'john@example.com', '+1/22/99*73s dsdas654 5s6', '+fasd3\qe3fs_=nac99013928czc'),
-            new Company('company@example.com', SnoTypes::OSN, '1234567890', 'https://example.com'),
+            new Client('John Doe', '+1/22/99*73s dsdas654 5s6', 'john@example.com', '+fasd3\qe3fs_=nac99013928czc'),
+            new Company('1234567890', SnoType::OSN, 'https://example.com', 'company@example.com'),
             new Items(['qwerty']),
             new Payments($this->generatePaymentObjects())
         );
@@ -240,8 +241,8 @@ class ReceiptTest extends BasicTestCase
     {
         $this->expectException(EmptyPaymentsException::class);
         new Receipt(
-            new Client('John Doe', 'john@example.com', '+1/22/99*73s dsdas654 5s6', '+fasd3\qe3fs_=nac99013928czc'),
-            new Company('company@example.com', SnoTypes::OSN, '1234567890', 'https://example.com'),
+            new Client('John Doe', '+1/22/99*73s dsdas654 5s6', 'john@example.com', '+fasd3\qe3fs_=nac99013928czc'),
+            new Company('1234567890', SnoType::OSN, 'https://example.com', 'company@example.com'),
             new Items([new Item('test item', 2, 3)]),
             new Payments([])
         );
@@ -273,8 +274,8 @@ class ReceiptTest extends BasicTestCase
             'Коллекция AtolOnline\Collections\Payments должна содержать объекты AtolOnline\Entities\Payment'
         );
         (string)new Receipt(
-            new Client('John Doe', 'john@example.com', '+1/22/99*73s dsdas654 5s6', '+fasd3\qe3fs_=nac99013928czc'),
-            new Company('company@example.com', SnoTypes::OSN, '1234567890', 'https://example.com'),
+            new Client('John Doe', '+1/22/99*73s dsdas654 5s6', 'john@example.com', '+fasd3\qe3fs_=nac99013928czc'),
+            new Company('1234567890', SnoType::OSN, 'https://example.com', 'company@example.com'),
             new Items([new Item('test item', 2, 3)]),
             new Payments(['qwerty'])
         );
@@ -365,11 +366,11 @@ class ReceiptTest extends BasicTestCase
     {
         $receipt = $this->newReceipt();
         $items_total = $receipt->getItems()->pluck('sum')->sum();
-        $this->assertEquals($items_total, $receipt->getTotal());
+        $this->assertSame($items_total, $receipt->getTotal());
 
         /** @var Vat $vat */
         $receipt->setVats(new Vats($this->generateVatObjects(2)))->getVats()
-            ->each(fn($vat) => $this->assertEquals($items_total, $vat->getSum()));
+            ->each(fn ($vat) => $this->assertSame($items_total, $vat->getSum()));
     }
 
     /**
@@ -398,7 +399,7 @@ class ReceiptTest extends BasicTestCase
     {
         $receipt = $this->newReceipt()->setCashier(Helpers::randomStr());
         $this->assertArrayHasKey('cashier', $receipt->jsonSerialize());
-        $this->assertEquals($receipt->getCashier(), $receipt->jsonSerialize()['cashier']);
+        $this->assertSame($receipt->getCashier(), $receipt->jsonSerialize()['cashier']);
     }
 
     /**
@@ -480,7 +481,7 @@ class ReceiptTest extends BasicTestCase
     {
         $receipt = $this->newReceipt()->setAddCheckProps(Helpers::randomStr());
         $this->assertArrayHasKey('additional_check_props', $receipt->jsonSerialize());
-        $this->assertEquals($receipt->getAddCheckProps(), $receipt->jsonSerialize()['additional_check_props']);
+        $this->assertSame($receipt->getAddCheckProps(), $receipt->jsonSerialize()['additional_check_props']);
     }
 
     /**
@@ -562,7 +563,7 @@ class ReceiptTest extends BasicTestCase
         $aup = new AdditionalUserProps('name', 'value');
         $receipt = $this->newReceipt()->setAddUserProps($aup);
         $this->assertArrayHasKey('additional_user_props', $receipt->jsonSerialize());
-        $this->assertEquals(
+        $this->assertSame(
             $receipt->getAddUserProps()->jsonSerialize(),
             $receipt->jsonSerialize()['additional_user_props']
         );

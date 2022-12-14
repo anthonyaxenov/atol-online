@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,13 +8,11 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Exceptions;
 
-use AtolOnline\Constants\Constraints;
-use AtolOnline\Constants\Ffd105Tags;
-use JetBrains\PhpStorm\Pure;
+use AtolOnline\Constraints;
 
 /**
  * Исключение, возникающее при попытке указать слишком длинный код товара
@@ -21,7 +20,6 @@ use JetBrains\PhpStorm\Pure;
 class TooLongItemCodeException extends TooLongException
 {
     protected float $max = Constraints::MAX_LENGTH_ITEM_CODE;
-    protected array $ffd_tags = [Ffd105Tags::ITEM_NOMENCLATURE_CODE];
 
     /**
      * Конструктор
@@ -29,7 +27,6 @@ class TooLongItemCodeException extends TooLongException
      * @param string $name
      * @param string $code
      */
-    #[Pure]
     public function __construct(string $name, string $code)
     {
         parent::__construct($code, "Слишком длинный код товара '$name'");

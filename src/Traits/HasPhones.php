@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -9,7 +10,7 @@
 
 namespace AtolOnline\Traits;
 
-use AtolOnline\Constants\Constraints;
+use AtolOnline\Constraints;
 use AtolOnline\Exceptions\InvalidPhoneException;
 use Illuminate\Support\Collection;
 
@@ -30,7 +31,7 @@ trait HasPhones
      * @return $this
      * @throws InvalidPhoneException
      */
-    public function setPhones(array|Collection|null $phones): static
+    public function setPhones(array | Collection | null $phones): static
     {
         if (!is_null($phones)) {
             $phones = is_array($phones) ? collect($phones) : $phones;

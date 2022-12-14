@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -14,8 +15,7 @@ use AtolOnline\{
     Entities\MoneyTransferOperator,
     Entities\PayingAgent,
     Entities\ReceivePaymentsOperator,
-    Enums\AgentTypes,
-    Exceptions\InvalidEnumValueException,
+    Enums\AgentType,
     Exceptions\InvalidInnLengthException,
     Exceptions\InvalidPhoneException,
     Exceptions\TooLongPayingAgentOperationException,
@@ -36,7 +36,7 @@ class AgentInfoTest extends BasicTestCase
      */
     public function testConstructorWithoutArgs(): void
     {
-        $this->assertIsAtolable(new AgentInfo(), []);
+        $this->assertIsAtolable(new AgentInfo());
     }
 
     /**
@@ -58,63 +58,64 @@ class AgentInfoTest extends BasicTestCase
      * @throws InvalidPhoneException
      * @throws TooLongPayingAgentOperationException
      * @throws InvalidInnLengthException
-     * @throws InvalidEnumValueException
      * @throws Exception
      */
     public function testConstructorWithArgs(): void
     {
-        $this->assertIsAtolable(new AgentInfo(null), []);
-        $this->assertIsAtolable(new AgentInfo(AgentTypes::ANOTHER), ['type' => AgentTypes::ANOTHER]);
-        $this->assertIsAtolable(new AgentInfo(pagent: new PayingAgent()), []);
-        $this->assertIsAtolable(new AgentInfo(mt_operator: new MoneyTransferOperator()), []);
-        $this->assertIsAtolable(new AgentInfo(rp_operator: new ReceivePaymentsOperator()), []);
+        $this->assertIsAtolable(new AgentInfo(null));
+        $this->assertIsAtolable(
+            new AgentInfo(AgentType::ANOTHER),
+            ['type' => AgentType::ANOTHER]
+        );
+        $this->assertIsAtolable(
+            new AgentInfo(payingAgent: new PayingAgent())
+        );
+        $this->assertIsAtolable(
+            new AgentInfo(moneyTransferOperator: new MoneyTransferOperator())
+        );
+        $this->assertIsAtolable(
+            new AgentInfo(receivePaymentsOperator: new ReceivePaymentsOperator())
+        );
 
-        $this->assertIsAtolable(new AgentInfo(
-            AgentTypes::ANOTHER,
-            new PayingAgent(),
-            new ReceivePaymentsOperator(),
-            new MoneyTransferOperator(),
-        ), ['type' => AgentTypes::ANOTHER]);
+        $this->assertIsAtolable(
+            new AgentInfo(
+                AgentType::ANOTHER,
+                new PayingAgent(),
+                new ReceivePaymentsOperator(),
+                new MoneyTransferOperator(),
+            ),
+            ['type' => AgentType::ANOTHER]
+        );
 
-        $this->assertIsAtolable(new AgentInfo(
-            AgentTypes::ANOTHER,
-            new PayingAgent('test', ['+79518888888']),
-            new ReceivePaymentsOperator(['+79519999999']),
-            new MoneyTransferOperator('MTO Name', '9876543210', 'London', ['+79517777777']),
-        ), [
-            'type' => AgentTypes::ANOTHER,
-            'paying_agent' => [
-                'operation' => 'test',
-                'phones' => [
-                    '+79518888888',
+        $this->assertIsAtolable(
+            new AgentInfo(
+                AgentType::ANOTHER,
+                new PayingAgent('test', ['+79518888888']),
+                new ReceivePaymentsOperator(['+79519999999']),
+                new MoneyTransferOperator('MTO Name', '9876543210', 'London', ['+79517777777']),
+            ),
+            [
+                'type' => AgentType::ANOTHER,
+                'paying_agent' => [
+                    'operation' => 'test',
+                    'phones' => [
+                        '+79518888888',
+                    ],
                 ],
-            ],
-            'receive_payments_operator' => [
-                'phones' => [
-                    '+79519999999',
+                'receive_payments_operator' => [
+                    'phones' => [
+                        '+79519999999',
+                    ],
                 ],
-            ],
-            'money_transfer_operator' => [
-                'name' => 'MTO Name',
-                'inn' => '9876543210',
-                'address' => 'London',
-                'phones' => [
-                    "+79517777777",
+                'money_transfer_operator' => [
+                    'name' => 'MTO Name',
+                    'inn' => '9876543210',
+                    'address' => 'London',
+                    'phones' => [
+                        '+79517777777',
+                    ],
                 ],
-            ],
-        ]);
-    }
-
-    /**
-     * Тестирует исключение при некорректном типе
-     *
-     * @covers \AtolOnline\Entities\AgentInfo
-     * @covers \AtolOnline\Enums\AgentTypes::isValid
-     * @covers \AtolOnline\Exceptions\InvalidEnumValueException
-     */
-    public function testInvalidEnumValueException(): void
-    {
-        $this->expectException(InvalidEnumValueException::class);
-        new AgentInfo('qwerty');
+            ]
+        );
     }
 }

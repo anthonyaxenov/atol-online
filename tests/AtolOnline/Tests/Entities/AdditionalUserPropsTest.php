@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -10,7 +11,7 @@
 namespace AtolOnline\Tests\Entities;
 
 use AtolOnline\{
-    Constants\Constraints,
+    Constraints,
     Entities\AdditionalUserProps,
     Exceptions\EmptyAddUserPropNameException,
     Exceptions\EmptyAddUserPropValueException,

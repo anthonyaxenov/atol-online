@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,7 +8,7 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Entities;
 
@@ -30,7 +31,7 @@ final class ReceivePaymentsOperator extends Entity
      * @param array|Collection|null $phones Телефоны оператора по приёму платежей (1074)
      * @throws InvalidPhoneException
      */
-    public function __construct(array|Collection|null $phones = null)
+    public function __construct(array | Collection | null $phones = null)
     {
         $this->setPhones($phones);
     }

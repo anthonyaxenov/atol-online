@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -9,7 +10,7 @@
 
 namespace AtolOnline\Traits;
 
-use AtolOnline\Constants\Constraints;
+use AtolOnline\Constraints;
 use AtolOnline\Exceptions\InvalidEmailException;
 use AtolOnline\Exceptions\TooLongEmailException;
 

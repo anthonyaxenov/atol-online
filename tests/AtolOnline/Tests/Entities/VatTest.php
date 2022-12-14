@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -11,8 +12,7 @@ namespace AtolOnline\Tests\Entities;
 
 use AtolOnline\{
     Entities\Vat,
-    Enums\VatTypes,
-    Exceptions\InvalidEnumValueException,
+    Enums\VatType,
     Tests\BasicTestCase};
 use Exception;
 
@@ -29,14 +29,14 @@ class VatTest extends BasicTestCase
     public function providerVatsSet(): array
     {
         return [
-            [VatTypes::NONE, 0],
-            [VatTypes::VAT0, 0],
-            [VatTypes::VAT10, 10],
-            [VatTypes::VAT18, 18],
-            [VatTypes::VAT20, 20],
-            [VatTypes::VAT110, 9.09],
-            [VatTypes::VAT118, 15.25],
-            [VatTypes::VAT120, 16.67],
+            [VatType::NONE, 0],
+            [VatType::VAT0, 0],
+            [VatType::VAT10, 10],
+            [VatType::VAT18, 18],
+            [VatType::VAT20, 20],
+            [VatType::VAT110, 9.09],
+            [VatType::VAT118, 15.25],
+            [VatType::VAT120, 16.67],
         ];
     }
 
@@ -48,20 +48,21 @@ class VatTest extends BasicTestCase
     public function providerVatsAdd(): array
     {
         return [
-            [VatTypes::VAT10, 12, 10],
-            [VatTypes::VAT18, 21.6, 18],
-            [VatTypes::VAT20, 24, 20],
-            [VatTypes::VAT110, 10.91, 9.09],
-            [VatTypes::VAT118, 18.31, 15.25],
-            [VatTypes::VAT120, 20, 16.67],
+            [VatType::VAT10, 12, 10],
+            [VatType::VAT18, 21.6, 18],
+            [VatType::VAT20, 24, 20],
+            [VatType::VAT110, 10.91, 9.09],
+            [VatType::VAT118, 18.31, 15.25],
+            [VatType::VAT120, 20, 16.67],
         ];
     }
 
     /**
      * Тестирует конструктор без передачи значений и приведение к json
      *
-     * @param string $type Тип НДС
+     * @param VatType $type Тип НДС
      * @param float $sum Исходная сумма
+     * @throws Exception
      * @dataProvider providerVatsSet
      * @covers       \AtolOnline\Entities\Vat
      * @covers       \AtolOnline\Entities\Vat::setType
@@ -70,36 +71,33 @@ class VatTest extends BasicTestCase
      * @covers       \AtolOnline\Entities\Vat::getSum
      * @covers       \AtolOnline\Entities\Vat::getCalculated
      * @covers       \AtolOnline\Entities\Vat::jsonSerialize
-     * @throws InvalidEnumValueException
-     * @throws Exception
      */
-    public function testConstructor(string $type, float $sum): void
+    public function testConstructor(VatType $type, float $sum): void
     {
         $vat = new Vat($type, $sum);
         $this->assertIsAtolable($vat, [
             'type' => $vat->getType(),
             'sum' => $vat->getCalculated(),
         ]);
-        $this->assertEquals($type, $vat->getType());
-        $this->assertEquals($sum, $vat->getSum());
+        $this->assertSame($type, $vat->getType());
+        $this->assertSame($sum, $vat->getSum());
     }
 
     /**
      * Тестирует расчёт суммы НДС от суммы 100+20р и 100-20р
      *
      * @dataProvider providerVatsAdd
-     * @param string $type Тип НДС
+     * @param VatType $type Тип НДС
      * @param float $after_plus Результат после +20р
      * @param float $after_minus Результат после -20р
      * @covers       \AtolOnline\Entities\Vat::addSum
      * @covers       \AtolOnline\Entities\Vat::getCalculated
-     * @throws InvalidEnumValueException
      */
-    public function testVatAdd(string $type, float $after_plus, float $after_minus)
+    public function testVatAdd(VatType $type, float $after_plus, float $after_minus)
     {
         $vat = (new Vat($type, 100))->addSum(20); // 120р
-        $this->assertEquals($after_plus, $vat->getCalculated());
+        $this->assertSame($after_plus, $vat->getCalculated());
         $vat->addSum(-20); // 100р
-        $this->assertEquals($after_minus, $vat->getCalculated());
+        $this->assertSame($after_minus, $vat->getCalculated());
     }
 }

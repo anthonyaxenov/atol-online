@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,7 +8,7 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Api;
 
@@ -88,7 +89,7 @@ final class Monitor extends AtolClient
     public function getAll(?int $limit = null, ?int $offset = null): Collection
     {
         $collection = collect($this->fetchAll($limit, $offset)->getContent());
-        return $collection->map(fn($data) => new Kkt($data));
+        return $collection->map(fn ($data) => new Kkt($data));
     }
 
     /**

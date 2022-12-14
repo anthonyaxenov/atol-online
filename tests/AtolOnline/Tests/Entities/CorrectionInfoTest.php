@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -11,12 +12,13 @@ namespace AtolOnline\Tests\Entities;
 
 use AtolOnline\{
     Entities\CorrectionInfo,
-    Enums\CorrectionTypes,
+    Enums\CorrectionType,
     Exceptions\EmptyCorrectionNumberException,
     Exceptions\InvalidCorrectionDateException,
-    Exceptions\InvalidEnumValueException,
     Helpers,
     Tests\BasicTestCase};
+use DateTime;
+use DateTimeImmutable;
 use Exception;
 
 /**
@@ -36,7 +38,6 @@ class CorrectionInfoTest extends BasicTestCase
      * @covers \AtolOnline\Entities\CorrectionInfo::getNumber
      * @covers \AtolOnline\Entities\CorrectionInfo::jsonSerialize
      * @return void
-     * @throws InvalidEnumValueException
      * @throws InvalidCorrectionDateException
      * @throws EmptyCorrectionNumberException
      * @throws Exception
@@ -44,32 +45,35 @@ class CorrectionInfoTest extends BasicTestCase
     public function testConstructor(): void
     {
         $this->assertIsAtolable(
-            new CorrectionInfo(CorrectionTypes::SELF, '01.01.2021', $number = Helpers::randomStr()),
+            new CorrectionInfo(CorrectionType::SELF, '01.01.2021', $number = Helpers::randomStr()),
             [
-                'type' => CorrectionTypes::SELF,
+                'type' => CorrectionType::SELF,
                 'base_date' => '01.01.2021',
                 'base_number' => $number,
             ]
         );
-    }
 
-    /**
-     * Тестирует исключение при некорректном типе
-     *
-     * @covers \AtolOnline\Entities\CorrectionInfo
-     * @covers \AtolOnline\Entities\CorrectionInfo::setType
-     * @covers \AtolOnline\Enums\CorrectionTypes::isValid
-     * @covers \AtolOnline\Exceptions\InvalidEnumValueException
-     * @return void
-     * @throws EmptyCorrectionNumberException
-     * @throws InvalidCorrectionDateException
-     * @throws InvalidEnumValueException
-     */
-    public function testInvalidEnumValueException(): void
-    {
-        $this->expectException(InvalidEnumValueException::class);
-        $this->expectExceptionMessage('Некорректное значение AtolOnline\Enums\CorrectionTypes::wrong_value');
-        new CorrectionInfo('wrong_value', '01.01.2021', Helpers::randomStr());
+        $this->assertIsAtolable(
+            new CorrectionInfo(CorrectionType::SELF, new DateTime('02.02.2022'), $number = Helpers::randomStr()),
+            [
+                'type' => CorrectionType::SELF,
+                'base_date' => '02.02.2022',
+                'base_number' => $number,
+            ]
+        );
+
+        $this->assertIsAtolable(
+            new CorrectionInfo(
+                CorrectionType::SELF,
+                new DateTimeImmutable('03.03.2023'),
+                $number = Helpers::randomStr()
+            ),
+            [
+                'type' => CorrectionType::SELF,
+                'base_date' => '03.03.2023',
+                'base_number' => $number,
+            ]
+        );
     }
 
     /**
@@ -77,17 +81,15 @@ class CorrectionInfoTest extends BasicTestCase
      *
      * @covers \AtolOnline\Entities\CorrectionInfo
      * @covers \AtolOnline\Entities\CorrectionInfo::setDate
-     * @covers \AtolOnline\Enums\CorrectionTypes::isValid
      * @covers \AtolOnline\Exceptions\InvalidCorrectionDateException
      * @return void
      * @throws EmptyCorrectionNumberException
      * @throws InvalidCorrectionDateException
-     * @throws InvalidEnumValueException
      */
     public function testInvalidCorrectionDateException(): void
     {
         $this->expectException(InvalidCorrectionDateException::class);
-        new CorrectionInfo(CorrectionTypes::SELF, Helpers::randomStr(), Helpers::randomStr());
+        new CorrectionInfo(CorrectionType::SELF, Helpers::randomStr(), Helpers::randomStr());
     }
 
     /**
@@ -95,13 +97,12 @@ class CorrectionInfoTest extends BasicTestCase
      *
      * @covers \AtolOnline\Entities\CorrectionInfo
      * @covers \AtolOnline\Entities\CorrectionInfo::setNumber
-     * @covers \AtolOnline\Enums\CorrectionTypes::isValid
      * @covers \AtolOnline\Exceptions\EmptyCorrectionNumberException
      * @return void
      */
     public function testEmptyCorrectionNumberException(): void
     {
         $this->expectException(EmptyCorrectionNumberException::class);
-        new CorrectionInfo(CorrectionTypes::SELF, '01.01.2021', "\n\r\t\0");
+        new CorrectionInfo(CorrectionType::SELF, '01.01.2021', "\n\r\t\0");
     }
 }

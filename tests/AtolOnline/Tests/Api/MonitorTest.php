@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -94,13 +95,13 @@ class MonitorTest extends BasicTestCase
     public function testLogin(): void
     {
         $client = new Monitor(false, login: 'login');
-        $this->assertEquals('login', $client->getLogin());
+        $this->assertSame('login', $client->getLogin());
 
         $client = new Monitor();
-        $this->assertEquals(TestEnvParams::FFD105()['login'], $client->getLogin());
+        $this->assertSame(TestEnvParams::FFD105()['login'], $client->getLogin());
 
         $client->setLogin('login');
-        $this->assertEquals(TestEnvParams::FFD105()['login'], $client->getLogin());
+        $this->assertSame(TestEnvParams::FFD105()['login'], $client->getLogin());
     }
 
     /**
@@ -145,13 +146,13 @@ class MonitorTest extends BasicTestCase
     public function testPassword(): void
     {
         $client = new Monitor(false, password: 'password');
-        $this->assertEquals('password', $client->getPassword());
+        $this->assertSame('password', $client->getPassword());
 
         $client = new Monitor();
-        $this->assertEquals(TestEnvParams::FFD105()['password'], $client->getPassword());
+        $this->assertSame(TestEnvParams::FFD105()['password'], $client->getPassword());
 
         $client->setPassword('password');
-        $this->assertEquals(TestEnvParams::FFD105()['password'], $client->getPassword());
+        $this->assertSame(TestEnvParams::FFD105()['password'], $client->getPassword());
     }
 
     /**
@@ -202,9 +203,6 @@ class MonitorTest extends BasicTestCase
         $this->assertFalse($client->isTestMode());
 
         $client = (new Monitor())->setTestMode();
-        $this->assertTrue($client->isTestMode());
-
-        $client = (new Monitor())->setTestMode(true);
         $this->assertTrue($client->isTestMode());
 
         $client = (new Monitor())->setTestMode(false);
@@ -302,7 +300,6 @@ class MonitorTest extends BasicTestCase
         $client = $this->newTestClient();
         $client->auth();
         $kkts = $client->getAll();
-        $sss = $kkts->where('deviceNumber', 'KKT014034');
         $this->assertNotEmpty($client->getLastResponse()->getContent());
         $this->assertIsCollection($kkts);
         $this->assertTrue($kkts->count() > 0);
@@ -342,6 +339,6 @@ class MonitorTest extends BasicTestCase
         $this->assertIsSameClass(Kkt::class, $kkt);
         $this->assertIsAtolable($kkt);
         $this->assertNotNull($kkt->serialNumber);
-        $this->assertEquals($serial_number, $kkt->serialNumber);
+        $this->assertSame($serial_number, $kkt->serialNumber);
     }
 }

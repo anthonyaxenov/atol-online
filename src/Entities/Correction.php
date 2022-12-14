@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -14,7 +15,7 @@ use AtolOnline\{
     Api\Fiscalizer,
     Collections\Payments,
     Collections\Vats,
-    Constants\Constraints};
+    Constraints};
 use AtolOnline\Exceptions\{
     AuthFailedException,
     EmptyLoginException,
@@ -41,48 +42,28 @@ final class Correction extends Entity
     public const DOC_TYPE = 'correction';
 
     /**
-     * @var Company Продавец
-     */
-    protected Company $company;
-
-    /**
      * @todo вынести в трейт?
      * @var string|null ФИО кассира
      */
     protected ?string $cashier = null;
 
     /**
-     * @var CorrectionInfo Данные коррекции
-     */
-    protected CorrectionInfo $correction_info;
-
-    /**
-     * @var Payments Коллекция оплат
-     */
-    protected Payments $payments;
-
-    /**
-     * @var Vats Коллекция ставок НДС
-     */
-    protected Vats $vats;
-
-    /**
      * Конструктор
      *
-     * @param Company $company
-     * @param CorrectionInfo $correction_info
-     * @param Payments $payments
-     * @param Vats $vats
+     * @param Company $company Продавец
+     * @param CorrectionInfo $correctionInfo Данные коррекции
+     * @param Payments $payments Коллекция оплат
+     * @param Vats $vats Коллекция ставок НДС
      * @throws InvalidEntityInCollectionException
      * @throws Exception
      */
     public function __construct(
-        Company $company,
-        CorrectionInfo $correction_info,
-        Payments $payments,
-        Vats $vats,
+        protected Company $company,
+        protected CorrectionInfo $correctionInfo,
+        protected Payments $payments,
+        protected Vats $vats,
     ) {
-        $this->setCompany($company)->setCorrectionInfo($correction_info)->setPayments($payments)->setVats($vats);
+        $this->setCompany($company)->setCorrectionInfo($correctionInfo)->setPayments($payments)->setVats($vats);
     }
 
     /**
@@ -143,18 +124,18 @@ final class Correction extends Entity
      */
     public function getCorrectionInfo(): CorrectionInfo
     {
-        return $this->correction_info;
+        return $this->correctionInfo;
     }
 
     /**
      * Устанавливает данные коррекции
      *
-     * @param CorrectionInfo $correction_info
+     * @param CorrectionInfo $correctionInfo
      * @return Correction
      */
-    public function setCorrectionInfo(CorrectionInfo $correction_info): Correction
+    public function setCorrectionInfo(CorrectionInfo $correctionInfo): Correction
     {
-        $this->correction_info = $correction_info;
+        $this->correctionInfo = $correctionInfo;
         return $this;
     }
 
@@ -177,8 +158,7 @@ final class Correction extends Entity
      */
     public function setPayments(Payments $payments): self
     {
-        $payments->checkCount();
-        $payments->checkItemsClasses();
+        $payments->checkCount()->checkItemsClasses();
         $this->payments = $payments;
         return $this;
     }
@@ -186,7 +166,7 @@ final class Correction extends Entity
     /**
      * Возвращает установленную коллекцию ставок НДС
      *
-     * @return Vats|null
+     * @return Vats
      */
     public function getVats(): Vats
     {
@@ -196,14 +176,13 @@ final class Correction extends Entity
     /**
      * Устанаваливает коллекцию ставок НДС
      *
-     * @param Vats|null $vats
+     * @param Vats $vats
      * @return $this
      * @throws Exception
      */
     public function setVats(Vats $vats): self
     {
-        $vats->checkCount();
-        $vats->checkItemsClasses();
+        $vats->checkCount()->checkItemsClasses();
         $this->vats = $vats;
         return $this;
     }

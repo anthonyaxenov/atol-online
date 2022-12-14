@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -11,9 +12,9 @@ namespace AtolOnline\Tests\Collections;
 
 use AtolOnline\{
     Collections\Vats,
-    Constants\Constraints,
+    Constraints,
     Entities\Payment,
-    Enums\PaymentTypes,
+    Enums\PaymentType,
     Exceptions\EmptyVatsException,
     Exceptions\InvalidEntityInCollectionException,
     Exceptions\InvalidEnumValueException,
@@ -42,7 +43,7 @@ class VatsTest extends BasicTestCase
     {
         $vats = new Vats($this->generateVatObjects(3));
         $this->assertIsCollection($vats);
-        $this->assertEquals(3, $vats->count());
+        $this->assertSame(3, $vats->count());
         $this->assertIsAtolable($vats);
     }
 
@@ -89,6 +90,7 @@ class VatsTest extends BasicTestCase
      * @covers \AtolOnline\Exceptions\InvalidEntityInCollectionException
      * @throws InvalidEnumValueException
      * @throws Exception
+     * @noinspection PhpParamsInspection
      */
     public function testInvalidCollectionItemExceptionScalar(): void
     {
@@ -115,7 +117,7 @@ class VatsTest extends BasicTestCase
         $this->expectException(InvalidEntityInCollectionException::class);
         $this->expectExceptionMessage(Payment::class);
         (new Vats($this->generateVatObjects()))
-            ->merge([new Payment(PaymentTypes::PREPAID, 1)])
+            ->merge([new Payment(PaymentType::PREPAID, 1)])
             ->jsonSerialize();
     }
 }

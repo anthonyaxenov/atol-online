@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,21 +8,19 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Constants\Constraints;
+use AtolOnline\Constraints;
 use AtolOnline\Exceptions\{
     EmptyAddUserPropNameException,
     EmptyAddUserPropValueException,
     TooLongAddUserPropNameException,
-    TooLongAddUserPropValueException
-};
+    TooLongAddUserPropValueException};
 use JetBrains\PhpStorm\{
     ArrayShape,
-    Pure
-};
+    Pure};
 
 /**
  * Класс, описывающий дополнительный реквизит пользователя
@@ -30,16 +29,6 @@ use JetBrains\PhpStorm\{
  */
 final class AdditionalUserProps extends Entity
 {
-    /**
-     * @var string Наименование (1085)
-     */
-    protected string $name;
-
-    /**
-     * @var string Значение (1086)
-     */
-    protected string $value;
-
     /**
      * Конструктор объекта покупателя
      *
@@ -50,8 +39,10 @@ final class AdditionalUserProps extends Entity
      * @throws TooLongAddUserPropNameException
      * @throws TooLongAddUserPropValueException
      */
-    public function __construct(string $name, string $value)
-    {
+    public function __construct(
+        protected string $name,
+        protected string $value,
+    ) {
         $this->setName($name)->setValue($value);
     }
 

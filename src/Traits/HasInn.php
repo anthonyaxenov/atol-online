@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -9,7 +10,7 @@
 
 namespace AtolOnline\Traits;
 
-use AtolOnline\Constants\Constraints;
+use AtolOnline\Constraints;
 use AtolOnline\Exceptions\InvalidInnLengthException;
 
 /**
@@ -32,7 +33,7 @@ trait HasInn
     public function setInn(?string $inn): static
     {
         if (is_string($inn)) {
-            $inn = preg_replace('/[^\d]/', '', trim($inn));
+            $inn = preg_replace('/\D/', '', trim($inn));
             if (preg_match_all(Constraints::PATTERN_INN, $inn) === 0) {
                 throw new InvalidInnLengthException($inn);
             }
