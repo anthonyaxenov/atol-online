@@ -7,6 +7,7 @@
 [![Stable Version](https://img.shields.io/packagist/v/axenov/atol-online?label=stable)](https://packagist.org/packages/axenov/atol-online)
 [![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/axenov/atol-online?color=%23787cb4)](https://packagist.org/packages/axenov/atol-online)
 [![License](https://img.shields.io/packagist/l/axenov/atol-online?color=%23369883)](LICENSE)
+[![buymeacoffee](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee)](https://www.buymeacoffee.com/axenov)
 
 **[Документация](/docs/readme.md)**
 
@@ -70,5 +71,3 @@ composer coverage # тестирование с покрытием
 ```
 
 После тестирования с покрытием в корне репозитория создаётся отчёт, который сохраняется в директории `.coverage`.
-
-<a href="https://www.buymeacoffee.com/axenov" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
