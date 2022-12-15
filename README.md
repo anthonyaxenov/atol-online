@@ -6,19 +6,19 @@
 [![codecov](https://codecov.io/gh/anthonyaxenov/atol-online/branch/master/graph/badge.svg?token=WR2IV7FTF0)](https://codecov.io/gh/anthonyaxenov/atol-online)
 [![Stable Version](https://img.shields.io/packagist/v/axenov/atol-online?label=stable)](https://packagist.org/packages/axenov/atol-online)
 [![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/axenov/atol-online?color=%23787cb4)](https://packagist.org/packages/axenov/atol-online)
-[![Liberapay](https://img.shields.io/liberapay/patrons/AnthonyAxenov.svg?logo=liberapay)](https://liberapay.com/AnthonyAxenov/donate)
 [![License](https://img.shields.io/packagist/l/axenov/atol-online?color=%23369883)](LICENSE)
+[![buymeacoffee](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee)](https://www.buymeacoffee.com/axenov)
 
 **[Документация](/docs/readme.md)**
 
 Текущие поддерживаемые версии АТОЛ Онлайн:
 
-| Протокол | API | ФФД  | Статус         |
-|----------|-----|------|----------------|
-| v4       | 5.8 | 1.05 | Поддерживается |
-| v5       | 2.0 | 1.2  | В планах       |
+| Протокол | API  | ФФД  | Статус         |
+|----------|------|------|----------------|
+| v4       | 5.10 | 1.05 | Поддерживается |
+| v5       | 3.0  | 1.2  | В планах       |
 
-## Плюшечки
+Поддерживаемые возможности:
 
 * Мониторинг ККТ и ФН
 * Фискализация документов на облачной ККТ
@@ -28,12 +28,12 @@
 
 ## Системные требования
 
-* `php v8.0` и выше
+* `php v8.1` и выше
 * `php-json`
-* `php-curl`
 * `php-mbstring`
-* `php-tokenizer`
 * [composer](https://getcomposer.org/)
+
+> Для использования на php8.0 используйте версии библиотеки до 1.0.2 включительно.
 
 ## Начало работы
 
@@ -50,6 +50,17 @@
    где `$project_root` — абсолютный путь к корневой директории вашего проекта.
    > При использовании фреймворков это обычно не требуется.
 
+### Использование библиотеки
+
+Вы имеете право использовать и распространять код на условиях **[лицензии MIT](LICENSE)**.
+
+Дополнительная информация может быть найдена здесь:
+
+1. [Документации к библиотеке](/docs)
+2. [Документация АТОЛ Онлайн](https://online.atol.ru/lib/)
+3. [Исходный код](/src), докблоки
+4. [Тесты](/tests/AtolOnline/Tests)
+
 ### Тестирование кода библиотеки
 
 Файлы тестов находятся в директории `/tests` корня репозитория.
@@ -57,24 +68,11 @@
 Для запуска тестов необходимо перейти в корень репозитория и выполнить одну из команд:
 
 ```bash
-composer test # обычное тестирование
-composer coverage # тестирование с покрытием
+composer psalm    # статический анализ
+composer phpcs    # синтаксический анализ
+composer test     # полное тестирование без покрытия
+composer coverage # полное тестирование с покрытием
 ```
 
-После тестирования с покрытием создаётся отчёт в директории `.coverage` в корне репозитория.
-
-### Использование библиотеки
-
-Весь исходный код находится в директории [`/src`](/src).
-Вы имеете право использовать и распространять его на условиях **[лицензии MIT](LICENSE)**.
-
-1. Обращайтесь к [документации библиотеки](/docs)
-2. Обращайтесь к [исходному коду](/src) и описанным докблокам
-3. Обращайтесь к [тестам](/tests/AtolOnline/Tests)
-4. Используйте нормальную IDE
-
-## Дополнительные ресурсы
-
-* [Документация АТОЛ Онлайн](https://online.atol.ru/lib/)
-
-[![Donate using Liberapay](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/AnthonyAxenov/donate)
+После тестирования с покрытием в корне репозитория создаётся отчёт, который сохраняется в директории `.coverage`.
+Для тестирования с покрытием необходим `php-xdebug` с параметром `xdebug.mode = coverage,...`.

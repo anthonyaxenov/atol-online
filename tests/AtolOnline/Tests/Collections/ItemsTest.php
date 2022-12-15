@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -11,7 +12,7 @@ namespace AtolOnline\Tests\Collections;
 
 use AtolOnline\{
     Collections\Items,
-    Constants\Constraints,
+    Constraints,
     Tests\BasicTestCase};
 use AtolOnline\Exceptions\{
     EmptyItemNameException,

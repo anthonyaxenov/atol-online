@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,11 +8,11 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Constants\Constraints;
+use AtolOnline\Constraints;
 use AtolOnline\Exceptions\{
     InvalidEmailException,
     InvalidInnLengthException,
@@ -30,17 +31,8 @@ use JetBrains\PhpStorm\Pure;
  */
 final class Client extends Entity
 {
-    use HasEmail, HasInn;
-
-    /**
-     * @var string|null Наименование (1227)
-     */
-    protected ?string $name = null;
-
-    /**
-     * @var string|null Телефон (1008)
-     */
-    protected ?string $phone = null;
+    use HasEmail;
+    use HasInn;
 
     /**
      * Конструктор объекта покупателя
@@ -56,9 +48,9 @@ final class Client extends Entity
      * @throws TooLongEmailException
      */
     public function __construct(
-        ?string $name = null,
+        protected ?string $name = null,
+        protected ?string $phone = null,
         ?string $email = null,
-        ?string $phone = null,
         ?string $inn = null
     ) {
         !is_null($name) && $this->setName($name);
@@ -116,8 +108,8 @@ final class Client extends Entity
     public function setPhone(?string $phone): self
     {
         if (is_string($phone)) {
-            $phone = preg_replace('/[^\d]/', '', trim($phone));
-            if (preg_match(Constraints::PATTERN_PHONE, $phone) != 1) {
+            $phone = preg_replace('/\D/', '', trim($phone));
+            if (preg_match(Constraints::PATTERN_PHONE, $phone) !== 1) {
                 throw new InvalidPhoneException($phone);
             }
         }
@@ -133,8 +125,8 @@ final class Client extends Entity
     {
         $json = [];
         !is_null($this->getName()) && $json['name'] = $this->getName();
-        !is_null($this->getEmail()) && $json['email'] = $this->getEmail();
         !is_null($this->getPhone()) && $json['phone'] = $this->getPhone();
+        !is_null($this->getEmail()) && $json['email'] = $this->getEmail();
         !is_null($this->getInn()) && $json['inn'] = $this->getInn();
         return $json;
     }

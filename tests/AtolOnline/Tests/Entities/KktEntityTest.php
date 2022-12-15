@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,7 +8,7 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Tests\Entities;
 
@@ -85,9 +86,11 @@ class KktEntityTest extends BasicTestCase
     public function testNotEnoughMonitorDataException(): void
     {
         $this->expectException(NotEnoughMonitorDataException::class);
-        new Kkt((object)[
-            'fiscalizationDate' => '2021-11-20T10:21:00+00:00',
-        ]);
+        new Kkt(
+            (object)[
+                'fiscalizationDate' => '2021-11-20T10:21:00+00:00',
+            ]
+        );
     }
 
     /**
@@ -104,7 +107,7 @@ class KktEntityTest extends BasicTestCase
         // string
         $this->assertNotNull($kkt->serialNumber);
         $this->assertIsString($kkt->serialNumber);
-        $this->assertEquals($this->sample_data['serialNumber'], $kkt->serialNumber);
+        $this->assertSame($this->sample_data['serialNumber'], $kkt->serialNumber);
 
         // int
         $this->assertNotNull($kkt->signedDocuments);

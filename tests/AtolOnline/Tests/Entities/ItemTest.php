@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -10,38 +11,40 @@
 namespace AtolOnline\Tests\Entities;
 
 use AtolOnline\{
-    Constants\Constraints,
-    Entities\AgentInfo,
-    Entities\Item,
-    Entities\MoneyTransferOperator,
-    Entities\PayingAgent,
-    Entities\ReceivePaymentsOperator,
-    Entities\Supplier,
-    Entities\Vat,
-    Enums\AgentTypes,
-    Enums\PaymentMethods,
-    Enums\PaymentObjects,
-    Enums\VatTypes,
-    Exceptions\EmptyItemNameException,
-    Exceptions\InvalidDeclarationNumberException,
-    Exceptions\InvalidEnumValueException,
-    Exceptions\InvalidInnLengthException,
-    Exceptions\InvalidOKSMCodeException,
-    Exceptions\InvalidPhoneException,
-    Exceptions\NegativeItemExciseException,
-    Exceptions\NegativeItemPriceException,
-    Exceptions\NegativeItemQuantityException,
-    Exceptions\TooHighItemPriceException,
-    Exceptions\TooHighItemQuantityException,
-    Exceptions\TooHighItemSumException,
-    Exceptions\TooLongItemCodeException,
-    Exceptions\TooLongItemNameException,
-    Exceptions\TooLongMeasurementUnitException,
-    Exceptions\TooLongPayingAgentOperationException,
-    Exceptions\TooLongUserdataException,
-    Exceptions\TooManyException,
+    Constraints,
     Helpers,
     Tests\BasicTestCase};
+use AtolOnline\Entities\{
+    AgentInfo,
+    Item,
+    MoneyTransferOperator,
+    PayingAgent,
+    ReceivePaymentsOperator,
+    Supplier,
+    Vat,};
+use AtolOnline\Enums\{
+    AgentType,
+    PaymentMethod,
+    PaymentObject,
+    VatType,};
+use AtolOnline\Exceptions\{
+    EmptyItemNameException,
+    InvalidDeclarationNumberException,
+    InvalidInnLengthException,
+    InvalidOKSMCodeException,
+    InvalidPhoneException,
+    NegativeItemExciseException,
+    NegativeItemPriceException,
+    NegativeItemQuantityException,
+    TooHighItemPriceException,
+    TooHighItemQuantityException,
+    TooHighItemSumException,
+    TooLongItemCodeException,
+    TooLongItemNameException,
+    TooLongMeasurementUnitException,
+    TooLongPayingAgentOperationException,
+    TooLongUserdataException,
+    TooManyException,};
 use Exception;
 
 /**
@@ -258,7 +261,6 @@ class ItemTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Item::getPaymentObject
      * @covers \AtolOnline\Entities\Item::jsonSerialize
      * @throws EmptyItemNameException
-     * @throws InvalidEnumValueException
      * @throws TooManyException
      * @throws NegativeItemPriceException
      * @throws TooHighItemPriceException
@@ -269,13 +271,13 @@ class ItemTest extends BasicTestCase
     public function testValidEnums(): void
     {
         $item = new Item('test item', 2, 3);
-        $this->assertEquals(
-            PaymentMethods::ADVANCE,
-            $item->setPaymentMethod(PaymentMethods::ADVANCE)->getPaymentMethod()
+        $this->assertSame(
+            PaymentMethod::ADVANCE,
+            $item->setPaymentMethod(PaymentMethod::ADVANCE)->getPaymentMethod()
         );
-        $this->assertEquals(
-            PaymentObjects::COMMODITY,
-            $item->setPaymentObject(PaymentObjects::COMMODITY)->getPaymentObject()
+        $this->assertSame(
+            PaymentObject::COMMODITY,
+            $item->setPaymentObject(PaymentObject::COMMODITY)->getPaymentObject()
         );
         $this->assertIsAtolable($item, [
             'name' => 'test item',
@@ -288,87 +290,12 @@ class ItemTest extends BasicTestCase
     }
 
     /**
-     * Тестирует установку невалидного способа оплаты
-     *
-     * @covers \AtolOnline\Entities\Item::setPaymentMethod
-     * @covers \AtolOnline\Exceptions\InvalidEnumValueException
-     * @throws EmptyItemNameException
-     * @throws InvalidEnumValueException
-     * @throws TooManyException
-     * @throws NegativeItemPriceException
-     * @throws TooHighItemPriceException
-     * @throws NegativeItemQuantityException
-     * @throws TooLongItemNameException
-     */
-    public function testInvalidPaymentMethod(): void
-    {
-        $this->expectException(InvalidEnumValueException::class);
-        $this->expectExceptionMessage('Некорректное значение AtolOnline\Enums\PaymentMethods::wrong_value');
-        (new Item('test item', 2, 3))->setPaymentMethod('wrong_value');
-    }
-
-    /**
-     * Тестирует установку невалидного предмета расчёта
-     *
-     * @covers \AtolOnline\Entities\Item::setPaymentObject
-     * @covers \AtolOnline\Exceptions\InvalidEnumValueException
-     * @throws EmptyItemNameException
-     * @throws InvalidEnumValueException
-     * @throws TooManyException
-     * @throws NegativeItemPriceException
-     * @throws TooHighItemPriceException
-     * @throws NegativeItemQuantityException
-     * @throws TooLongItemNameException
-     */
-    public function testInvalidPaymentObject(): void
-    {
-        $this->expectException(InvalidEnumValueException::class);
-        $this->expectExceptionMessage('Некорректное значение AtolOnline\Enums\PaymentObjects::wrong_value');
-        (new Item('test item', 2, 3))->setPaymentObject('wrong_value');
-    }
-
-    /**
-     * Тестирует установку ставки НДС по строковой константе типа ставки
-     *
-     * @covers \AtolOnline\Entities\Item::setVat
-     * @covers \AtolOnline\Entities\Item::getVat
-     * @covers \AtolOnline\Entities\Item::jsonSerialize
-     * @throws EmptyItemNameException
-     * @throws InvalidEnumValueException
-     * @throws NegativeItemPriceException
-     * @throws NegativeItemQuantityException
-     * @throws TooHighItemPriceException
-     * @throws TooHighItemSumException
-     * @throws TooLongItemNameException
-     * @throws TooManyException
-     * @throws Exception
-     */
-    public function testValidVatByString(): void
-    {
-        $item = (new Item('test item', 2, 3))->setVat(VatTypes::VAT20);
-        $this->assertIsSameClass(Vat::class, $item->getVat());
-        $this->assertEquals(VatTypes::VAT20, $item->getVat()->getType());
-        $this->assertEquals($item->getSum(), $item->getVat()->getSum());
-        $this->assertIsAtolable($item, [
-            'name' => 'test item',
-            'price' => 2,
-            'quantity' => 3,
-            'sum' => 6,
-            'vat' => [
-                'type' => 'vat20',
-                'sum' => 1.2,
-            ],
-        ]);
-    }
-
-    /**
      * Тестирует установку ставки НДС объектом
      *
      * @covers \AtolOnline\Entities\Item::setVat
      * @covers \AtolOnline\Entities\Item::getVat
      * @covers \AtolOnline\Entities\Item::jsonSerialize
      * @throws EmptyItemNameException
-     * @throws InvalidEnumValueException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
      * @throws TooHighItemPriceException
@@ -379,11 +306,11 @@ class ItemTest extends BasicTestCase
      */
     public function testValidVatByObject(): void
     {
-        $vat = new Vat(VatTypes::VAT20, 4000);
+        $vat = new Vat(VatType::VAT20, 4000);
         $item = (new Item('test item', 2, 3))->setVat($vat);
         $this->assertIsSameClass(Vat::class, $item->getVat());
-        $this->assertEquals(VatTypes::VAT20, $item->getVat()->getType());
-        $this->assertEquals($item->getSum(), $item->getVat()->getSum());
+        $this->assertSame(VatType::VAT20, $item->getVat()->getType());
+        $this->assertSame($item->getSum(), $item->getVat()->getSum());
         $this->assertIsAtolable($item, [
             'name' => 'test item',
             'price' => 2,
@@ -397,35 +324,12 @@ class ItemTest extends BasicTestCase
     }
 
     /**
-     * Тестирует обнуление ставки НДС
-     *
-     * @param mixed $vat
-     * @dataProvider providerNullableStrings
-     * @covers       \AtolOnline\Entities\Item::setVat
-     * @covers       \AtolOnline\Entities\Item::getVat
-     * @covers       \AtolOnline\Entities\Item::jsonSerialize
-     * @throws EmptyItemNameException
-     * @throws NegativeItemPriceException
-     * @throws NegativeItemQuantityException
-     * @throws TooHighItemPriceException
-     * @throws TooLongItemNameException
-     * @throws TooManyException
-     * @throws InvalidEnumValueException
-     */
-    public function testNullableVatByString(mixed $vat): void
-    {
-        $item = (new Item('test item', 2, 3))->setVat($vat);
-        $this->assertNull($item->getVat());
-    }
-
-    /**
      * Тестирует установку атрибутов агента
      *
      * @covers \AtolOnline\Entities\Item::setAgentInfo
      * @covers \AtolOnline\Entities\Item::getAgentInfo
      * @covers \AtolOnline\Entities\Item::jsonSerialize
      * @throws EmptyItemNameException
-     * @throws InvalidEnumValueException
      * @throws InvalidInnLengthException
      * @throws InvalidPhoneException
      * @throws NegativeItemPriceException
@@ -438,13 +342,13 @@ class ItemTest extends BasicTestCase
     public function testAgentInfo(): void
     {
         $agent_info = new AgentInfo(
-            AgentTypes::ANOTHER,
+            AgentType::ANOTHER,
             new PayingAgent('test', ['+79518888888']),
             new ReceivePaymentsOperator(['+79519999999']),
             new MoneyTransferOperator('MTO Name', '9876543210', 'London', ['+79517777777']),
         );
         $item = (new Item('test item', 2, 3))->setAgentInfo($agent_info);
-        $this->assertEquals($agent_info, $item->getAgentInfo());
+        $this->assertSame($agent_info, $item->getAgentInfo());
     }
 
     /**
@@ -471,7 +375,7 @@ class ItemTest extends BasicTestCase
             ['+122997365456'],
         );
         $item = (new Item('test item', 2, 3))->setSupplier($supplier);
-        $this->assertEquals($supplier, $item->getSupplier());
+        $this->assertSame($supplier, $item->getSupplier());
         $this->assertIsAtolable($item, [
             'name' => 'test item',
             'price' => 2,
@@ -744,11 +648,11 @@ class ItemTest extends BasicTestCase
         $encoded = trim(preg_replace('/([\dA-Fa-f]{2})/', '$1 ', bin2hex($code)));
 
         $item = (new Item('test item', 2, 3))->setCode($code);
-        $this->assertEquals($code, $item->getCode());
-        $this->assertEquals($encoded, $item->getCodeHex());
+        $this->assertSame($code, $item->getCode());
+        $this->assertSame($encoded, $item->getCodeHex());
 
         $decoded = hex2bin(str_replace(' ', '', $item->getCodeHex()));
-        $this->assertEquals($decoded, $item->getCode());
+        $this->assertSame($decoded, $item->getCode());
 
         $this->assertIsAtolable($item, [
             'name' => 'test item',

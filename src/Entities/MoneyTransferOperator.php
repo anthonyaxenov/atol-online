@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,18 +8,16 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Entities;
 
 use AtolOnline\Exceptions\{
     InvalidInnLengthException,
-    InvalidPhoneException
-};
+    InvalidPhoneException};
 use AtolOnline\Traits\{
     HasInn,
-    HasPhones
-};
+    HasPhones};
 use Illuminate\Support\Collection;
 
 /**
@@ -28,7 +27,8 @@ use Illuminate\Support\Collection;
  */
 final class MoneyTransferOperator extends Entity
 {
-    use HasInn, HasPhones;
+    use HasInn;
+    use HasPhones;
 
     /**
      * @var string|null Наименование (1026)
@@ -64,7 +64,7 @@ final class MoneyTransferOperator extends Entity
         ?string $name = null,
         ?string $inn = null,
         ?string $address = null,
-        array|Collection|null $phones = null,
+        array | Collection | null $phones = null,
     ) {
         $this->setName($name);
         $this->setInn($inn);

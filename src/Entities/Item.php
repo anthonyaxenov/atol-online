@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,20 +8,18 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Constants\Constraints;
+use AtolOnline\Constraints;
 use AtolOnline\Enums\{
-    PaymentMethods,
-    PaymentObjects,
-    VatTypes
-};
+    PaymentMethod,
+    PaymentObject,
+    VatType};
 use AtolOnline\Exceptions\{
     EmptyItemNameException,
     InvalidDeclarationNumberException,
-    InvalidEnumValueException,
     InvalidOKSMCodeException,
     NegativeItemExciseException,
     NegativeItemPriceException,
@@ -32,8 +31,7 @@ use AtolOnline\Exceptions\{
     TooLongItemNameException,
     TooLongMeasurementUnitException,
     TooLongUserdataException,
-    TooManyException
-};
+    TooManyException};
 
 /**
  * Предмет расчёта (товар, услуга)
@@ -42,21 +40,6 @@ use AtolOnline\Exceptions\{
  */
 final class Item extends Entity
 {
-    /**
-     * @var string Наименование (1030)
-     */
-    protected string $name;
-
-    /**
-     * @var float Цена в рублях (с учётом скидок и наценок) (1079)
-     */
-    protected float $price;
-
-    /**
-     * @var float Количество/вес (1023)
-     */
-    protected float $quantity;
-
     /**
      * @var string|null Единица измерения (1197)
      */
@@ -70,22 +53,22 @@ final class Item extends Entity
     /**
      * @var string|null Код товара (1162) в форматированной шестнадцатиричной форме
      */
-    protected ?string $code_hex = null;
+    protected ?string $codeHex = null;
 
     /**
-     * @var string|null Признак способа расчёта (1214)
+     * @var PaymentMethod|null Признак способа расчёта (1214)
      */
-    protected ?string $payment_method = null;
+    protected ?PaymentMethod $paymentMethod = null;
 
     /**
-     * @var string|null Признак предмета расчёта (1212)
+     * @var PaymentObject|null Признак предмета расчёта (1212)
      */
-    protected ?string $payment_object = null;
+    protected ?PaymentObject $paymentObject = null;
 
     /**
      * @var string|null Номер таможенной декларации (1321)
      */
-    protected ?string $declaration_number = null;
+    protected ?string $declarationNumber = null;
 
     /**
      * @var Vat|null Ставка НДС
@@ -95,7 +78,7 @@ final class Item extends Entity
     /**
      * @var AgentInfo|null Атрибуты агента
      */
-    protected ?AgentInfo $agent_info = null;
+    protected ?AgentInfo $agentInfo = null;
 
     /**
      * @var Supplier|null Атрибуты поставшика
@@ -105,7 +88,7 @@ final class Item extends Entity
     /**
      * @var string|null Дополнительный реквизит (1191)
      */
-    protected ?string $user_data = null;
+    protected ?string $userData = null;
 
     /**
      * @var float|null Сумма акциза, включенная в стоимость (1229)
@@ -115,14 +98,14 @@ final class Item extends Entity
     /**
      * @var string|null Цифровой код страны происхождения товара (1230)
      */
-    protected ?string $country_code = null;
+    protected ?string $countryCode = null;
 
     /**
      * Конструктор
      *
-     * @param string|null $name Наименование
-     * @param float|null $price Цена за одну единицу
-     * @param float|null $quantity Количество
+     * @param string|null $name Наименование (1030)
+     * @param float|null $price Цена в рублях (с учётом скидок и наценок) (1079)
+     * @param float|null $quantity Количество/вес (1023)
      * @throws TooLongItemNameException
      * @throws TooHighItemPriceException
      * @throws TooManyException
@@ -131,9 +114,9 @@ final class Item extends Entity
      * @throws NegativeItemQuantityException
      */
     public function __construct(
-        string $name = null,
-        float $price = null,
-        float $quantity = null,
+        protected ?string $name = null,
+        protected ?float $price = null,
+        protected ?float $quantity = null,
     ) {
         !is_null($name) && $this->setName($name);
         !is_null($price) && $this->setPrice($price);
@@ -160,13 +143,10 @@ final class Item extends Entity
      */
     public function setName(string $name): self
     {
-        $name = trim($name);
-        if (mb_strlen($name) > Constraints::MAX_LENGTH_ITEM_NAME) {
+        if (mb_strlen($name = trim($name)) > Constraints::MAX_LENGTH_ITEM_NAME) {
             throw new TooLongItemNameException($name);
         }
-        if (empty($name)) {
-            throw new EmptyItemNameException();
-        }
+        empty($name) && throw new EmptyItemNameException();
         $this->name = $name;
         return $this;
     }
@@ -193,12 +173,8 @@ final class Item extends Entity
     public function setPrice(float $price): self
     {
         $price = round($price, 2);
-        if ($price > Constraints::MAX_COUNT_ITEM_PRICE) {
-            throw new TooHighItemPriceException($this->getName(), $price);
-        }
-        if ($price < 0) {
-            throw new NegativeItemPriceException($this->getName(), $price);
-        }
+        $price > Constraints::MAX_COUNT_ITEM_PRICE && throw new TooHighItemPriceException($this->getName(), $price);
+        $price < 0 && throw new NegativeItemPriceException($this->getName(), $price);
         $this->price = $price;
         $this->getVat()?->setSum($this->getSum());
         return $this;
@@ -229,9 +205,7 @@ final class Item extends Entity
         if ($quantity > Constraints::MAX_COUNT_ITEM_QUANTITY) {
             throw new TooHighItemQuantityException($this->getName(), $quantity);
         }
-        if ($quantity < 0) {
-            throw new NegativeItemQuantityException($this->getName(), $quantity);
-        }
+        $quantity < 0 && throw new NegativeItemQuantityException($this->getName(), $quantity);
         $this->quantity = $quantity;
         $this->getVat()?->setSum($this->getSum());
         return $this;
@@ -296,7 +270,7 @@ final class Item extends Entity
      */
     public function getCodeHex(): ?string
     {
-        return $this->code_hex;
+        return $this->codeHex;
     }
 
     /**
@@ -318,57 +292,51 @@ final class Item extends Entity
             $hex_string = trim(preg_replace('/([\dA-Fa-f]{2})/', '$1 ', $hex));
         }
         $this->code = $code ?: null;
-        $this->code_hex = $hex_string ?: null;
+        $this->codeHex = $hex_string ?: null;
         return $this;
     }
 
     /**
      * Возвращает признак способа оплаты
      *
-     * @return string|null
+     * @return PaymentMethod|null
      */
-    public function getPaymentMethod(): ?string
+    public function getPaymentMethod(): ?PaymentMethod
     {
-        return $this->payment_method;
+        return $this->paymentMethod;
     }
 
     /**
      * Устанавливает признак способа оплаты
      *
-     * @param string|null $payment_method Признак способа оплаты
+     * @param PaymentMethod|null $paymentMethod Признак способа оплаты
      * @return $this
-     * @throws InvalidEnumValueException
      */
-    public function setPaymentMethod(?string $payment_method): self
+    public function setPaymentMethod(?PaymentMethod $paymentMethod): self
     {
-        $payment_method = trim((string)$payment_method);
-        PaymentMethods::isValid($payment_method);
-        $this->payment_method = $payment_method ?: null;
+        $this->paymentMethod = $paymentMethod;
         return $this;
     }
 
     /**
      * Возвращает признак предмета расчёта
      *
-     * @return string|null
+     * @return PaymentObject|null
      */
-    public function getPaymentObject(): ?string
+    public function getPaymentObject(): ?PaymentObject
     {
-        return $this->payment_object;
+        return $this->paymentObject;
     }
 
     /**
      * Устанавливает признак предмета расчёта
      *
-     * @param string|null $payment_object Признак предмета расчёта
+     * @param PaymentObject|null $paymentObject Признак предмета расчёта
      * @return $this
-     * @throws InvalidEnumValueException
      */
-    public function setPaymentObject(?string $payment_object): self
+    public function setPaymentObject(?PaymentObject $paymentObject): self
     {
-        $payment_object = trim((string)$payment_object);
-        PaymentObjects::isValid($payment_object);
-        $this->payment_object = $payment_object ?: null;
+        $this->paymentObject = $paymentObject;
         return $this;
     }
 
@@ -385,21 +353,19 @@ final class Item extends Entity
     /**
      * Устанавливает ставку НДС
      *
-     * @param Vat|string|null $vat Объект ставки, одно из значений VatTypes или null для удаления ставки
+     * @param Vat | VatType | null $vat Объект ставки, одно из значений VatTypes или null для удаления ставки
      * @return $this
      * @throws TooHighItemSumException
-     * @throws InvalidEnumValueException
      */
-    public function setVat(Vat|string|null $vat): self
+    public function setVat(Vat | VatType | null $vat): self
     {
-        if (is_string($vat)) {
-            $vat = trim($vat);
-            empty($vat)
-                ? $this->vat = null
-                : VatTypes::isValid($vat) && $this->vat = new Vat($vat, $this->getSum());
+        if (is_null($vat)) {
+            $this->vat = null;
         } elseif ($vat instanceof Vat) {
             $vat->setSum($this->getSum());
             $this->vat = $vat;
+        } else {
+            $this->vat = new Vat($vat, $this->getSum());
         }
         return $this;
     }
@@ -411,18 +377,18 @@ final class Item extends Entity
      */
     public function getAgentInfo(): ?AgentInfo
     {
-        return $this->agent_info;
+        return $this->agentInfo;
     }
 
     /**
      * Устанавливает атрибуты агента
      *
-     * @param AgentInfo|null $agent_info
+     * @param AgentInfo|null $agentInfo
      * @return Item
      */
-    public function setAgentInfo(?AgentInfo $agent_info): self
+    public function setAgentInfo(?AgentInfo $agentInfo): self
     {
-        $this->agent_info = $agent_info;
+        $this->agentInfo = $agentInfo;
         return $this;
     }
 
@@ -455,23 +421,23 @@ final class Item extends Entity
      */
     public function getUserData(): ?string
     {
-        return $this->user_data;
+        return $this->userData;
     }
 
     /**
      * Устанавливает дополнительный реквизит
      *
-     * @param string|null $user_data Дополнительный реквизит
+     * @param string|null $userData Дополнительный реквизит
      * @return $this
      * @throws TooLongUserdataException
      */
-    public function setUserData(?string $user_data): self
+    public function setUserData(?string $userData): self
     {
-        $user_data = trim((string)$user_data);
-        if (mb_strlen($user_data) > Constraints::MAX_LENGTH_USER_DATA) {
-            throw new TooLongUserdataException($user_data);
+        $userData = trim((string)$userData);
+        if (mb_strlen($userData) > Constraints::MAX_LENGTH_USER_DATA) {
+            throw new TooLongUserdataException($userData);
         }
-        $this->user_data = $user_data ?: null;
+        $this->userData = $userData ?: null;
         return $this;
     }
 
@@ -512,25 +478,25 @@ final class Item extends Entity
      */
     public function getCountryCode(): ?string
     {
-        return $this->country_code;
+        return $this->countryCode;
     }
 
     /**
      * Устанавливает код страны происхождения товара
      *
-     * @param string|null $country_code
+     * @param string|null $countryCode
      * @return Item
      * @throws InvalidOKSMCodeException
      * @see https://classifikators.ru/oksm
      * @see https://ru.wikipedia.org/wiki/Общероссийский_классификатор_стран_мира
      */
-    public function setCountryCode(?string $country_code): self
+    public function setCountryCode(?string $countryCode): self
     {
-        $country_code = trim((string)$country_code);
-        if (preg_match(Constraints::PATTERN_OKSM_CODE, $country_code) != 1) {
-            throw new InvalidOKSMCodeException($country_code);
+        $countryCode = trim((string)$countryCode);
+        if (preg_match(Constraints::PATTERN_OKSM_CODE, $countryCode) != 1) {
+            throw new InvalidOKSMCodeException($countryCode);
         }
-        $this->country_code = $country_code ?: null;
+        $this->countryCode = $countryCode ?: null;
         return $this;
     }
 
@@ -541,28 +507,27 @@ final class Item extends Entity
      */
     public function getDeclarationNumber(): ?string
     {
-        return $this->declaration_number;
+        return $this->declarationNumber;
     }
 
     /**
      * Устанавливает код таможенной декларации
      *
-     * @param string|null $declaration_number
+     * @param string|null $declarationNumber
      * @return Item
      * @throws InvalidDeclarationNumberException
      */
-    public function setDeclarationNumber(?string $declaration_number): self
+    public function setDeclarationNumber(?string $declarationNumber): self
     {
-        if (is_string($declaration_number)) {
-            $declaration_number = trim($declaration_number);
-            if (
-                mb_strlen($declaration_number) < Constraints::MIN_LENGTH_DECLARATION_NUMBER
-                || mb_strlen($declaration_number) > Constraints::MAX_LENGTH_DECLARATION_NUMBER
-            ) {
-                throw new InvalidDeclarationNumberException($declaration_number);
+        if (is_string($declarationNumber)) {
+            $declarationNumber = trim($declarationNumber);
+            $is_short = mb_strlen($declarationNumber) < Constraints::MIN_LENGTH_DECLARATION_NUMBER;
+            $is_long = mb_strlen($declarationNumber) > Constraints::MAX_LENGTH_DECLARATION_NUMBER;
+            if ($is_short || $is_long) {
+                throw new InvalidDeclarationNumberException($declarationNumber);
             }
         }
-        $this->declaration_number = $declaration_number;
+        $this->declarationNumber = $declarationNumber;
         return $this;
     }
 

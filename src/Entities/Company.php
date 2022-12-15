@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,24 +8,21 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Entities;
 
 use AtolOnline\{
-    Constants\Constraints,
-    Enums\SnoTypes,
+    Constraints,
+    Enums\SnoType,
     Traits\HasEmail,
-    Traits\HasInn
-};
+    Traits\HasInn};
 use AtolOnline\Exceptions\{
     InvalidEmailException,
-    InvalidEnumValueException,
     InvalidInnLengthException,
     InvalidPaymentAddressException,
     TooLongEmailException,
-    TooLongPaymentAddressException
-};
+    TooLongPaymentAddressException};
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
@@ -34,47 +32,39 @@ use JetBrains\PhpStorm\ArrayShape;
  */
 final class Company extends Entity
 {
-    use HasEmail, HasInn;
-
-    /**
-     * @var string|null Система налогообложения продавца (1055)
-     */
-    protected ?string $sno;
-
-    /**
-     * @var string|null Место расчётов (адрес интернет-магазина) (1187)
-     */
-    protected ?string $payment_address;
+    use HasEmail;
+    use HasInn;
 
     /**
      * Конструктор
      *
-     * @param string $sno Система налогообложения продавца (1055)
      * @param string $inn ИНН (1018)
-     * @param string $payment_address Место расчётов (адрес интернет-магазина) (1187)
+     * @param SnoType $sno Система налогообложения продавца (1055)
+     * @param string $paymentAddress Место расчётов (адрес интернет-магазина) (1187)
      * @param string $email Почта (1117)
      * @throws InvalidEmailException
      * @throws InvalidInnLengthException
      * @throws InvalidPaymentAddressException
-     * @throws InvalidEnumValueException
      * @throws TooLongEmailException
      * @throws TooLongPaymentAddressException
      */
     public function __construct(
-        string $email, //TODO сделать необязательным здесь
-        string $sno, //TODO сделать необязательным здесь
         string $inn,
-        string $payment_address,
+        protected SnoType $sno,
+        protected string $paymentAddress,
+        string $email,
     ) {
-        $this->setEmail($email)->setSno($sno)->setInn($inn)->setPaymentAddress($payment_address);
+        $this->setInn($inn)
+            ->setPaymentAddress($paymentAddress)
+            ->setEmail($email);
     }
 
     /**
      * Возвращает установленный тип налогообложения
      *
-     * @return string
+     * @return SnoType
      */
-    public function getSno(): string
+    public function getSno(): SnoType
     {
         return $this->sno;
     }
@@ -82,14 +72,12 @@ final class Company extends Entity
     /**
      * Устанавливает тип налогообложения
      *
-     * @param string $sno
+     * @param SnoType $sno
      * @return $this
-     * @throws InvalidEnumValueException
      */
-    public function setSno(string $sno): self
+    public function setSno(SnoType $sno): self
     {
-        $sno = trim($sno);
-        SnoTypes::isValid($sno) && $this->sno = $sno;
+        $this->sno = $sno;
         return $this;
     }
 
@@ -100,57 +88,45 @@ final class Company extends Entity
      */
     public function getPaymentAddress(): string
     {
-        return $this->payment_address;
+        return $this->paymentAddress;
     }
 
     /**
      * Устанавливает адрес места расчётов
      *
-     * @param string $payment_address
+     * @param string $paymentAddress
      * @return $this
      * @throws TooLongPaymentAddressException
      * @throws InvalidPaymentAddressException
      */
-    public function setPaymentAddress(string $payment_address): self
+    public function setPaymentAddress(string $paymentAddress): self
     {
-        $payment_address = trim($payment_address);
-        if (empty($payment_address)) {
+        $paymentAddress = trim($paymentAddress);
+        if (empty($paymentAddress)) {
             throw new InvalidPaymentAddressException();
-        } elseif (mb_strlen($payment_address) > Constraints::MAX_LENGTH_PAYMENT_ADDRESS) {
-            throw new TooLongPaymentAddressException($payment_address);
+        } elseif (mb_strlen($paymentAddress) > Constraints::MAX_LENGTH_PAYMENT_ADDRESS) {
+            throw new TooLongPaymentAddressException($paymentAddress);
         }
-        $this->payment_address = $payment_address;
+        $this->paymentAddress = $paymentAddress;
         return $this;
     }
 
     /**
      * @inheritDoc
-     * @throws InvalidEmailException
-     * @throws InvalidEnumValueException
-     * @throws InvalidInnLengthException
-     * @throws InvalidPaymentAddressException
      */
     #[ArrayShape([
-        'email' => 'string',
         'sno' => 'string',
+        'email' => 'string',
         'inn' => 'string',
         'payment_address' => 'string',
     ])]
     public function jsonSerialize(): array
     {
         return [
-            'email' => $this->email
-                ? $this->getEmail()
-                : throw new InvalidEmailException(),
-            'sno' => $this->sno
-                ? $this->getSno()
-                : throw new InvalidEnumValueException(SnoTypes::class, 'null'),
-            'inn' => $this->inn
-                ? $this->getInn()
-                : throw new InvalidInnLengthException(),
-            'payment_address' => $this->payment_address
-                ? $this->getPaymentAddress()
-                : throw new InvalidPaymentAddressException(),
+            'inn' => $this->getInn(),
+            'sno' => $this->getSno(),
+            'payment_address' => $this->getPaymentAddress(),
+            'email' => $this->getEmail(),
         ];
     }
 }

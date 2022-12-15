@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,7 +8,7 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Tests;
 
@@ -24,10 +25,10 @@ use AtolOnline\Entities\Item;
 use AtolOnline\Entities\Payment;
 use AtolOnline\Entities\Receipt;
 use AtolOnline\Entities\Vat;
-use AtolOnline\Enums\CorrectionTypes;
-use AtolOnline\Enums\PaymentTypes;
-use AtolOnline\Enums\SnoTypes;
-use AtolOnline\Enums\VatTypes;
+use AtolOnline\Enums\CorrectionType;
+use AtolOnline\Enums\PaymentType;
+use AtolOnline\Enums\SnoType;
+use AtolOnline\Enums\VatType;
 use AtolOnline\Exceptions\EmptyCorrectionNumberException;
 use AtolOnline\Exceptions\EmptyItemNameException;
 use AtolOnline\Exceptions\EmptyItemsException;
@@ -112,15 +113,15 @@ class BasicTestCase extends TestCase
      * @covers \AtolOnline\Collections\EntityCollection::jsonSerialize
      * @throws Exception
      */
-    public function assertIsAtolable(Entity|EntityCollection $entity, ?array $json_structure = null): void
+    public function assertIsAtolable(Entity | EntityCollection $entity, ?array $json_structure = []): void
     {
         $this->assertIsArray($entity->jsonSerialize());
         $this->assertIsArray($entity->toArray());
-        $this->assertEquals($entity->jsonSerialize(), $entity->toArray());
+        $this->assertSame($entity->jsonSerialize(), $entity->toArray());
         $this->assertIsString((string)$entity);
         $this->assertJson((string)$entity);
-        if (!is_null($json_structure)) {
-            $this->assertEquals(json_encode($json_structure), (string)$entity);
+        if (!empty($json_structure)) {
+            $this->assertSame(json_encode($json_structure), (string)$entity);
         }
     }
 
@@ -134,7 +135,7 @@ class BasicTestCase extends TestCase
      * @param object|string $expected Ожидаемый класс
      * @param object|string $actual Фактический класс
      */
-    public function assertIsSameClass(object|string $expected, object|string $actual): void
+    public function assertIsSameClass(object | string $expected, object | string $actual): void
     {
         $this->assertTrue($this->checkisSameClass($expected, $actual));
     }
@@ -146,7 +147,7 @@ class BasicTestCase extends TestCase
      * @param object|string $class2
      * @return bool
      */
-    private function checkisSameClass(object|string $class1, object|string $class2): bool
+    private function checkisSameClass(object | string $class1, object | string $class2): bool
     {
         return (is_object($class1) ? $class1::class : $class1)
             === (is_object($class2) ? $class2::class : $class2);
@@ -158,7 +159,7 @@ class BasicTestCase extends TestCase
      * @param array $expected Массив ожидаемых имён классов-родителей
      * @param object|string $actual Объект или имя класса для проверки
      */
-    public function assertExtendsClasses(array $expected, object|string $actual): void
+    public function assertExtendsClasses(array $expected, object | string $actual): void
     {
         $this->assertTrue($this->checkExtendsClasses($expected, $actual));
     }
@@ -169,7 +170,7 @@ class BasicTestCase extends TestCase
      * @param string[] $parents Имена классов-родителей
      * @param object|string $class Объект или имя класса для проверки
      */
-    private function checkExtendsClasses(array $parents, object|string $class): bool
+    private function checkExtendsClasses(array $parents, object | string $class): bool
     {
         return !empty(array_intersect($parents, is_object($class) ? class_parents($class) : [$class]));
     }
@@ -180,7 +181,7 @@ class BasicTestCase extends TestCase
      * @param string[] $expected Массив ожидаемых имён интерфейсов
      * @param object|string $actual Объект или имя класса для проверки
      */
-    public function assertImplementsInterfaces(array $expected, object|string $actual): void
+    public function assertImplementsInterfaces(array $expected, object | string $actual): void
     {
         $this->assertTrue($this->checkImplementsInterfaces($expected, $actual));
     }
@@ -192,7 +193,7 @@ class BasicTestCase extends TestCase
      * @param object|string $class Объект или имя класса для проверки
      * @see https://www.php.net/manual/ru/function.class-implements.php
      */
-    private function checkImplementsInterfaces(array $interfaces, object|string $class): bool
+    private function checkImplementsInterfaces(array $interfaces, object | string $class): bool
     {
         return !empty(array_intersect($interfaces, is_object($class) ? class_implements($class) : [$class]));
     }
@@ -203,7 +204,7 @@ class BasicTestCase extends TestCase
      * @param string[] $expected Массив ожидаемых имён трейтов
      * @param object|string $actual Объект или имя класса для проверки
      */
-    public function assertUsesTraits(array $expected, object|string $actual): void
+    public function assertUsesTraits(array $expected, object | string $actual): void
     {
         $this->assertTrue($this->checkUsesTraits($expected, $actual));
     }
@@ -216,15 +217,15 @@ class BasicTestCase extends TestCase
      * @return bool
      * @see https://www.php.net/manual/ru/function.class-uses.php#110752
      */
-    private function checkUsesTraits(array $traits, object|string $class): bool
+    private function checkUsesTraits(array $traits, object | string $class): bool
     {
         $found_traits = [];
         $check_class = is_object($class) ? $class::class : $class;
         do {
-            $found_traits = array_merge(class_uses($check_class, true), $found_traits);
+            $found_traits = array_merge(class_uses($check_class), $found_traits);
         } while ($check_class = get_parent_class($check_class));
         foreach ($found_traits as $trait => $same) {
-            $found_traits = array_merge(class_uses($trait, true), $found_traits);
+            $found_traits = array_merge(class_uses($trait), $found_traits);
         }
         return !empty(array_intersect(array_unique($found_traits), $traits));
     }
@@ -349,13 +350,11 @@ class BasicTestCase extends TestCase
      * @throws TooManyException
      * @throws Exception
      */
-    protected function generateItemObjects(int $count = 1): array
+    protected function generateItemObjects(int $count = 1): iterable
     {
-        $result = [];
         for ($i = 0; $i < abs($count); ++$i) {
-            $result[] = new Item(Helpers::randomStr(), random_int(1, 100), random_int(1, 10));
+            yield new Item(Helpers::randomStr(), random_int(1, 100), random_int(1, 10));
         }
-        return $result;
     }
 
     /**
@@ -363,22 +362,19 @@ class BasicTestCase extends TestCase
      *
      * @param int $count
      * @return Payment[]
-     * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
      * @throws TooHighPaymentSumException
      * @throws Exception
      */
-    protected function generatePaymentObjects(int $count = 1): array
+    protected function generatePaymentObjects(int $count = 1): iterable
     {
-        $types = PaymentTypes::toArray();
-        $result = [];
+        $types = PaymentType::cases();
         for ($i = 0; $i < abs($count); ++$i) {
-            $result[] = new Payment(
-                array_values($types)[random_int(min($types), max($types))],
+            yield new Payment(
+                $types[random_int(0, count($types) - 1)],
                 random_int(1, 100) * 2 / 3
             );
         }
-        return $result;
     }
 
     /**
@@ -389,17 +385,15 @@ class BasicTestCase extends TestCase
      * @throws InvalidEnumValueException
      * @throws Exception
      */
-    protected function generateVatObjects(int $count = 1): array
+    protected function generateVatObjects(int $count = 1): iterable
     {
-        $types = VatTypes::toArray();
-        $result = [];
+        $types = VatType::cases();
         for ($i = 0; $i < abs($count); ++$i) {
-            $result[] = new Vat(
-                array_values($types)[random_int(0, count($types) - 1)],
+            yield new Vat(
+                $types[random_int(0, count($types) - 1)],
                 random_int(1, 100) * 2 / 3
             );
         }
-        return $result;
     }
 
     /**
@@ -409,7 +403,6 @@ class BasicTestCase extends TestCase
      * @throws EmptyItemNameException
      * @throws EmptyItemsException
      * @throws InvalidEntityInCollectionException
-     * @throws InvalidEnumValueException
      * @throws NegativeItemPriceException
      * @throws NegativeItemQuantityException
      * @throws NegativePaymentSumException
@@ -421,8 +414,8 @@ class BasicTestCase extends TestCase
     protected function newReceipt(): Receipt
     {
         return new Receipt(
-            new Client('John Doe', 'john@example.com', '+79501234567', '1234567890'),
-            new Company('company@example.com', SnoTypes::OSN, '1234567890', 'https://example.com'),
+            new Client('John Doe', '+79501234567', 'john@example.com', '1234567890'),
+            new Company('1234567890', SnoType::OSN, 'https://example.com', 'company@example.com'),
             new Items($this->generateItemObjects(2)),
             new Payments($this->generatePaymentObjects())
         );
@@ -442,8 +435,8 @@ class BasicTestCase extends TestCase
     protected function newCorrection(): Correction
     {
         return new Correction(
-            new Company('company@example.com', SnoTypes::OSN, '1234567890', 'https://example.com'),
-            new CorrectionInfo(CorrectionTypes::SELF, '01.01.2021', Helpers::randomStr()),
+            new Company('1234567890', SnoType::OSN, 'https://example.com', 'company@example.com'),
+            new CorrectionInfo(CorrectionType::SELF, '01.01.2021', Helpers::randomStr()),
             new Payments($this->generatePaymentObjects(2)),
             new Vats($this->generateVatObjects(2)),
         );

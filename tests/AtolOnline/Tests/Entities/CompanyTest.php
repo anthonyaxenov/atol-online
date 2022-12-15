@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -11,9 +12,8 @@ namespace AtolOnline\Tests\Entities;
 
 use AtolOnline\{
     Entities\Company,
-    Enums\SnoTypes,
+    Enums\SnoType,
     Exceptions\InvalidEmailException,
-    Exceptions\InvalidEnumValueException,
     Exceptions\InvalidInnLengthException,
     Exceptions\InvalidPaymentAddressException,
     Exceptions\TooLongEmailException,
@@ -44,17 +44,20 @@ class CompanyTest extends BasicTestCase
      */
     public function testConstructor()
     {
-        $this->assertIsAtolable(new Company(
-            $email = 'company@example.com',
-            $sno = SnoTypes::OSN,
-            $inn = '1234567890',
-            $payment_address = 'https://example.com',
-        ), [
-            'email' => $email,
-            'sno' => $sno,
-            'inn' => $inn,
-            'payment_address' => $payment_address,
-        ]);
+        $this->assertIsAtolable(
+            new Company(
+                $inn = '1234567890',
+                $sno = SnoType::OSN,
+                $paymentAddress = 'https://example.com',
+                $email = 'company@example.com',
+            ),
+            [
+                'inn' => $inn,
+                'sno' => $sno,
+                'payment_address' => $paymentAddress,
+                'email' => $email,
+            ]
+        );
     }
 
     /**
@@ -64,7 +67,6 @@ class CompanyTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Company::setEmail
      * @covers \AtolOnline\Exceptions\TooLongEmailException
      * @throws InvalidEmailException
-     * @throws InvalidEnumValueException
      * @throws InvalidInnLengthException
      * @throws InvalidPaymentAddressException
      * @throws TooLongEmailException
@@ -73,7 +75,7 @@ class CompanyTest extends BasicTestCase
     public function testEmailTooLongException()
     {
         $this->expectException(TooLongEmailException::class);
-        new Company(Helpers::randomStr(65), SnoTypes::OSN, '1234567890', 'https://example.com');
+        new Company('1234567890', SnoType::OSN, 'https://example.com', Helpers::randomStr(65));
     }
 
     /**
@@ -86,20 +88,7 @@ class CompanyTest extends BasicTestCase
     public function testInvalidEmailException()
     {
         $this->expectException(InvalidEmailException::class);
-        new Company('company@examas%^*.com', SnoTypes::OSN, '1234567890', 'https://example.com');
-    }
-
-    /**
-     * Тестирует исключение о слишком длинном платёжном адресе
-     *
-     * @covers \AtolOnline\Entities\Company
-     * @covers \AtolOnline\Entities\Company::setSno
-     * @covers \AtolOnline\Exceptions\InvalidEnumValueException
-     */
-    public function testInvalidSnoException()
-    {
-        $this->expectException(InvalidEnumValueException::class);
-        new Company('company@example.com', 'test', '1234567890', 'https://example.com');
+        new Company('1234567890', SnoType::OSN, 'https://example.com', 'company@examas%^*.com');
     }
 
     /**
@@ -109,7 +98,6 @@ class CompanyTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Company::setInn
      * @covers \AtolOnline\Exceptions\InvalidInnLengthException
      * @throws InvalidEmailException
-     * @throws InvalidEnumValueException
      * @throws InvalidInnLengthException
      * @throws InvalidPaymentAddressException
      * @throws TooLongEmailException
@@ -118,7 +106,7 @@ class CompanyTest extends BasicTestCase
     public function testInvalidInnLengthException()
     {
         $this->expectException(InvalidInnLengthException::class);
-        new Company('company@example.com', SnoTypes::OSN, Helpers::randomStr(13), 'https://example.com');
+        new Company(Helpers::randomStr(13), SnoType::OSN, 'https://example.com', 'company@example.com');
     }
 
     /**
@@ -128,7 +116,6 @@ class CompanyTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Company::setPaymentAddress
      * @covers \AtolOnline\Exceptions\TooLongPaymentAddressException
      * @throws InvalidEmailException
-     * @throws InvalidEnumValueException
      * @throws InvalidInnLengthException
      * @throws InvalidPaymentAddressException
      * @throws TooLongEmailException
@@ -137,7 +124,7 @@ class CompanyTest extends BasicTestCase
     public function testTooLongPaymentAddressException()
     {
         $this->expectException(TooLongPaymentAddressException::class);
-        new Company('company@example.com', SnoTypes::OSN, '1234567890', Helpers::randomStr(257));
+        new Company('1234567890', SnoType::OSN, Helpers::randomStr(257), 'company@example.com');
     }
 
     /**
@@ -150,6 +137,6 @@ class CompanyTest extends BasicTestCase
     public function testInvalidPaymentAddressException()
     {
         $this->expectException(InvalidPaymentAddressException::class);
-        new Company('company@example.com', SnoTypes::OSN, '1234567890', '');
+        new Company('1234567890', SnoType::OSN, '', 'company@example.com');
     }
 }

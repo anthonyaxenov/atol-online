@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,11 +8,11 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Exceptions;
 
-use AtolOnline\Constants\Constraints;
+use AtolOnline\Constraints;
 
 /**
  * Исключение, возникающее при попытке указать слишком длинный логин ККТ

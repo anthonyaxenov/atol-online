@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,12 +8,12 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Api;
 
 use AtolOnline\{
-    Constants\Constraints,
+    Constraints,
     TestEnvParams};
 use AtolOnline\Entities\{
     Correction,
@@ -320,7 +321,7 @@ final class Fiscalizer extends AtolClient
      */
     protected function registerDocument(
         string $api_method,
-        Receipt|Correction $document,
+        Receipt | Correction $document,
         ?string $external_id = null
     ): ?AtolResponse {
         $this->isTestMode() && $document->getCompany()

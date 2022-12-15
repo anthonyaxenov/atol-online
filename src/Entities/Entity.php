@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -9,7 +10,7 @@
 
 /** @noinspection PhpMultipleClassDeclarationsInspection */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Entities;
 
@@ -74,7 +75,7 @@ abstract class Entity implements JsonSerializable, Stringable, Arrayable, ArrayA
     /**
      * @inheritDoc
      */
-    public function offsetSet(mixed $offset, mixed $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         throw new BadMethodCallException(
             'Объект ' . static::class . ' нельзя изменять как массив. Следует использовать сеттеры.'

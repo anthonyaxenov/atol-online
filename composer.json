@@ -5,22 +5,18 @@
     "type": "library",
     "keywords": [
         "api",
-        "e-commerce",
-        "54-fz",
-        "54-фз",
-        "kkt",
-        "ккт",
-        "cash",
-        "cash register",
-        "payment",
-        "payment system",
+        "чек",
         "atol",
         "атол",
+        "payment",
+        "e-commerce",
         "atol online",
         "атол онлайн",
-        "fiscalization",
+        "atol-online",
+        "атол-онлайн",
         "фискализация",
-        "чек"
+        "fiscalization",
+        "payment system"
     ],
     "homepage": "https://github.com/anthonyaxenov/atol-online",
     "readme": "https://github.com/anthonyaxenov/atol-online/blob/master/README.md",
@@ -40,27 +36,30 @@
     },
     "funding": [
         {
-            "type": "Patreon",
-            "url": "https://www.patreon.com/anthonyaxenov"
-        },
-        {
             "type": "Yoomoney",
             "url": "https://yoomoney.ru/to/41001685237530"
+        },
+        {
+            "type": "Buy Me a Coffee",
+            "url": "https://www.buymeacoffee.com/axenov"
         }
     ],
     "require": {
-        "php": ">=8.0",
+        "php": ">=8.1",
         "ext-json": "*",
         "ext-mbstring": "*",
-        "guzzlehttp/guzzle": "^7.4",
+        "guzzlehttp/guzzle": "^7.5",
         "psr/log": "^3",
-        "ramsey/uuid": "^4.2",
-        "myclabs/php-enum": "^1.8",
-        "illuminate/collections": "^8.70",
+        "ramsey/uuid": "^4.6",
+        "illuminate/collections": "^v9.43",
         "jetbrains/phpstorm-attributes": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5"
+        "friendsofphp/php-cs-fixer": "^3.13",
+        "phpunit/phpunit": "^9.5",
+        "psalm/plugin-phpunit": "^0.18",
+        "squizlabs/php_codesniffer": "^3.7",
+        "vimeo/psalm": "^4.30"
     },
     "autoload": {
         "psr-4": {
@@ -73,6 +72,8 @@
         ]
     },
     "scripts": {
+        "phpcs": "vendor/bin/phpcs",
+        "psalm": "vendor/bin/psalm",
         "test": "vendor/bin/phpunit --colors=always",
         "coverage": "php -dxdebug.mode=coverage vendor/bin/phpunit --coverage-html .coverage"
     },

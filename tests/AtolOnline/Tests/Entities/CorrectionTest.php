@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -10,7 +11,7 @@
 namespace AtolOnline\Tests\Entities;
 
 use AtolOnline\{
-    Constants\Constraints,
+    Constraints,
     Helpers,
     Tests\BasicTestCase};
 use AtolOnline\Exceptions\{
@@ -71,7 +72,7 @@ class CorrectionTest extends BasicTestCase
     {
         $correction = $this->newCorrection()->setCashier(Helpers::randomStr());
         $this->assertArrayHasKey('cashier', $correction->jsonSerialize());
-        $this->assertEquals($correction->getCashier(), $correction->jsonSerialize()['cashier']);
+        $this->assertSame($correction->getCashier(), $correction->jsonSerialize()['cashier']);
     }
 
     /**

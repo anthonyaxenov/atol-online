@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,21 +8,21 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Constants\Constraints;
-use AtolOnline\Enums\CorrectionTypes;
+use AtolOnline\Constraints;
+use AtolOnline\Enums\CorrectionType;
 use AtolOnline\Exceptions\{
     EmptyCorrectionNumberException,
-    InvalidCorrectionDateException,
-    InvalidEnumValueException};
+    InvalidCorrectionDateException,};
 use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Exception;
 use JetBrains\PhpStorm\{
-    ArrayShape,
-    Pure};
+    ArrayShape};
 
 /**
  * Класс, описывающий данные коррекции
@@ -31,41 +32,35 @@ use JetBrains\PhpStorm\{
 final class CorrectionInfo extends Entity
 {
     /**
-     * @var string|null Тип коррекции (1173)
+     * @var DateTimeImmutable Дата документа основания для коррекции (1178)
      */
-    protected ?string $type = null;
-
-    /**
-     * @var string|null Дата документа основания для коррекции (1178)
-     */
-    protected ?string $date = null;
-
-    /**
-     * @var string|null Номер документа основания для коррекции (1179)
-     */
-    protected ?string $number = null;
+    protected DateTimeImmutable $date;
 
     /**
      * Конструктор
      *
-     * @param string $type Тип коррекции
-     * @param string $date Дата документа
-     * @param string $number Номер документа
-     * @throws InvalidEnumValueException
+     * @param CorrectionType $type Тип коррекции (1173)
+     * @param DateTimeInterface|string $date Дата документа основания для коррекции (1178)
+     * @param string $number Номер документа основания для коррекции (1179)
      * @throws InvalidCorrectionDateException
      * @throws EmptyCorrectionNumberException
      */
-    public function __construct(string $type, string $date, string $number)
-    {
-        $this->setType($type)->setDate($date)->setNumber($number);
+    public function __construct(
+        protected CorrectionType $type,
+        DateTimeInterface | string $date,
+        protected string $number,
+    ) {
+        $this->setType($type)
+            ->setDate($date)
+            ->setNumber($number);
     }
 
     /**
      * Возвращает тип коррекции
      *
-     * @return string|null
+     * @return CorrectionType|null
      */
-    public function getType(): ?string
+    public function getType(): ?CorrectionType
     {
         return $this->type;
     }
@@ -73,23 +68,21 @@ final class CorrectionInfo extends Entity
     /**
      * Устанавливает тип коррекции
      *
-     * @param string $type
+     * @param CorrectionType $type
      * @return $this
-     * @throws InvalidEnumValueException
      */
-    public function setType(string $type): self
+    public function setType(CorrectionType $type): self
     {
-        $type = trim($type);
-        CorrectionTypes::isValid($type) && $this->type = $type;
+        $this->type = $type;
         return $this;
     }
 
     /**
      * Возвращает дату документа основания для коррекции
      *
-     * @return string|null
+     * @return DateTimeImmutable
      */
-    public function getDate(): ?string
+    public function getDate(): DateTimeImmutable
     {
         return $this->date;
     }
@@ -97,17 +90,20 @@ final class CorrectionInfo extends Entity
     /**
      * Устанавливает дату документа основания для коррекции
      *
-     * @param DateTime|string $date Строковая дата в формате d.m.Y либо объект DateTime с датой
+     * @param DateTimeInterface|string $date Строковая дата в формате d.m.Y либо объект DateTime с датой
      * @return $this
      * @throws InvalidCorrectionDateException
      */
-    public function setDate(DateTime|string $date): self
+    public function setDate(DateTimeInterface | string $date): self
     {
         try {
             if (is_string($date)) {
-                $date = new DateTime(trim($date));
+                $this->date = new DateTimeImmutable(trim($date));
+            } elseif ($date instanceof DateTime) {
+                $this->date = DateTimeImmutable::createFromMutable($date);
+            } elseif ($date instanceof DateTimeImmutable) {
+                $this->date = $date;
             }
-            $this->date = $date->format(Constraints::CORRECTION_DATE_FORMAT);
         } catch (Exception $e) {
             throw new InvalidCorrectionDateException($date, $e->getMessage());
         }
@@ -142,13 +138,16 @@ final class CorrectionInfo extends Entity
     /**
      * @inheritDoc
      */
-    #[Pure]
-    #[ArrayShape(['type' => 'string', 'base_date' => 'string', 'base_number' => 'string'])]
+    #[ArrayShape([
+        'type' => 'string',
+        'base_date' => 'string',
+        'base_number' => 'string',
+    ])]
     public function jsonSerialize(): array
     {
         return [
             'type' => $this->getType(),
-            'base_date' => $this->getDate(),
+            'base_date' => $this->getDate()->format(Constraints::CORRECTION_DATE_FORMAT),
             'base_number' => $this->getNumber(),
         ];
     }

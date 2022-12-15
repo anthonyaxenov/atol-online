@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,23 +8,19 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Entities;
 
 use AtolOnline\{
-    Constants\Constraints,
-    Enums\PaymentTypes,
-};
+    Constraints,
+    Enums\PaymentType,};
 use AtolOnline\Exceptions\{
-    InvalidEnumValueException,
     NegativePaymentSumException,
-    TooHighPaymentSumException,
-};
+    TooHighPaymentSumException,};
 use JetBrains\PhpStorm\{
     ArrayShape,
-    Pure
-};
+    Pure};
 
 /**
  * Класс, описывающий оплату
@@ -33,35 +30,26 @@ use JetBrains\PhpStorm\{
 final class Payment extends Entity
 {
     /**
-     * @var int Тип оплаты
-     */
-    protected int $type;
-
-    /**
-     * @var float Сумма оплаты (1031, 1081, 1215, 1216, 1217)
-     */
-    protected float $sum;
-
-    /**
      * Конструктор
      *
-     * @param int $type Тип оплаты
-     * @param float $sum Сумма оплаты
+     * @param PaymentType $type Тип оплаты
+     * @param float $sum Сумма оплаты (1031, 1081, 1215, 1216, 1217)
      * @throws NegativePaymentSumException
      * @throws TooHighPaymentSumException
-     * @throws InvalidEnumValueException
      */
-    public function __construct(int $type, float $sum)
-    {
+    public function __construct(
+        protected PaymentType $type,
+        protected float $sum,
+    ) {
         $this->setType($type)->setSum($sum);
     }
 
     /**
      * Возвращает установленный тип оплаты
      *
-     * @return int
+     * @return PaymentType
      */
-    public function getType(): int
+    public function getType(): PaymentType
     {
         return $this->type;
     }
@@ -69,13 +57,12 @@ final class Payment extends Entity
     /**
      * Устанавливает тип оплаты
      *
-     * @param int $type
+     * @param PaymentType $type
      * @return $this
-     * @throws InvalidEnumValueException
      */
-    public function setType(int $type): self
+    public function setType(PaymentType $type): self
     {
-        PaymentTypes::isValid($type) && $this->type = $type;
+        $this->type = $type;
         return $this;
     }
 
@@ -100,12 +87,8 @@ final class Payment extends Entity
     public function setSum(float $sum): self
     {
         $sum = round($sum, 2);
-        if ($sum > Constraints::MAX_COUNT_PAYMENT_SUM) {
-            throw new TooHighPaymentSumException($sum);
-        }
-        if ($sum < 0) {
-            throw new NegativePaymentSumException($sum);
-        }
+        $sum > Constraints::MAX_COUNT_PAYMENT_SUM && throw new TooHighPaymentSumException($sum);
+        $sum < 0 && throw new NegativePaymentSumException($sum);
         $this->sum = $sum;
         return $this;
     }

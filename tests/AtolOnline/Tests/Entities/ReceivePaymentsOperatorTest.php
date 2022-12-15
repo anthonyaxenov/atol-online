@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -28,7 +29,7 @@ class ReceivePaymentsOperatorTest extends BasicTestCase
      */
     public function testConstructorWithoutArgs(): void
     {
-        $this->assertEquals('[]', (string)(new ReceivePaymentsOperator()));
+        $this->assertSame('[]', (string)(new ReceivePaymentsOperator()));
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -90,7 +91,7 @@ class HelpersTest extends BasicTestCase
     {
         $result = Helpers::toRub($kopeks);
         $this->assertIsFloat($result);
-        $this->assertEquals($result, $rubles);
+        $this->assertSame($result, $rubles);
     }
 
     /**
@@ -103,7 +104,7 @@ class HelpersTest extends BasicTestCase
     {
         $result = Helpers::toKop($rubles);
         $this->assertIsInt($result);
-        $this->assertEquals($result, $kopeks);
+        $this->assertSame($result, $kopeks);
     }
 
     /**
@@ -117,7 +118,7 @@ class HelpersTest extends BasicTestCase
     {
         $result = Helpers::randomStr($input);
         $this->assertIsString($result);
-        $this->assertEquals($output, strlen($result));
+        $this->assertSame($output, strlen($result));
         // тестировать на наличие цифр быссмысленно
     }
 }

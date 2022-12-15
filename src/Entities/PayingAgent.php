@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,11 +8,11 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Constants\Constraints;
+use AtolOnline\Constraints;
 use AtolOnline\Exceptions\{
     InvalidPhoneException,
     TooLongPayingAgentOperationException};
@@ -42,7 +43,7 @@ final class PayingAgent extends Entity
      */
     public function __construct(
         ?string $operation = null,
-        array|Collection|null $phones = null,
+        array | Collection | null $phones = null,
     ) {
         !is_null($operation) && $this->setOperation($operation);
         $this->setPhones($phones);

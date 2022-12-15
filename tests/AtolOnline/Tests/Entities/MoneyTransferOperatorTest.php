@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -29,7 +30,7 @@ class MoneyTransferOperatorTest extends BasicTestCase
      */
     public function testConstructorWithoutArgs(): void
     {
-        $this->assertEquals('[]', (string)(new MoneyTransferOperator()));
+        $this->assertSame('[]', (string)(new MoneyTransferOperator()));
     }
 
     /**
@@ -52,20 +53,26 @@ class MoneyTransferOperatorTest extends BasicTestCase
     public function testConstructorWithArgs(): void
     {
         $this->assertIsAtolable(new MoneyTransferOperator('some name'), ['name' => 'some name']);
-        $this->assertIsAtolable(new MoneyTransferOperator(inn: '+fasd3\qe3fs_=nac99013928czc'), ['inn' => '3399013928']);
+        $this->assertIsAtolable(
+            new MoneyTransferOperator(inn: '+fasd3\qe3fs_=nac99013928czc'),
+            ['inn' => '3399013928']
+        );
         $this->assertIsAtolable(new MoneyTransferOperator(address: 'London'), ['address' => 'London']);
         $this->assertIsAtolable(new MoneyTransferOperator(phones: ['+122997365456']), ['phones' => ['+122997365456']]);
-        $this->assertIsAtolable(new MoneyTransferOperator(
-            'some name',
-            '+fasd3\qe3fs_=nac99013928czc',
-            'London',
-            ['+122997365456'],
-        ), [
-            'name' => 'some name',
-            'inn' => '3399013928',
-            'address' => 'London',
-            'phones' => ['+122997365456'],
-        ]);
+        $this->assertIsAtolable(
+            new MoneyTransferOperator(
+                'some name',
+                '+fasd3\qe3fs_=nac99013928czc',
+                'London',
+                ['+122997365456'],
+            ),
+            [
+                'name' => 'some name',
+                'inn' => '3399013928',
+                'address' => 'London',
+                'phones' => ['+122997365456'],
+            ]
+        );
     }
 
     /**
@@ -145,8 +152,8 @@ class MoneyTransferOperatorTest extends BasicTestCase
      */
     public function testValidInn(): void
     {
-        $this->assertEquals('1234567890', (new MoneyTransferOperator())->setInn('1234567890')->getInn());
-        $this->assertEquals('123456789012', (new MoneyTransferOperator())->setInn('123456789012')->getInn());
+        $this->assertSame('1234567890', (new MoneyTransferOperator())->setInn('1234567890')->getInn());
+        $this->assertSame('123456789012', (new MoneyTransferOperator())->setInn('123456789012')->getInn());
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -10,12 +11,11 @@
 namespace AtolOnline\Tests\Entities;
 
 use AtolOnline\{
-    Constants\Constraints,
+    Constraints,
     Entities\Payment,
-    Enums\PaymentTypes,
+    Enums\PaymentType,
     Tests\BasicTestCase};
 use AtolOnline\Exceptions\{
-    InvalidEnumValueException,
     NegativePaymentSumException,
     TooHighPaymentSumException,};
 use Exception;
@@ -35,7 +35,6 @@ class PaymentTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Payment::getSum
      * @covers \AtolOnline\Entities\Payment::jsonSerialize
      * @return void
-     * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
      * @throws TooHighPaymentSumException
      * @throws Exception
@@ -43,31 +42,12 @@ class PaymentTest extends BasicTestCase
     public function testConstructor(): void
     {
         $this->assertIsAtolable(
-            new Payment(PaymentTypes::ELECTRON, 123.456789),
+            new Payment(PaymentType::ELECTRON, 123.456789),
             [
-                'type' => PaymentTypes::ELECTRON,
+                'type' => PaymentType::ELECTRON,
                 'sum' => 123.46,
             ]
         );
-    }
-
-    /**
-     * Тестирует исключение при некорректном типе
-     *
-     * @covers \AtolOnline\Entities\Payment
-     * @covers \AtolOnline\Entities\Payment::setType
-     * @covers \AtolOnline\Enums\PaymentTypes::isValid
-     * @covers \AtolOnline\Exceptions\InvalidEnumValueException
-     * @return void
-     * @throws InvalidEnumValueException
-     * @throws NegativePaymentSumException
-     * @throws TooHighPaymentSumException
-     */
-    public function testInvalidEnumValueException(): void
-    {
-        $this->expectException(InvalidEnumValueException::class);
-        $this->expectExceptionMessage('Некорректное значение AtolOnline\Enums\PaymentTypes::123');
-        new Payment(123, 123.456789);
     }
 
     /**
@@ -77,13 +57,12 @@ class PaymentTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Payment::setSum
      * @covers \AtolOnline\Exceptions\TooHighPaymentSumException
      * @return void
-     * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
      */
     public function testTooHighPaymentSumException(): void
     {
         $this->expectException(TooHighPaymentSumException::class);
-        new Payment(PaymentTypes::ELECTRON, Constraints::MAX_COUNT_PAYMENT_SUM + 1);
+        new Payment(PaymentType::ELECTRON, Constraints::MAX_COUNT_PAYMENT_SUM + 1);
     }
 
     /**
@@ -93,13 +72,12 @@ class PaymentTest extends BasicTestCase
      * @covers \AtolOnline\Entities\Payment::setSum
      * @covers \AtolOnline\Exceptions\NegativePaymentSumException
      * @return void
-     * @throws InvalidEnumValueException
      * @throws NegativePaymentSumException
      * @throws TooHighPaymentSumException
      */
     public function testNegativePaymentSumException(): void
     {
         $this->expectException(NegativePaymentSumException::class);
-        new Payment(PaymentTypes::ELECTRON, -1);
+        new Payment(PaymentType::ELECTRON, -1);
     }
 }

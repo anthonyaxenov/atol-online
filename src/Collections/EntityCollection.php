@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,7 +8,7 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Collections;
 
@@ -33,36 +34,38 @@ abstract class EntityCollection extends Collection
     /**
      * Проверяет количество элементов коллекции
      *
-     * @return void
+     * @return static
      */
-    public function checkCount(): void
+    public function checkCount(): static
     {
         $this->isEmpty() && throw new (static::EMPTY_EXCEPTION_CLASS)();
         $this->count() > static::MAX_COUNT && throw new (static::TOO_MANY_EXCEPTION_CLASS)(static::MAX_COUNT);
+        return $this;
     }
 
     /**
      * Проверяет корректность класса элемента коллекции
      *
      * @param mixed $item
-     * @return void
+     * @return static
      * @throws InvalidEntityInCollectionException
      */
-    public function checkItemClass(mixed $item): void
+    public function checkItemClass(mixed $item): static
     {
         if (!is_object($item) || $item::class !== static::ENTITY_CLASS) {
             throw new InvalidEntityInCollectionException(static::class, static::ENTITY_CLASS, $item);
         }
+        return $this;
     }
 
     /**
      * Проверяет корректность классов элементов коллекции
      *
-     * @return $this
+     * @return static
      * @throws InvalidEntityInCollectionException
      */
-    public function checkItemsClasses(): self
+    public function checkItemsClasses(): static
     {
-        return $this->each(fn($item) => $this->checkItemClass($item));
+        return $this->each(fn ($item) => $this->checkItemClass($item));
     }
 }

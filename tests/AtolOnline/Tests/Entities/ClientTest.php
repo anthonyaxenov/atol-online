@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -9,15 +10,15 @@
 
 namespace AtolOnline\Tests\Entities;
 
-use AtolOnline\{Entities\Client,
+use AtolOnline\{
+    Entities\Client,
     Exceptions\InvalidEmailException,
     Exceptions\InvalidInnLengthException,
     Exceptions\InvalidPhoneException,
     Exceptions\TooLongClientNameException,
     Exceptions\TooLongEmailException,
     Helpers,
-    Tests\BasicTestCase
-};
+    Tests\BasicTestCase};
 use BadMethodCallException;
 use Exception;
 
@@ -35,7 +36,7 @@ class ClientTest extends BasicTestCase
      */
     public function testConstructorWithoutArgs(): void
     {
-        $this->assertIsAtolable(new Client(), []);
+        $this->assertIsAtolable(new Client());
     }
 
     /**
@@ -56,19 +57,20 @@ class ClientTest extends BasicTestCase
     public function testConstructorWithArgs(): void
     {
         $this->assertIsAtolable(new Client('John Doe'), ['name' => 'John Doe']);
-        $this->assertIsAtolable(new Client(email: 'john@example.com'), ['email' => 'john@example.com']);
         $this->assertIsAtolable(new Client(phone: '+1/22/99*73s dsdas654 5s6'), ['phone' => '+122997365456']);
+        $this->assertIsAtolable(new Client(email: 'john@example.com'), ['email' => 'john@example.com']);
         $this->assertIsAtolable(new Client(inn: '+fasd3\qe3fs_=nac99013928czc'), ['inn' => '3399013928']);
         $this->assertIsAtolable(
             new Client(
                 'John Doe',
-                'john@example.com',
                 '+1/22/99*73s dsdas654 5s6', // +122997365456
+                'john@example.com',
                 '+fasd3\qe3fs_=nac99013928czc' // 3399013928
-            ), [
+            ),
+            [
                 'name' => 'John Doe',
-                'email' => 'john@example.com',
                 'phone' => '+122997365456',
+                'email' => 'john@example.com',
                 'inn' => '3399013928',
             ]
         );
@@ -100,7 +102,7 @@ class ClientTest extends BasicTestCase
     public function testValidName(): void
     {
         $name = Helpers::randomStr();
-        $this->assertEquals($name, (new Client())->setName($name)->getName());
+        $this->assertSame($name, (new Client())->setName($name)->getName());
     }
 
     /**
@@ -143,7 +145,7 @@ class ClientTest extends BasicTestCase
      */
     public function testValidPhone(string $input, string $output): void
     {
-        $this->assertEquals($output, (new Client())->setPhone($input)->getPhone());
+        $this->assertSame($output, (new Client())->setPhone($input)->getPhone());
     }
 
     /**
@@ -174,7 +176,7 @@ class ClientTest extends BasicTestCase
      */
     public function testValidEmails(mixed $email): void
     {
-        $this->assertEquals($email, (new Client())->setEmail($email)->getEmail());
+        $this->assertSame($email, (new Client())->setEmail($email)->getEmail());
     }
 
     /**
@@ -219,8 +221,8 @@ class ClientTest extends BasicTestCase
      */
     public function testValidInn(): void
     {
-        $this->assertEquals('1234567890', (new Client())->setInn('1234567890')->getInn());
-        $this->assertEquals('123456789012', (new Client())->setInn('123456789012')->getInn());
+        $this->assertSame('1234567890', (new Client())->setInn('1234567890')->getInn());
+        $this->assertSame('123456789012', (new Client())->setInn('123456789012')->getInn());
     }
 
     /**
@@ -261,7 +263,7 @@ class ClientTest extends BasicTestCase
     public function testOffsetGetExists(): void
     {
         $client = new Client('John Doe');
-        $this->assertEquals('John Doe', $client['name']);
+        $this->assertSame('John Doe', $client['name']);
         $this->assertTrue(isset($client['name']));
         $this->assertFalse(isset($client['qwerty']));
     }

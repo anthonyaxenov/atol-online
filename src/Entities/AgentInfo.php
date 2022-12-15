@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -7,12 +8,11 @@
  * https://github.com/anthonyaxenov/atol-online/blob/master/LICENSE
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AtolOnline\Entities;
 
-use AtolOnline\Enums\AgentTypes;
-use AtolOnline\Exceptions\InvalidEnumValueException;
+use AtolOnline\Enums\AgentType;
 
 /**
  * Класс, описывающий данные агента
@@ -22,52 +22,28 @@ use AtolOnline\Exceptions\InvalidEnumValueException;
 final class AgentInfo extends Entity
 {
     /**
-     * @var string|null Признак агента (1057)
-     */
-    protected ?string $type = null;
-
-    /**
-     * @var PayingAgent|null Платёжный агент
-     */
-    protected ?PayingAgent $paying_agent = null;
-
-    /**
-     * @var ReceivePaymentsOperator|null Оператор по приёму платежей
-     */
-    protected ?ReceivePaymentsOperator $receive_payments_operator = null;
-
-    /**
-     * @var MoneyTransferOperator|null Оператор перевода
-     */
-    protected ?MoneyTransferOperator $money_transfer_operator = null;
-
-    /**
      * Конструктор
      *
-     * @param string|null $type Признак агента (1057)
-     * @param PayingAgent|null $pagent Платёжный агент
-     * @param ReceivePaymentsOperator|null $rp_operator Оператор по приёму платежей
-     * @param MoneyTransferOperator|null $mt_operator Оператор перевода
-     * @throws InvalidEnumValueException
+     * @param AgentType|null $type Признак агента (1057)
+     * @param PayingAgent|null $payingAgent Платёжный агент
+     * @param ReceivePaymentsOperator|null $receivePaymentsOperator Оператор по приёму платежей
+     * @param MoneyTransferOperator|null $moneyTransferOperator Оператор перевода
      */
     public function __construct(
-        ?string $type = null,
-        ?PayingAgent $pagent = null,
-        ?ReceivePaymentsOperator $rp_operator = null,
-        ?MoneyTransferOperator $mt_operator = null,
+        protected ?AgentType $type = null,
+        protected ?PayingAgent $payingAgent = null,
+        protected ?ReceivePaymentsOperator $receivePaymentsOperator = null,
+        protected ?MoneyTransferOperator $moneyTransferOperator = null,
     ) {
-        !is_null($type) && $this->setType($type);
-        !is_null($pagent) && $this->setPayingAgent($pagent);
-        !is_null($rp_operator) && $this->setReceivePaymentsOperator($rp_operator);
-        !is_null($mt_operator) && $this->setMoneyTransferOperator($mt_operator);
+        $this->setType($type);
     }
 
     /**
      * Возвращает установленный признак оператора
      *
-     * @return string|null
+     * @return AgentType|null
      */
-    public function getType(): ?string
+    public function getType(): ?AgentType
     {
         return $this->type;
     }
@@ -75,24 +51,23 @@ final class AgentInfo extends Entity
     /**
      * Устанавливает признак оператора
      *
-     * @param string|null $type
+     * @param AgentType|null $type
      * @return AgentInfo
-     * @throws InvalidEnumValueException
      */
-    public function setType(?string $type): self
+    public function setType(?AgentType $type): self
     {
-        AgentTypes::isValid($type) && $this->type = $type;
+        $this->type = $type;
         return $this;
     }
 
     /**
-     * Взвращает установленного платёжного агента
+     * Возвращает установленного платёжного агента
      *
      * @return PayingAgent|null
      */
     public function getPayingAgent(): ?PayingAgent
     {
-        return $this->paying_agent;
+        return $this->payingAgent;
     }
 
     /**
@@ -103,7 +78,7 @@ final class AgentInfo extends Entity
      */
     public function setPayingAgent(?PayingAgent $agent): self
     {
-        $this->paying_agent = $agent;
+        $this->payingAgent = $agent;
         return $this;
     }
 
@@ -114,7 +89,7 @@ final class AgentInfo extends Entity
      */
     public function getReceivePaymentsOperator(): ?ReceivePaymentsOperator
     {
-        return $this->receive_payments_operator;
+        return $this->receivePaymentsOperator;
     }
 
     /**
@@ -125,7 +100,7 @@ final class AgentInfo extends Entity
      */
     public function setReceivePaymentsOperator(?ReceivePaymentsOperator $operator): self
     {
-        $this->receive_payments_operator = $operator;
+        $this->receivePaymentsOperator = $operator;
         return $this;
     }
 
@@ -136,7 +111,7 @@ final class AgentInfo extends Entity
      */
     public function getMoneyTransferOperator(): ?MoneyTransferOperator
     {
-        return $this->money_transfer_operator;
+        return $this->moneyTransferOperator;
     }
 
     /**
@@ -147,7 +122,7 @@ final class AgentInfo extends Entity
      */
     public function setMoneyTransferOperator(?MoneyTransferOperator $operator): self
     {
-        $this->money_transfer_operator = $operator;
+        $this->moneyTransferOperator = $operator;
         return $this;
     }
 
@@ -157,13 +132,18 @@ final class AgentInfo extends Entity
     public function jsonSerialize(): array
     {
         $json = [];
-        $this->getType() && $json['type'] = $this->getType();
-        $this->getPayingAgent()?->jsonSerialize() && $json['paying_agent'] = $this
-            ->getPayingAgent()->jsonSerialize();
-        $this->getReceivePaymentsOperator()?->jsonSerialize() && $json['receive_payments_operator'] = $this
-            ->getReceivePaymentsOperator()->jsonSerialize();
-        $this->getMoneyTransferOperator()?->jsonSerialize() && $json['money_transfer_operator'] = $this
-            ->getMoneyTransferOperator()->jsonSerialize();
+        if ($this?->type) {
+            $json['type'] = $this->getType();
+        }
+        if ($this->payingAgent?->jsonSerialize()) {
+            $json['paying_agent'] = $this->payingAgent->jsonSerialize();
+        }
+        if ($this->receivePaymentsOperator?->jsonSerialize()) {
+            $json['receive_payments_operator'] = $this->receivePaymentsOperator->jsonSerialize();
+        }
+        if ($this->moneyTransferOperator?->jsonSerialize()) {
+            $json['money_transfer_operator'] = $this->moneyTransferOperator->jsonSerialize();
+        }
         return $json;
     }
 }

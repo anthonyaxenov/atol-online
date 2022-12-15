@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2020-2021 Антон Аксенов (Anthony Axenov)
  *
@@ -10,7 +11,7 @@
 namespace AtolOnline\Tests\Api;
 
 use AtolOnline\{
-    Constants\Constraints,
+    Constraints,
     Helpers,
     TestEnvParams,
     Tests\BasicTestCase};
@@ -79,12 +80,12 @@ class FiscalizerTest extends BasicTestCase
     public function testGroup(): void
     {
         // test mode
-        $this->assertEquals(
+        $this->assertSame(
             TestEnvParams::FFD105()['group'],
             (new Fiscalizer(group: 'group'))->getGroup()
         );
         // prod mode
-        $this->assertEquals('group', (new Fiscalizer(false, group: 'group'))->getGroup());
+        $this->assertSame('group', (new Fiscalizer(false, group: 'group'))->getGroup());
         $this->assertNull((new Fiscalizer(false))->getGroup());
     }
 
@@ -164,7 +165,6 @@ class FiscalizerTest extends BasicTestCase
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
      * @throws InvalidEntityInCollectionException
-     * @throws InvalidEnumValueException
      * @throws InvalidInnLengthException
      * @throws InvalidPaymentAddressException
      * @throws NegativeItemPriceException
@@ -176,12 +176,13 @@ class FiscalizerTest extends BasicTestCase
      * @throws TooLongPaymentAddressException
      * @throws TooManyException
      * @throws GuzzleException
+     * @throws InvalidEnumValueException
      */
     public function testSell(): void
     {
         $fisc_result = $this->newReceipt()->sell(new Fiscalizer());
         $this->assertTrue($fisc_result->isSuccessful());
-        $this->assertEquals('wait', $fisc_result->getContent()->status);
+        $this->assertSame('wait', $fisc_result->getContent()->status);
         self::$registered_uuids[] = $fisc_result->getContent()->uuid;
     }
 
@@ -201,7 +202,6 @@ class FiscalizerTest extends BasicTestCase
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
      * @throws InvalidEntityInCollectionException
-     * @throws InvalidEnumValueException
      * @throws InvalidInnLengthException
      * @throws InvalidPaymentAddressException
      * @throws NegativeItemPriceException
@@ -213,12 +213,13 @@ class FiscalizerTest extends BasicTestCase
      * @throws TooLongPaymentAddressException
      * @throws TooManyException
      * @throws GuzzleException
+     * @throws InvalidEnumValueException
      */
     public function testSellRefund(): void
     {
         $fisc_result = $this->newReceipt()->sellRefund(new Fiscalizer());
         $this->assertTrue($fisc_result->isSuccessful());
-        $this->assertEquals('wait', $fisc_result->getContent()->status);
+        $this->assertSame('wait', $fisc_result->getContent()->status);
         self::$registered_uuids[] = $fisc_result->getContent()->uuid;
     }
 
@@ -237,7 +238,6 @@ class FiscalizerTest extends BasicTestCase
      * @throws EmptyPasswordException
      * @throws GuzzleException
      * @throws InvalidEntityInCollectionException
-     * @throws InvalidEnumValueException
      * @throws InvalidInnLengthException
      * @throws InvalidPaymentAddressException
      * @throws NegativePaymentSumException
@@ -245,12 +245,13 @@ class FiscalizerTest extends BasicTestCase
      * @throws TooLongPaymentAddressException
      * @throws EmptyCorrectionNumberException
      * @throws InvalidCorrectionDateException
+     * @throws InvalidEnumValueException
      */
     public function testSellCorrect(): void
     {
         $fisc_result = $this->newCorrection()->sellCorrect(new Fiscalizer());
         $this->assertTrue($fisc_result->isSuccessful());
-        $this->assertEquals('wait', $fisc_result->getContent()->status);
+        $this->assertSame('wait', $fisc_result->getContent()->status);
         //self::$registered_uuids[] = $fisc_result->getContent()->uuid;
     }
 
@@ -270,7 +271,6 @@ class FiscalizerTest extends BasicTestCase
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
      * @throws InvalidEntityInCollectionException
-     * @throws InvalidEnumValueException
      * @throws InvalidInnLengthException
      * @throws InvalidPaymentAddressException
      * @throws NegativeItemPriceException
@@ -282,12 +282,13 @@ class FiscalizerTest extends BasicTestCase
      * @throws TooLongPaymentAddressException
      * @throws TooManyException
      * @throws GuzzleException
+     * @throws InvalidEnumValueException
      */
     public function testBuy(): void
     {
         $fisc_result = $this->newReceipt()->buy(new Fiscalizer());
         $this->assertTrue($fisc_result->isSuccessful());
-        $this->assertEquals('wait', $fisc_result->getContent()->status);
+        $this->assertSame('wait', $fisc_result->getContent()->status);
         //self::$registered_uuids[] = $fisc_result->getContent()->uuid;
     }
 
@@ -307,7 +308,6 @@ class FiscalizerTest extends BasicTestCase
      * @throws EmptyLoginException
      * @throws EmptyPasswordException
      * @throws InvalidEntityInCollectionException
-     * @throws InvalidEnumValueException
      * @throws InvalidInnLengthException
      * @throws InvalidPaymentAddressException
      * @throws NegativeItemPriceException
@@ -319,12 +319,13 @@ class FiscalizerTest extends BasicTestCase
      * @throws TooLongPaymentAddressException
      * @throws TooManyException
      * @throws GuzzleException
+     * @throws InvalidEnumValueException
      */
     public function testBuyRefund(): void
     {
         $fisc_result = $this->newReceipt()->buyRefund(new Fiscalizer());
         $this->assertTrue($fisc_result->isSuccessful());
-        $this->assertEquals('wait', $fisc_result->getContent()->status);
+        $this->assertSame('wait', $fisc_result->getContent()->status);
         //self::$registered_uuids[] = $fisc_result->getContent()->uuid;
     }
 
@@ -356,7 +357,7 @@ class FiscalizerTest extends BasicTestCase
     {
         $fisc_result = $this->newCorrection()->buyCorrect(new Fiscalizer());
         $this->assertTrue($fisc_result->isSuccessful());
-        $this->assertEquals('wait', $fisc_result->getContent()->status);
+        $this->assertSame('wait', $fisc_result->getContent()->status);
         //self::$registered_uuids[] = $fisc_result->getContent()->uuid;
     }
 
@@ -395,6 +396,6 @@ class FiscalizerTest extends BasicTestCase
     {
         $fisc_status = (new Fiscalizer())->pollDocumentStatus(array_shift(self::$registered_uuids));
         //$this->assertTrue($fisc_status->isSuccessful());
-        $this->assertEquals('done', $fisc_status->getContent()->status);
+        $this->assertSame('done', $fisc_status->getContent()->status);
     }
 }
